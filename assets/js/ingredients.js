@@ -6,9 +6,20 @@ function addInged() {
     ingredientDiv.className = 'ingredient';
     ingredientDiv.innerHTML = `
         <div class="ingredient">
-            <input class="menge" type="text" id="ingredient${ingredientCount}" name="ingredient${ingredientCount}" required placeholder="Menge">
-            <input class="zutat" type="text" id="ingredient${ingredientCount}" name="ingredient${ingredientCount}" required placeholder="Zutat">
-                    <button type="button" class="remove-ingredient center" onclick="removeIngredient(this)" title="Löschen"><span class="material-symbols-outlined">close</span></button>
+            <input class="menge" name="menge[]" type="text" id="ingredient${ingredientCount}" name="ingredient${ingredientCount}" required placeholder="Menge">
+            <select class="einheit" name="einheit[]"  required>
+                        <option value=""disabled selected> </option>
+                        <option value="g">g</option>
+                        <option value="kg">kg</option>
+                        <option value="ml">ml</option>
+                        <option value="l">l</option>
+                        <option value="EL">EL</option>
+                        <option value="TL">TL</option>
+                        <option value="%">%</option>
+                        <option value="Stl.">Stk.</option>
+                    </select>
+            <input class="zutat" name="zutat[]" type="text" id="ingredient${ingredientCount}" name="ingredient${ingredientCount}" required placeholder="Zutat">
+            <button type="button" class="remove-ingredient center" onclick="removeIngredient(this)" title="Löschen"><span class="material-symbols-outlined">close</span></button>
         </div>
     `;
 

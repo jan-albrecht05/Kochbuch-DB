@@ -1,9 +1,14 @@
+body.no-scroll {
+    overflow: hidden;
+}
 #heading{
     height: 5rem;
     width: 100%;
     display: flex;
     background-color: var(--grey);
     transition: all 0.3s;
+    position: relative;
+    z-index:20;
     filter: drop-shadow(0px 0px 5px var(--grey));
 }
 #inner-heading{
@@ -47,21 +52,77 @@
     transition: all 0.3s;
 }
 input[type="text"]{
-    width: 15rem;
+    width: 0rem;
     height: 2rem;
     border-radius: 5px 0px 0px 5px;
     border: none;
-    padding: 0.5rem;
     font-size: 1.2rem;
     background-color: var(--lightergrey);
-    display: none;
     transition: all 0.3s;
 }
 #suche:hover input[type="text"],
 input[type="text"]:focus{
-    display: block;
+    width: 15rem;
+    padding: 0.5rem;
     outline: none;
     color: var(--bg-color);
+}
+#filter-container{
+    position: absolute;
+    z-index: 999;
+    width: 600px;
+    height: 100vh;
+    top: 0;
+    left: calc(50% - 300px);
+    margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--grey);
+    text-align: center;
+    filter: drop-shadow(0px 0px 5px black);
+    transform: translateY(-105vh);
+    transition: all 0.5s;
+    overflow: hidden;
+}
+#filter-container.open{
+    transform: translateY(0);
+}
+#close-filter{
+    position: absolute;
+    top: 1rem;
+    width: 3rem;
+    height: 3rem;
+    left: calc(50% - 1.5rem);
+    background-color: var(--grey);
+    color: var(--bg-color);
+    border: none;
+    cursor: pointer;
+    font-size: 200%;
+}
+.filter-link{
+    margin-top: .6rem;
+    color: var(--bg-color) !important;
+    font-size: 170%;
+    width: fit-content;
+    margin-inline: auto;
+    transition: all 0.3s;
+}
+.filter-link::after{
+    content: '';
+    display: block;
+    width: 0;
+    height: 1px;
+    background-color: var(--orange);
+    margin-top: .5rem;
+    transition: all 0.3s;
+}
+.filter-link:hover{
+    color: var(--orange) !important;
+}
+.filter-link:hover::after{
+    width: 100%;
+    transition: all 0.3s;
 }
 @media (max-width: 600px){
     #heading{
@@ -79,5 +140,22 @@ input[type="text"]:focus{
         width: 10rem;
         height: 2rem;
         font-size: 1rem;
+    }
+    #filter-container{
+        width: 100%;
+        left: 0;
+    }
+    #close-filter{
+        top: .5rem;
+        height: 2rem;
+        width: 2rem;
+        left: calc(50% - 1rem);
+    }
+    .filter-link{
+        margin-top: .3rem;
+        font-size: 150%;
+    }
+    .filter-link:nth-child(2){
+        margin-top: 2rem;
     }
 }

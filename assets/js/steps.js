@@ -24,7 +24,7 @@ function removeStep(button) {
     steps.forEach((step, index) => {
         step.querySelector('label').textContent = index + 1 + '.';
         step.querySelector('textarea').id = `schritt${index + 1}`;
-        step.querySelector('textarea').name = `schritt${index + 1}`;
+        step.querySelector('textarea').name = `schritt`;
     });
     // Show the add step button if there are less than 10 steps
     if (steps.length < 10) {

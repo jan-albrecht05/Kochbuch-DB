@@ -128,8 +128,12 @@ input[type="checkbox"]{
     margin-top: .1rem;
     margin-bottom: .1rem;
 }
+.ingredient input[type="number"]{
+    margin-top: 0 !important;
+    padding: .5rem;
+}
 .menge{
-    width: 10rem !important;
+    width: 5rem !important;
     padding: 0.5rem;
     font-size: 1.2rem;
 }
@@ -145,7 +149,10 @@ select,
 option{
     padding: 0.5rem;
     font-size: 1.2rem;
-    background-color: var(--lightgrey2);
+    background-color: var(--bg-color-transparent);
+}
+select{
+    border: 2px solid var(--bg-color);
 }
 select{
     width: max-content;

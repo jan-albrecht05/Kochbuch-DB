@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+    <?php
+        session_start();
+    ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rezept erstellen - Kochbuch</title>
@@ -76,8 +79,19 @@
             <h2>Zutaten:</h2><br>
             <div id="ingredients">
                 <div class="ingredient">
-                    <input class="menge" type="text" id="ingredient${ingredientCount}" name="ingredient${ingredientCount}" required placeholder="Menge">
-                    <input class="zutat" type="text" id="ingredient${ingredientCount}" name="ingredient${ingredientCount}" required placeholder="Zutat">
+                    <input class="menge" name="menge[]" type="number" required placeholder="Menge">
+                    <select class="einheit" name="einheit[]" required>
+                        <option value=""disabled selected> </option>
+                        <option value="g">g</option>
+                        <option value="kg">kg</option>
+                        <option value="ml">ml</option>
+                        <option value="l">l</option>
+                        <option value="EL">EL</option>
+                        <option value="TL">TL</option>
+                        <option value="%">%</option>
+                        <option value="Stl.">Stk.</option>
+                    </select>
+                    <input class="zutat" name="zutat[]" type="text" required placeholder="Zutat">
                 </div>
             </div>
             <button type="button" id="add-Ingredient" class="center" onclick="addInged()"><span class="material-symbols-outlined center">add</span><span>Weitere Zutaten hinzufügen</span></button>
@@ -102,7 +116,7 @@
             <div id="steps">
                 <div class="step" id="step1">
                     <label class="schritt" for="schritt1">1.</label>
-                    <textarea id="schritt1" name="schritt1" rows="2" required placeholder="Teile die Zubereitung in Sinnvolle Schritte ein."></textarea>
+                    <textarea id="schritt1" name="schritt" rows="2" required placeholder="Teile die Zubereitung in Sinnvolle Schritte ein."></textarea>
                 </div>
             </div>
             <button type="button" id="add-step" class="center" onclick="addStep()">
@@ -121,6 +135,61 @@
                 <button type="submit" id="speichern">Rezept speichern</button>
             </div>
         </form>
+        <?php
+            // Verbindung zur SQLite-Datenbank
+            $db = new PDO('sqlite:../assets/db/gerichte.db');
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Rezeptdaten erfassen
+    $titel = $_POST['titel'] ?? '';
+    $beschreibung = $_POST['kbeschreibung'] ?? '';
+    $tags = isset($_POST['tags']) ? implode(",", $_POST['tags']) : '';
+    $personen = $_POST['portionen'] ?? 1;
+    $vorbereitungszeit = $_POST['vorbereitungszeit'] ?? 0;
+    $zubereitungszeit = $_POST['zubereitungszeit'] ?? 0;
+    $made_by_id = $_POST['userid'] ?? null;
+
+    // Bilder (hier nur Dateinamen speichern, Dateiupload-Logik auslassen)
+    $bild1 = $_FILES['img1']['name'] ?? '';
+    $bild2 = $_FILES['img2']['name'] ?? '';
+    $bild3 = $_FILES['img3']['name'] ?? '';
+
+    // Rezept einfügen
+    $stmt = $db->prepare("INSERT INTO gerichte 
+        (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, userid) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([$titel, $beschreibung, $tags, $vorbereitungszeit, $zubereitungszeit, $bild1, $bild2, $bild3, $personen, $made_by_id]);
+
+    $gericht_id = $db->lastInsertId();
+
+    // Zutaten auslesen (mehrere Einträge)
+    if (!empty($_POST['zutat']) && is_array($_POST['zutat'])) {
+        for ($i = 0; $i < count($_POST['zutat']); $i++) {
+            $name = $_POST['zutat'][$i] ?? '';
+            $menge = $_POST['menge'][$i] ?? '';
+            $einheit = $_POST['einheit'][$i] ?? '';
+
+            if ($name !== '') {
+                $stmt = $db->prepare("INSERT INTO zutaten (gerichte_id, name, menge, einheit) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$gericht_id, $name, $menge, $einheit]);
+            }
+        }
+    }
+
+    // Schritte auslesen (mehrere Einträge)
+    if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
+        foreach ($_POST['schritt'] as $text) {
+            if (trim($text) !== '') {
+                $stmt = $db->prepare("INSERT INTO schritte (gerichte_id, schritt) VALUES (?, ?)");
+                $stmt->execute([$gericht_id, $text]);
+            }
+        }
+    }
+
+    echo "<p>Rezept erfolgreich gespeichert!</p>";
+}
+?>
     </div>
 </body>
 </html>

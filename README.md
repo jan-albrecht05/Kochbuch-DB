@@ -6,7 +6,6 @@ Table Gerichte:
  - id
  - titel
  - kurzbeschreibung
- - timecode
  - bild_1
  - bild_2
  - bild_3
@@ -21,7 +20,8 @@ Table Gerichte:
  - ZZeit (Zubereitung)
  - made_by_user
  - viewcount
- - timecode
+ - timecode_erstellt
+ - timecode_lastchange
  - error_msg
 
 Table Zutaten:
