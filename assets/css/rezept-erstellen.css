@@ -1,0 +1,295 @@
+#main{
+    background-color: var(--bg-color-transparent);
+    border: 2px solid var(--bg-color);
+    padding: 2rem;
+    margin-top: 2rem;
+    border-radius: 10px;
+    min-height: 90vh;
+    margin-bottom: 1rem;
+}
+h1{
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+}
+label.heading, h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    display: inline-block;
+}
+#images{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+label.img-drop{
+    width: 10rem;
+    height: 10rem;
+    border: 2px solid var(--text-color);
+    border-radius: 5px;
+    background-color: var(--bg-color-transparent);
+    border-color: var(--grey);
+}
+label.img-drop:hover{
+    background-color: var(--lightgrey);
+    cursor: pointer;
+}
+label.img-drop span{
+    font-size: 3rem;
+    transition: all 0.3s;
+}
+label.img-drop:hover span{
+    font-size: 3.5rem;
+}
+input[type="file"]{
+    display: none;
+}
+input[type="text"],
+textarea,
+input[type="number"]{
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid var(--bg-color);
+    border-radius: 5px;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    background-color: var(--bg-color-transparent);
+    box-sizing: border-box;
+    outline: none;
+    resize: vertical;
+}
+input[type="number"]{
+    -moz-appearance: textfield;
+    width: 10rem;
+    margin-top: 0.5rem;
+}
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+    border-color: var(--orange);
+    background-color: var(--lightgrey);
+}
+#tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    user-select: none;
+    margin-bottom: 2rem;
+}
+label.tag{
+    height: 2rem;
+    min-width: 5rem;
+    padding: 0.5rem;
+    display: inline-block;
+    border: 1px solid var(--grey);
+    background-color: var(--lightgrey);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    transition: all 0.3s;
+}
+label.tag.active{
+    background-color: var(--green);
+    border-color: var(--lightgrey2);
+}
+label.tag.active:hover{
+    background-color: var(--green);
+}
+label.tag.active::after{
+    content: "+";
+    margin-left: 0.5rem;
+    margin-right: 0.2rem;
+    transform: rotatez(45deg);
+    color: var(--text-color);
+    font-size: 2rem;
+}
+label.tag:hover{
+    background-color: var(--lightgrey2);
+    cursor: pointer;
+}
+input[type="checkbox"]{
+    display: none;
+}
+.step{
+    display: flex;
+    margin-bottom: 1rem;
+}
+.ingredient{
+    width: 100%;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: .1rem;
+    margin-bottom: .1rem;
+}
+.menge{
+    width: 10rem !important;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+}
+.zutat{
+    flex-grow: 1;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+}
+#add-Ingredient{
+    margin-top: .5rem;
+}
+select,
+option{
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    background-color: var(--lightgrey2);
+}
+select{
+    width: max-content;
+    border: none;
+    border-radius: 5px;
+}
+.schritt{
+    width: 3rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    padding-top: 1rem;
+}
+#add-Ingredient,
+#add-step{
+    height: 2.8rem;
+    padding: .5rem;
+    font-size: 110%;
+    background-color: var(--lightgrey2);
+    border: 1px solid var(--lightgrey2);
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+#add-step:hover{
+    background-color: var(--lightgrey);
+    cursor: pointer;
+}
+#add-step span.material-symbols-outlined{
+    font-size: 1.5rem;
+}
+button.remove-ingredient,
+button.remove-step{
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: 1rem;
+    margin-top: .9rem;
+    background: none;
+    border: 5px solid var(--grey);
+    border-radius: 2rem;
+    transition: all 0.3s;
+}
+button.remove-ingredient{
+    margin-left: .5rem;
+    margin-top: .2rem !important;
+}
+button.remove-ingredient:hover,
+button.remove-step:hover{
+    cursor: pointer;
+    color: red;
+    border-color:red
+}
+button.remove-ingredient span,
+button.remove-step span{
+    font-weight: bold;
+}
+#buttons{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    width: 40%;
+    margin-inline: auto;
+}
+#buttons button{
+    padding: 0.5rem 1rem;
+    font-size: 1.4rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+#buttons button:hover{
+    filter: drop-shadow(0 5px 7px var(--grey));
+}
+#abbrechen{
+    background: none;
+    border: 2px solid var(--bg-color);
+    color: var(--text-color);
+}
+#abbrechen:hover{
+    background-color: var(--lightgrey);
+    color: var(--text-color);
+}
+#speichern{
+    background-image: linear-gradient(-45deg, var(--yellow) -20%, var(--orange) 150%);
+    color: var(--text-color);
+    border: 2px solid var(--bg-color);
+}
+
+@media (max-width: 600px) {
+    h1{
+        font-size: 150%;
+    }
+    label.heading, h2{
+        font-size: 130%;
+        margin-bottom: .5rem;
+        margin-top: 1.2rem;
+    }
+    #images{
+        display: flex;
+        margin-bottom: 1rem;
+    }
+    label.img-drop{
+        width: 5rem;
+        height: 5rem;
+    }
+    .info{
+        font-size: 80%;
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea {
+        font-size: 120%;
+    }
+    h3{
+        font-size: 100%;
+        margin: 0;
+    }
+    label.tag {
+        font-size: 1.1rem;
+        padding: 0.3rem;
+    }
+    .menge{
+        width: 5rem !important;
+        font-size: 1.1rem;
+    }
+    select{
+        margin-top: .5rem;
+    }
+    .schritt{
+        width: 2.2rem;
+        font-size: 1.5rem;
+    }
+    button.remove-ingredient,
+    button.remove-step{
+        margin-left: .2rem;
+        margin-top: .6rem !important;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-width: 2px;
+        font-size: 100%;
+    }
+    button.remove-step{
+        margin-left: .6rem;
+    }
+    #buttons{
+        width: 100%;
+        gap: 1rem;
+    }
+}

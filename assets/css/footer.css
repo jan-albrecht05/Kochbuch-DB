@@ -1,0 +1,38 @@
+#footer{
+    width: 100%;
+    background-color: var(--lightergrey);
+    height: 4rem;
+}
+#inner-footer{
+    width: 70%;
+    margin-inline: auto;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--bg-color);
+    font-size: 120%;
+}
+#footer a{
+    color: var(--bg-color) !important;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+#footer a:hover{
+    color: var(--orange) !important;
+}
+#footer a span{
+    margin-left: .5rem;
+}
+@media (max-width: 600px) {
+    #inner-footer{
+        width: 95%;
+        font-size: 90%;
+        justify-content: space-evenly;
+    }
+    #inner-footer a{
+        margin-bottom: .5rem;
+    }
+    
+}

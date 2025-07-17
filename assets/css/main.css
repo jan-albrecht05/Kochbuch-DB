@@ -1,0 +1,148 @@
+html{
+    scrollbar-width: thin;
+}
+body{
+    margin: 0;
+    background-image: linear-gradient(180deg, var(--yellow) 0%, var(--orange) 100%);
+    background-repeat: none;
+    background-attachment: fixed;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+img{
+    width: 100%;
+    height: auto;
+}
+a{
+    color: var(--text-color) !important;
+}
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#main{
+    width: 70%;
+    margin-inline: auto;
+    background-color: var(--bg-color-transparent);
+    padding: 1rem;
+    border-radius: 10px;
+    border: 2px solid var(--bg-color);
+    margin-top: 2rem;
+    margin-bottom: 4rem;
+}
+
+h2{
+    display: flex;
+    align-items: center;
+}
+h2 span{
+    font-size: 2rem !important;
+}
+.container{
+    width: calc(100% - 2rem);
+    padding: 1rem;
+    background-color: var(--bg-color-transparent);
+    border-radius: 10px;
+    border: 2px solid var(--bg-color);
+    margin-bottom: 2rem;
+}
+.container:nth-last-child(1){
+    margin-bottom: 0rem;
+}
+.inner-container{
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    overflow-x: scroll;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    padding-bottom: 1rem;
+    padding: .5rem;
+}
+.rezeptlink{
+    min-width: 20rem;
+    max-width: 20rem;
+    min-height: 17rem;
+    height: max-content;
+    background-color: var(--bg-color-transparent);
+    border: 2px solid var(--bg-color);
+    border-radius: 5px;
+    padding: .5rem;
+}
+.img-container{
+    width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    border-radius: 5px;
+    padding-top: -1rem;
+    margin-top: -3.5rem;
+}
+.rezeptlink img{
+    width: auto;
+    height: 100%;
+    object-fit: contain;
+}
+.rezeptlink:hover img{
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}
+.rezeptlink .tag{
+    position: relative;
+    z-index: 10;
+    display: inline-block;
+    width: fit-content;
+    top: 0.5rem;
+    background-color: var(--yellow);
+    color: var(--text-color);
+    padding: 0.2rem 0.5rem;
+    font-size: 1.2rem;
+}
+.tag.time{
+    background-color: var(--lightgrey);
+    left: 0.5rem;
+}
+.tag.neu{
+    background-color: red;
+    color: white;
+    right: .5rem;
+    top: -1.3rem;
+    margin-left: auto;
+    display: flex;
+}
+.rezept-info{
+    display: block;
+}
+.infotag{
+    display: inline-block;
+    background-color: var(--lightgrey2);
+    color: var(--text-color);
+    padding: 0.2rem 0.5rem;
+    font-size: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+}
+@media (max-width: 600px){
+    #main{
+        width: 90%;
+        padding: .2rem !important;
+    }
+    h2 span{
+        font-size: 80% !important;
+    }
+    .container{
+        width: calc(100% - 1rem);
+        padding: .2rem;
+    }
+    .inner-container{
+        padding: .2rem;
+    }
+    .rezeptlink{
+        min-width: 10rem;
+        max-width: 10rem;
+        height: max-content;
+    }
+    .infotag{
+        margin-bottom: .1rem;
+        font-size: 80%;
+    }
+}
