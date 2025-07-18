@@ -7,7 +7,7 @@ function addStep(){
     
     stepDiv.innerHTML = `
         <label class="schritt" for="schritt1">${stepCount}.</label>
-        <textarea id="step-${stepCount}" name="step-${stepCount}" required></textarea>
+        <textarea id="schritt-${stepCount}" name="schritt[]" required></textarea>
         <button type="button" class="remove-step center" onclick="removeStep(this)" title="Löschen"><span class="material-symbols-outlined">close</span></button>
     `;
     
@@ -23,8 +23,8 @@ function removeStep(button) {
     const steps = document.querySelectorAll('.step');  
     steps.forEach((step, index) => {
         step.querySelector('label').textContent = index + 1 + '.';
-        step.querySelector('textarea').id = `schritt${index + 1}`;
-        step.querySelector('textarea').name = `schritt`;
+        step.querySelector('textarea').id = `schritt[${index + 1}]`;
+        step.querySelector('textarea').name = `schritt[]`;
     });
     // Show the add step button if there are less than 10 steps
     if (steps.length < 10) {

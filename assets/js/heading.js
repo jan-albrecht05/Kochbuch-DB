@@ -1,9 +1,5 @@
 window.addEventListener('load', function(event) {
-    link = new URL(window.location.href);
-    if (link.pathname.includes("index.php")){
-        homepage = true;
-    }
-    else{
+    if (typeof homepage === "undefined") {
         homepage = false;
     }
     if (homepage){
@@ -38,13 +34,14 @@ window.addEventListener('load', function(event) {
             <a href="pages/suche.php?filter=vegan" class="filter-link">Vegan</a>
             <a href="pages/suche.php?filter=vegetarisch" class="filter-link">Vegetarisch</a>
             <a href="pages/suche.php?filter=getränk" class="filter-link">Getränke</a>
+            <button id="rezept-erstellen" onclick="window.location.href = 'pages/rezept-erstellen.php'"><span>Rezept erstellen</span></button>
         </div>
         `;
     }
     else{
         document.getElementById('heading').innerHTML = `
         <div id="inner-heading">
-            <a href="index.php" id="logo">
+            <a href="../index.php" id="logo">
                 <img src="../assets/icons/Topficon.png" alt="Kochbuch Icon">
             </a>
             <p id="filter" onclick="openfilter()">
@@ -73,6 +70,7 @@ window.addEventListener('load', function(event) {
             <a href="../pages/suche.php?filter=vegan" class="filter-link">Vegan</a>
             <a href="../pages/suche.php?filter=vegetarisch" class="filter-link">Vegetarisch</a>
             <a href="../pages/suche.php?filter=getränk" class="filter-link">Getränke</a>
+            <button id="rezept-erstellen" onclick="window.location.href = './pages/rezept-erstellen.php'"><span>Rezept erstellen</span></button>
         </div>
         `;
     }

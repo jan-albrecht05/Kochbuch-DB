@@ -49,7 +49,7 @@ label.img-drop:hover span{
 input[type="file"]{
     display: none;
 }
-input[type="text"],
+form input[type="text"],
 textarea,
 input[type="number"]{
     width: 100%;
@@ -63,13 +63,17 @@ input[type="number"]{
     outline: none;
     resize: vertical;
 }
-input[type="number"]{
+form input[type="number"]{
     -moz-appearance: textfield;
     width: 10rem;
     margin-top: 0.5rem;
 }
-input[type="text"]:focus,
-input[type="number"]:focus,
+form input[type="number"],
+form input[type="text"]{
+    height: 2.5rem;
+}
+form input[type="text"]:focus,
+form input[type="number"]:focus,
 textarea:focus {
     border-color: var(--orange);
     background-color: var(--lightgrey);
@@ -238,6 +242,46 @@ button.remove-step span{
     color: var(--text-color);
     border: 2px solid var(--bg-color);
 }
+.popup-positiv{
+    position: fixed;
+    bottom: 0;
+    z-index: 50;
+    width: 100%;
+    height: 100%;
+    background: none;
+    backdrop-filter: blur(5px);
+}
+.inner-popup{
+    width: 30%;
+    height: auto;
+    padding: 2rem;
+    background-color: var(--bg-color);
+    filter: drop-shadow(0px 1px 5px var(--grey));
+    border: 2px solid var(--green);
+}
+.buttons{
+    width: 60%;
+    margin-inline: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.buttons button{
+    width: 49%;
+    height: 2rem;
+    border-radius: 5px;
+    font-size: 110%;
+}
+#btn-mehr{
+    background-image: linear-gradient(-45deg, var(--yellow) -20%, var(--orange) 150%);
+    color: var(--text-color);
+    border: 1px solid black;
+}
+#btn-close{
+    background-color: var(--bg-color);
+    border: 2px solid var(--orange);
+}
 
 @media (max-width: 600px) {
     h1{
@@ -276,6 +320,9 @@ button.remove-step span{
         width: 5rem !important;
         font-size: 1.1rem;
     }
+    .ingredient select{
+        margin-top: 0;
+    }
     select{
         margin-top: .5rem;
     }
@@ -298,5 +345,14 @@ button.remove-step span{
     #buttons{
         width: 100%;
         gap: 1rem;
+    }
+    .inner-popup{
+        width: 95%;
+    }
+    .buttons{
+        width: 90%;
+    }
+    .inner-popup button{
+        height: auto;
     }
 }

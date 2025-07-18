@@ -61,7 +61,7 @@ input[type="text"]{
     transition: all 0.3s;
 }
 #suche:hover input[type="text"],
-input[type="text"]:focus{
+#suche input[type="text"]:focus{
     width: 15rem;
     padding: 0.5rem;
     outline: none;
@@ -124,6 +124,26 @@ input[type="text"]:focus{
     width: 100%;
     transition: all 0.3s;
 }
+#rezept-erstellen{
+    width: 50%;
+    margin-inline: auto;
+    min-height: 3rem;
+    background-color: var(--orange);
+    border: 2px solid black;
+    border-radius: 5px;
+    margin-top: 2rem;
+    font-size: 120%;
+}
+#rezept-erstellen span:after{
+    width: 0;
+    height: 1px;
+    background-color: black;
+    display: inline-block;
+    transition: all .3s;
+}
+#rezept-erstellen:hover span:after{
+    width: 100%;
+}
 @media (max-width: 600px){
     #heading{
         height: 3rem;
@@ -137,9 +157,14 @@ input[type="text"]:focus{
         height: 2.5rem;
     }
     input[type="text"]{
-        width: 10rem;
+        width: 0rem;
         height: 2rem;
         font-size: 1rem;
+    }
+    #suche:hover input[type="text"],
+    #suche input[type="text"]:hover,
+    #suche input[type="text"]:focus{
+        width: 10rem !important;
     }
     #filter-container{
         width: 100%;
@@ -157,5 +182,10 @@ input[type="text"]:focus{
     }
     .filter-link:nth-child(2){
         margin-top: 2rem;
+    }
+    #rezept-erstellen{
+        margin-top: .5rem;
+        max-height: 2rem;
+        font-size: 100%;
     }
 }
