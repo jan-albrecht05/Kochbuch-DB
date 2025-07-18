@@ -1,37 +1,72 @@
 # Kochbuch-DB
-Updated Version of "Kochbuch"
 
+[![MIT License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)<br>
+![Made with PHP](https://img.shields.io/badge/PHP-8.x-blue)
+![SQLite](https://img.shields.io/badge/Database-SQLite-lightgrey)
+![CSS](https://img.shields.io/badge/Style-CSS-blueviolet)
+![JavaScript](https://img.shields.io/badge/Frontend-JavaScript-yellow)
+![CSS](https://img.shields.io/badge/Frontend-HTML-orange)
 
-Table Gerichte:
- - id
- - titel
- - kurzbeschreibung
- - bild_1
- - bild_2
- - bild_3
- - tags
- - personenanzahl
- - rating1star
- - rating2star
- - rating3star
- - rating4star
- - rating5star
- - VZeit (Vorbereitung)
- - ZZeit (Zubereitung)
- - made_by_user
- - viewcount
- - timecode_erstellt
- - timecode_lastchange
- - error_msg
+> Ein webbasiertes Tool zur Organisation und Verwaltung von Kochrezepten mit Benutzerkonten und Rechtesystem.
 
-Table Zutaten:
- - id
- - gericht_id
- - menge
- - einheit
- - Zutat
+---
+<br><br>
 
-Tabelle Schritte:
- - id
- - gerichte_id
- - Schritt
+# SEITEN
+## 🎯 index.php
+ - ✅ Header w/ Links to all tags
+ - ✅ 3 different sections: random, latest, favorites
+ - ❌ arrows for horizontal scrolling
+ ### random section
+ - ✅ shows 6 random entries
+ ```php
+ SELECT * FROM gerichte ORDER BY RANDOM() LIMIT 6
+ ```
+ ### latest section
+ - ✅ shows the 6 latest entries
+ ```php
+ SELECT * FROM gerichte ORDER BY id DESC LIMIT 6
+ ```
+
+## 🌐 suche.php
+ - ❌ showing search results
+ - ❌ showing filter results (+ Filter: random, latest, saved)
+ - ❌ PHP paging (25, 50, 100 Gerichte)
+ - ❌ sort by A-Z, Z-A
+
+## 💥 gericht.php
+ - ✅ connect to gerichte.db
+ - ✅ container w/ different images
+ - ❌ logic for switching images 
+ - ❌ steps
+ - ❌ calculation for ingredients
+ - ❌ save-button
+ - ❌ share-link
+ - ❌ metadaten mit PHP anpassen
+ - ❌ star input
+ - ❌ star output
+ - ❌ link to user
+ - ❌ "Fehler melden" → cell in gerichte.db
+ - ❌ add ingredients to einkaufsliste.php
+
+## ➕ rezept-erstellen.php
+ - ✅ input-form
+ - ✅ connect so SQL
+ - ✅ Image-Handling+Upload
+ - ❌fetch error messages
+
+## ▶ login.php
+ - ❌ login-form
+ - ❌ users.db
+
+## ◀ logout.php
+ - ❌ logout logic
+
+## 🚹 benutzer.php
+ - ❌ "meine Rezepte"
+ - ❌ "meine Einkaufsliste"
+ - ❌ gespeicherte Rezepte
+ - ❌ users.db
+
+## einkaufsliste.php
+ - ❌ needs everything
