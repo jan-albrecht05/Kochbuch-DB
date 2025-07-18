@@ -16,7 +16,7 @@ function addInged() {
                         <option value="EL">EL</option>
                         <option value="TL">TL</option>
                         <option value="%">%</option>
-                        <option value="Stl.">Stk.</option>
+                        <option value="Stk.">Stk.</option>
                     </select>
             <input class="zutat" name="zutat[]" type="text" id="ingredient${ingredientCount}" name="ingredient${ingredientCount}" required placeholder="Zutat">
             <button type="button" class="remove-ingredient center" onclick="removeIngredient(this)" title="Löschen"><span class="material-symbols-outlined">close</span></button>

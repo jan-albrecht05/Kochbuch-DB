@@ -137,7 +137,7 @@
             <input type="number" id="zubereitungszeit" name="zubereitungszeit" required placeholder="25"><br>
             <!--Hidden inputs-->
             <input type="hidden" id="timecode" name="timecode" value="<?php echo time(); ?>">
-            <input type="hidden" id="userid" name="made_by_id" value="<?php echo $_SESSION['user_id']; ?>">
+            <!--<input type="hidden" id="userid" name="made_by_id" value="<?php //echo $_SESSION['user_id']; ?>">-->
             <input type="hidden" id="ID" name="ID">
             <div id="buttons">
                 <button type="reset" id="abbrechen">Abbrechen</button>
@@ -146,8 +146,9 @@
         </form>
         <?php
             // Verbindung zur SQLite-Datenbank
-            $db = new PDO('sqlite:../assets/db/gerichte.db');
-            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $db = new SQLite3('../assets/db/gerichte.db');
+            $result = $db->querySingle("SELECT MAX(id) FROM gerichte");
+            $gericht_id = $result ? $result + 1 : 1;
             $allowedimgtypes = array("png", "jpeg", "jpg", "JPG", "JPEG", "PNG", "ICO", "ico");
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -159,19 +160,6 @@
                 $vorbereitungszeit = $_POST['vorbereitungszeit'] ?? 0;
                 $zubereitungszeit = $_POST['zubereitungszeit'] ?? 0;
                 $made_by_id = $_POST['made_by_id'] ?? null;
-            
-            // Bilder
-                $bild1 = $_FILES['img1']['name'] ?? '';
-                $bild2 = $_FILES['img2']['name'] ?? '';
-                $bild3 = $_FILES['img3']['name'] ?? '';
-
-            // Rezept einfügen
-                $stmt = $db->prepare("INSERT INTO gerichte 
-                    (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, made_by_id) 
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$titel, $beschreibung, $tags, $vorbereitungszeit, $zubereitungszeit, $bild1, $bild2, $bild3, $personen, $made_by_id]);
-
-                $gericht_id = $db->lastInsertId();
 
             // Handle file uploads
                 if (!empty($_FILES['img1']['name'])) {
@@ -183,6 +171,8 @@
                         $targetpathImg1 = "../assets/img/uploads/gerichte/" . $Img1Name;
                         move_uploaded_file($tmpNameImg1, $targetpathImg1);
                     }
+                }else{
+                    $Img1Name = null;
                 }
                 if (!empty($_FILES['img2']['name'])) {
                     $Img2 = $_FILES['img2']['name'];
@@ -190,9 +180,12 @@
                     if(in_array($img_extention, $allowedimgtypes)){
                         $tmpNameImg2 = $_FILES['img2']['tmp_name'];
                         $Img2Name = $gericht_id . '.2.' . $img_extention;
-                        $targetpathImg1 = "../assets/img/uploads/gerichte/" . $Img2Name;
+                        $targetpathImg2 = "../assets/img/uploads/gerichte/" . $Img2Name;
                         move_uploaded_file($tmpNameImg2, $targetpathImg2);
                     }
+                }
+                else{
+                    $Img2Name = null;
                 }
                 if (!empty($_FILES['img3']['name'])) {
                     $Img3 = $_FILES['img3']['name'];
@@ -204,30 +197,55 @@
                         move_uploaded_file($tmpNameImg3, $targetpathImg3);
                     }
                 }
+                else{
+                    $Img3Name = null;
+                }
+                
+            // Rezept einfügen
+                $stmt = $db->prepare("INSERT INTO gerichte (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, made_by_id) 
+                    VALUES (:titel, :beschreibung, :tags, :vorbereitungszeit, :zubereitungszeit, :bild1, :bild2, :bild3, :personen, :made_by_id)");
+                    $stmt->bindValue(':titel', $titel, SQLITE3_TEXT);
+                    $stmt->bindValue(':beschreibung', $beschreibung, SQLITE3_TEXT);
+                    $stmt->bindValue(':tags', $tags, SQLITE3_TEXT);
+                    $stmt->bindValue(':vorbereitungszeit', $vorbereitungszeit, SQLITE3_INTEGER);
+                    $stmt->bindValue(':zubereitungszeit', $zubereitungszeit, SQLITE3_INTEGER);
+                    $stmt->bindValue(':bild1', $Img1Name, SQLITE3_TEXT);
+                    $stmt->bindValue(':bild2', $Img2Name, SQLITE3_TEXT);
+                    $stmt->bindValue(':bild3', $Img3Name, SQLITE3_TEXT);
+                    $stmt->bindValue(':personen', $personen, SQLITE3_TEXT);
+                    $stmt->bindValue(':made_by_id', $made_by_id, SQLITE3_TEXT);
+                $stmt->execute();
 
             // Zutaten auslesen (mehrere Einträge)
-                if (!empty($_POST['zutat']) && is_array($_POST['zutat'])) {
-                    for ($i = 0; $i < count($_POST['zutat']); $i++) {
-                        $name = $_POST['zutat'][$i] ?? '';
-                        $menge = $_POST['menge'][$i] ?? '';
-                        $einheit = $_POST['einheit'][$i] ?? '';
-                        if ($name !== '') {
-                            $stmt = $db->prepare("INSERT INTO zutaten (gerichte_id, name, menge, einheit) VALUES (?, ?, ?, ?)");
-                            $stmt->execute([$gericht_id, $name, $menge, $einheit]);
-                        }
+            if (!empty($_POST['zutat']) && is_array($_POST['zutat'])) {
+                for ($i = 0; $i < count($_POST['zutat']); $i++) {
+                    $name = $_POST['zutat'][$i] ?? '';
+                    $menge = $_POST['menge'][$i] ?? '';
+                    $einheit = $_POST['einheit'][$i] ?? '';
+                    if ($name !== '') {
+                        $stmt = $db->prepare("INSERT INTO zutaten (gerichte_id, name, menge, einheit) 
+                        VALUES (:gerichte_id, :name, :menge, :einheit)");
+                        $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
+                        $stmt->bindValue(':name', $name, SQLITE3_TEXT);
+                        $stmt->bindValue(':menge', $menge, SQLITE3_TEXT);
+                        $stmt->bindValue(':einheit', $einheit, SQLITE3_TEXT);
+                        $stmt->execute();
                     }
                 }
+            }
 
             // Schritte auslesen (mehrere Einträge)
-                if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
-                    for ($j = 0; $j < count($_POST['schritt']); $j++) {
-                        $schritt = $_POST['schritt'][$j] ?? '';
-                        if ($schritt !== '') {
-                            $stmt = $db->prepare("INSERT INTO schritte (gerichte_id, schritt) VALUES (?, ?)");
-                            $stmt->execute([$gericht_id, $schritt]);
-                        }
-                    }
-                }
+if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
+    for ($j = 0; $j < count($_POST['schritt']); $j++) {
+        $schritt = $_POST['schritt'][$j] ?? '';
+        if ($schritt !== '') {
+            $stmt = $db->prepare("INSERT INTO schritte (gerichte_id, schritt) VALUES (:gerichte_id, :schritt)");
+            $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
+            $stmt->bindValue(':schritt', $schritt, SQLITE3_TEXT);
+            $stmt->execute();
+        }
+    }
+}
 
                 //Positiv Popup
                 echo '
@@ -235,7 +253,7 @@
                         <div class="inner-popup">
                             <h1>Danke!</h1>
                             <p>Dein Rezept wurde erfolgreich gespeichert!</p>
-                            <p>Du kannst es <a href="../rezept.php?id='.$gericht_id.'"><u>hier</u></a> ansehen und teilen.</p>
+                            <p>Du kannst es <a href="../gericht.php?id='.$gericht_id.'"><u>hier</u></a> ansehen und teilen.</p>
                             <div class="buttons">
                                 <button onclick="window.location.href = `../pages/rezept-erstellen.php`" id="btn-mehr">mehr erstellen</button>
                                 <button onclick="closeErfolg()" id="btn-close">schließen</button>

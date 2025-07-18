@@ -14,7 +14,11 @@
     <link rel="stylesheet" href="assets/css/footer.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <script src="assets/js/horizontal_scroll.js" defer></script>
+    <script>
+        let homepage = true;
+    </script>
     <script src="assets/js/heading.js" defer></script>
+    <script src="assets/js/links.js" defer></script>
 </head>
 <body>
     <div id="heading">
@@ -30,216 +34,111 @@
                     <span class="material-symbols-outlined">chevron_right</span>
                 </div>-->
             <div class="inner-container">
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="https://mein-kochbuch.netlify.app/bilder/gerichte/NudelsalatmitMandarienen.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">
-                            <span class="infotag">Asiatisch</span>
-                            <span class="infotag">Nudeln</span>
-                        </p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
+                <?php
+                    if(file_exists("assets/db/gerichte.db")){
+                        $db = new SQlite3("assets/db/gerichte.db");
+                        $query = "SELECT * FROM gerichte ORDER BY RANDOM() LIMIT 6";
+                        $result = $db->query($query);
+                        // Get the maximum id
+                        $maxId = $db->querySingle("SELECT MAX(id) FROM gerichte");
+
+                        if($result){
+                            while ($row = $result->fetchArray(SQLITE3_ASSOC)){
+                                echo '
+                                    <div class="rezeptlink" id="'.htmlspecialchars($row['id']).'">
+                                        <div class="tag-bereich">
+                                            <div class="tag time">'.htmlspecialchars($row['zubereitungszeit']).'min</div>';
+                                            if ($row['id'] >= $maxId - 5) {
+                                                echo '<div class="tag neu">NEU!</div>';
+                                            };
+                                echo '  </div>
+                                        <div class="img-container">';
+                                        if(!empty($row['bild1'])){
+                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="Rezeptbild">';
+                                        }
+                                        else{
+                                            echo '<img src="" alt="Bild konnte nicht geladen werden">';
+                                        };
+                                echo '
+                                        </div>
+                                        <div class="rezept-titel">
+                                            <h2>'.htmlspecialchars($row['titel']).'</h2>
+                                        </div>
+                                        <div class="rezept-info">
+                                            <p class="info">'.htmlspecialchars($row['beschreibung']).'</p>
+                                        </div>
+                                        <div class="tags">';
+                                            if (!empty($row['tags'])) {
+                                                $tags = explode(',', $row['tags']);
+                                                foreach ($tags as $tag) {
+                                                    echo '<span class="infotag">' . htmlspecialchars(trim($tag)) . '</span> ';
+                                                }
+                                            };
+                                echo '      </div>
+                                    </div>
+                                ';
+                            }
+                        }
+                    }
+                ?>
             </div>
         </div>
         <div id="neue-Rezepte" class="container">
             <h2 onclick="window.location.href = 'pages/search.php?latest'"><span>Neueste Rezepte</span> <span class="material-symbols-outlined">chevron_right</span></h2>
             <div class="inner-container">
-                
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
+                <?php
+                    if(file_exists("assets/db/gerichte.db")){
+                        $db = new SQlite3("assets/db/gerichte.db");
+                        $query = "SELECT * FROM gerichte ORDER BY id DESC LIMIT 6";
+                        $result = $db->query($query);
+                        // Get the maximum id
+                        $maxId = $db->querySingle("SELECT MAX(id) FROM gerichte");
+                        if($result){
+                            while ($row = $result->fetchArray(SQLITE3_ASSOC)){
+                                echo '
+                                    <div class="rezeptlink" id="'.htmlspecialchars($row['id']).'">
+                                        <div class="tag-bereich">
+                                            <div class="tag time">'.htmlspecialchars($row['zubereitungszeit']).'min</div>';
+                                            if ($row['id'] >= $maxId - 5) {
+                                                echo '<div class="tag neu">NEU!</div>';
+                                            };
+                                echo '  </div>
+                                        <div class="img-container">';
+                                        if(!empty($row['bild1'])){
+                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="Rezeptbild">';
+                                        }
+                                        else{
+                                            echo '<img src="" alt="Bild konnte nicht geladen werden">';
+                                        };
+                                echo '
+                                        </div>
+                                        <div class="rezept-titel">
+                                            <h2>'.htmlspecialchars($row['titel']).'</h2>
+                                        </div>
+                                        <div class="rezept-info">
+                                            <p class="info">'.htmlspecialchars($row['beschreibung']).'</p>
+                                        </div>
+                                        <div class="tags">';
+                                            if (!empty($row['tags'])) {
+                                                $tags = explode(',', $row['tags']);
+                                                foreach ($tags as $tag) {
+                                                    echo '<span class="infotag">' . htmlspecialchars(trim($tag)) . '</span> ';
+                                                }
+                                            };
+                                echo '      </div>
+                                    </div>
+                                ';
+                            }
+                        }
+                    }
+                ?>
             </div>
         </div>
-        <div id="neue-Rezepte" class="container">
+        <div id="Favoriten" class="container">
             <h2 onclick="window.location.href = 'pages/search.php?saved'"><span>Meine Favoriten</span> <span class="material-symbols-outlined">chevron_right</span></h2>
             <div class="inner-container">
-                
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
-                <div class="rezeptlink" id="1">
-                    <div class="tag time">25min</div>
-                    <div class="tag neu">NEU!</div>
-                    <div class="img-container">
-                        <img src="assets/icons/no-img.png" alt="Rezeptbild">
-                    </div>
-                    <div class="rezept-titel">
-                        <h2>Rezept Titel</h2>
-                    </div>
-                    <div class="rezept-info">
-                        <p class="info">Kurzbeschreibung des Rezepts.</p>
-                        <p class="info">Tags: Asiatisch, Nudeln</p>
-                    </div>
-                </div>
+                <p>Melde dich an, um deine Favoriten zu sehen.
+                <a style="color:var(--orange)"onclick="window.location = `pages/login.php`">login</a></p>
             </div>
         </div>
     </div>
