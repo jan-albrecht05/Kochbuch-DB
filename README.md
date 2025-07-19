@@ -17,6 +17,7 @@
  - ✅ Header w/ Links to all tags
  - ✅ 3 different sections: random, latest, favorites
  - ❌ arrows for horizontal scrolling
+ - ❕ different order/sorting 
  ### random section
  - ✅ shows 6 random entries
  ```php
@@ -37,16 +38,17 @@
 ## 💥 gericht.php
  - ✅ connect to gerichte.db
  - ✅ container w/ different images
- - ❌ logic for switching images 
- - ❌ steps
+ - ✅ logic for switching images 
+ - ✅ steps
  - ❌ calculation for ingredients
- - ❌ save-button
- - ❌ share-link
+ - ❌ save-button-logik
+ - ✅ share-link
+ - ❌ Banner for action "saved" and "link copied" 
  - ❌ metadaten mit PHP anpassen
- - ❌ star input
- - ❌ star output
+ - ❌ star input-logik + cooldown
+ - ✅ star output
  - ❌ link to user
- - ❌ "Fehler melden" → cell in gerichte.db
+ - ❌ "Fehler melden" Popup mit textarea → cell in gerichte.db
  - ❌ add ingredients to einkaufsliste.php
 
 ## ➕ rezept-erstellen.php

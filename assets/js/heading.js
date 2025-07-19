@@ -74,6 +74,7 @@ window.addEventListener('load', function(event) {
         </div>
         `;
     }
+    insertfooter();
 });
 function openfilter() {
     document.getElementById('filter-container').classList.toggle('open');
