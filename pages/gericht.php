@@ -3,26 +3,38 @@
 <head>
     <?php
         session_start();
-    ?>
-    <?php
         if(file_exists("../assets/db/gerichte.db")){
             $db = new SQlite3("../assets/db/gerichte.db");
-            // Get the maximum id
-            $maxId = $db->querySingle("SELECT MAX(id) FROM gerichte");
-            $id = htmlspecialchars($_GET['id']);
-            // Rezept holen
-            $stmt = $db->prepare("SELECT * FROM gerichte WHERE id = :id");
-            $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
-            $result = $stmt->execute();
-            $row = $result->fetchArray(SQLITE3_ASSOC);
-            // Zutaten holen
-            $zutatenStmt = $db->prepare("SELECT * FROM zutaten WHERE gerichte_id = :id");
-            $zutatenStmt->bindValue(':id', $id, SQLITE3_INTEGER);
-            $zutatenResult = $zutatenStmt->execute();
-            // schritte holen
-            $schrittStmt = $db->prepare("SELECT * FROM schritte WHERE gerichte_id = :id");
-            $schrittStmt->bindValue(':id', $id, SQLITE3_INTEGER);
-            $schrittResult = $schrittStmt->execute();
+            $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+            if ($id > 0) {
+                // Rezept holen
+                $stmt = $db->prepare("SELECT * FROM gerichte WHERE id = :id");
+                $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+                $result = $stmt->execute();
+                $row = $result->fetchArray(SQLITE3_ASSOC);
+
+                // Zutaten holen
+                $zutatenStmt = $db->prepare("SELECT * FROM zutaten WHERE gerichte_id = :id");
+                $zutatenStmt->bindValue(':id', $id, SQLITE3_INTEGER);
+                $zutatenResult = $zutatenStmt->execute();
+
+                // schritte holen
+                $schrittStmt = $db->prepare("SELECT * FROM schritte WHERE gerichte_id = :id");
+                $schrittStmt->bindValue(':id', $id, SQLITE3_INTEGER);
+                $schrittResult = $schrittStmt->execute();
+
+                // Increase viewcount by 1 only if not already counted in this session
+                if ($row && !isset($_SESSION['viewed_' . $id])) {
+                    $updateStmt = $db->prepare("UPDATE gerichte SET viewcount = viewcount + 1 WHERE id = :id");
+                    $updateStmt->bindValue(':id', $id, SQLITE3_INTEGER);
+                    $updateStmt->execute();
+                    $_SESSION['viewed_' . $id] = true;
+                    $row['viewcount']++;
+                }
+            } else {
+            // Invalid or missing id, show error or redirect
+                die("Ungültige Rezept-ID.");
+            }
         }
     ?>
     <meta charset="UTF-8">
@@ -76,6 +88,16 @@
             <div id="buttons">
                 <button id="savebtn"><span class="material-symbols-outlined">bookmark</span></button>
                 <button id="sharebtn" onclick="copyTextToClipBoard()"><span class="material-symbols-outlined">share</span></button>
+            </div>
+        </div>
+        <div id="countanddate">
+            <div id="viewcount">
+                <span class="material-symbols-outlined">visibility</span>
+                <span><?php echo htmlspecialchars($row['viewcount'])?></span>
+            </div>
+            <div id="date_created">
+                <span class="material-symbols-outlined">calendar_month</span>
+                <span><?php echo htmlspecialchars($row['timecode_erstellt'])?></span>
             </div>
         </div>
         <div id="zutaten">

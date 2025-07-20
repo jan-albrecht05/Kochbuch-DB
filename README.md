@@ -30,10 +30,11 @@
  ```
 
 ## 🌐 suche.php
- - ❌ showing search results
- - ❌ showing filter results (+ Filter: random, latest, saved)
+ - ✅ showing search results
+ - ✅ showing filter results (+ Filter: random, latest, saved)
  - ❌ PHP paging (25, 50, 100 Gerichte)
- - ❌ sort by A-Z, Z-A
+ - ✅ sort by A-Z, Z-A
+ - ✅ advanced search (search in ingredients too)
 
 ## 💥 gericht.php
  - ✅ connect to gerichte.db
@@ -55,7 +56,7 @@
  - ✅ input-form
  - ✅ connect so SQL
  - ✅ Image-Handling+Upload
- - ❌fetch error messages
+ - ❌ fetch error messages
 
 ## ▶ login.php
  - ❌ login-form

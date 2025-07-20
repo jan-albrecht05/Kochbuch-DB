@@ -26,7 +26,7 @@
     </div>
     <div id="main">
         <div id="random-Rezepte" class="container">
-            <h2 onclick="window.location.href = 'pages/search.php?random'"><span>Lass dich überraschen</span> <span class="material-symbols-outlined">chevron_right</span></h2>
+            <h2 onclick="window.location.href = 'pages/suche.php?random'"><span>Lass dich überraschen</span> <span class="material-symbols-outlined">chevron_right</span></h2>
                 <!--<div class="arrow arrow-left">
                     <span class="material-symbols-outlined">chevron_left</span>
                 </div>
@@ -84,7 +84,7 @@
             </div>
         </div>
         <div id="neue-Rezepte" class="container">
-            <h2 onclick="window.location.href = 'pages/search.php?latest'"><span>Neueste Rezepte</span> <span class="material-symbols-outlined">chevron_right</span></h2>
+            <h2 onclick="window.location.href = 'pages/suche.php?latest'"><span>Neueste Rezepte</span> <span class="material-symbols-outlined">chevron_right</span></h2>
             <div class="inner-container">
                 <?php
                     if(file_exists("assets/db/gerichte.db")){
@@ -135,7 +135,7 @@
             </div>
         </div>
         <div id="Favoriten" class="container">
-            <h2 onclick="window.location.href = 'pages/search.php?saved'"><span>Meine Favoriten</span> <span class="material-symbols-outlined">chevron_right</span></h2>
+            <h2 onclick="window.location.href = '#'"><span>Meine Favoriten</span> <span class="material-symbols-outlined">chevron_right</span></h2>
             <div class="inner-container">
                 <p>Melde dich an, um deine Favoriten zu sehen.
                 <a style="color:var(--orange)"onclick="window.location = `pages/login.php`">login</a></p>

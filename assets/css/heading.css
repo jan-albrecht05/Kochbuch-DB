@@ -20,6 +20,13 @@ body.no-scroll {
     transition: all 0.3s;
     
 }
+.row{
+    display: flex;
+    width: max-content;
+    margin-inline: auto;
+    justify-content: center;
+    gap: 1rem;
+}
 #logo{
     display: flex;
     align-items: center;
@@ -156,6 +163,14 @@ input[type="text"]{
         width: 2.5rem;
         height: 2.5rem;
     }
+    .row{
+        display: flex;
+        flex-direction: row;
+        margin-bottom: .5rem;
+    }
+    .row a:nth-child(2n){
+        margin-top: .6rem;
+    }
     input[type="text"]{
         width: 0rem;
         height: 2rem;
@@ -177,7 +192,6 @@ input[type="text"]{
         left: calc(50% - 1rem);
     }
     .filter-link{
-        margin-top: .3rem;
         font-size: 150%;
     }
     .filter-link:nth-child(2){

@@ -90,7 +90,7 @@ h2 span{
     right: 16%;
     display: flex;
 }
-.rezeptlink{
+.inner-container > .rezeptlink{
     min-width: 20rem;
     max-width: 20rem;
     height: 95%;
@@ -192,7 +192,7 @@ h2 span{
         padding: .2rem;
         height: 20rem;
     }
-    .rezeptlink{
+    .inner-container > .rezeptlink{
         min-width: 10rem;
         max-width: 10rem;
         height: 95%;

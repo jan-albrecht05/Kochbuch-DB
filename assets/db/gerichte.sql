@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS "gerichte" (
 	"titel"	TEXT NOT NULL,
 	"beschreibung"	TEXT,
 	"timecode_erstellt"	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	"timecode_geaendert"	TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	"timecode_geaendert"	TIMESTAMP DEFAULT 0,
 	"tags"	TEXT,
 	"vorbereitungszeit"	INTEGER,
 	"zubereitungszeit"	INTEGER,
@@ -45,9 +45,11 @@ INSERT INTO "gerichte" VALUES (3,'Käsekuchen (ohne Boden)','der Beste und einfa
 INSERT INTO "gerichte" VALUES (4,'Thaicurry mit Kokosmilch','Das beste aus Thailand - Thaicurry mit Kokosmilch jetzt für Zuhause!','2025-07-18 19:21:19','2025-07-18 19:21:19','Asiatisch,Reis,Fleisch,Hühnchen,Suppe,vegetarisch',45,35,'4.1.png',NULL,NULL,6,0,0,0,0,0,NULL,0,NULL,0);
 INSERT INTO "schritte" VALUES (1,1,'Nudeln nach Packungsanleitung kochen. Nüsse ohne Fett rösten. Fleisch waschen, trocknen tupfen, salzen, pfeffern, in einer Pfanne in heißem Öl braten, in Folie beiseite stellen. Frühlingszwiebeln waschen, in Ringe schneiden. Mandarinen abtropfen lassen, den Saft dabei auffangen.');
 INSERT INTO "schritte" VALUES (2,1,'Crème fraîche mit Mandarinensaft, restlichen Zutaten, Salz und Pfeffer verrühren. Zur Hälfte mit den Nudeln vermengen, auf Teller verteilen. Fleisch in Scheiben schneiden, mit Frühlingszwiebeln, Mandarinen, Nüssen darauf anrichten, Rest Dressing darüberträufeln.');
-INSERT INTO "schritte" VALUES (3,2,'Limette in Scheiben schneiden, im Glas quetschen.
+INSERT INTO "schritte" VALUES (3,2,'Limette in Scheiben schneiden, im Glas quetschen.
+
 Zucker hinzufügen.');
-INSERT INTO "schritte" VALUES (4,2,'Glas zu etwa 60 Prozent mit Ginger Ale füllen, Rest mit Maracujasaft und Eis auffüllen.
+INSERT INTO "schritte" VALUES (4,2,'Glas zu etwa 60 Prozent mit Ginger Ale füllen, Rest mit Maracujasaft und Eis auffüllen.
+
 Limettenscheibe einschneiden und damit das Glas dekorieren.');
 INSERT INTO "schritte" VALUES (5,3,'Backofen auf 180 Grad Ober-/Unterhitze vorheizen. Den Boden einer auslaufsicheren Springform (20 cm) mit Backpapier auslegen.');
 INSERT INTO "schritte" VALUES (6,3,'Eier, Vanille Paste, Salz und Zucker mit einem Schneebesen verrühren, nicht aufschlagen.');
