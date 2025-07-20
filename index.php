@@ -26,7 +26,7 @@
     </div>
     <div id="main">
         <div id="random-Rezepte" class="container">
-            <h2 onclick="window.location.href = 'pages/suche.php?random'"><span>Lass dich überraschen</span> <span class="material-symbols-outlined">chevron_right</span></h2>
+            <h2 onclick="window.location.href = 'pages/suche.php?filter=random'"><span>Lass dich überraschen</span> <span class="material-symbols-outlined">chevron_right</span></h2>
                 <!--<div class="arrow arrow-left">
                     <span class="material-symbols-outlined">chevron_left</span>
                 </div>
@@ -84,7 +84,7 @@
             </div>
         </div>
         <div id="neue-Rezepte" class="container">
-            <h2 onclick="window.location.href = 'pages/suche.php?latest'"><span>Neueste Rezepte</span> <span class="material-symbols-outlined">chevron_right</span></h2>
+            <h2 onclick="window.location.href = 'pages/suche.php?filter=latest'"><span>Neueste Rezepte</span> <span class="material-symbols-outlined">chevron_right</span></h2>
             <div class="inner-container">
                 <?php
                     if(file_exists("assets/db/gerichte.db")){

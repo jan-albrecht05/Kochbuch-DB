@@ -98,7 +98,7 @@
         <form id="controls" method="get">
             <input type="hidden" name="suche" value="<?php echo htmlspecialchars($suche);?>">
             <label for="a_search" id="advanced_search" class="center">
-                <input type="checkbox" name="a_search" id="a_search" <?php if(isset($_GET['a_search'])) echo 'checked';if(isset($suche)){echo 'disabled"';}; ?>>
+                <input type="checkbox" name="a_search" id="a_search" <?php if(isset($_GET['a_search'])){ echo 'checked';};if(isset($filter)){echo ' disabled';}; ?>>
                 <div id="toggle">
                     <span id="toggle_btn"></span>
                 </div>
@@ -117,8 +117,12 @@
                 document.getElementById('controls').submit();
             });
         </script>
-        <div id="output" <?php if($filter = 'random'){echo 'hidden';}?>>
-            Deine Suche nach <?php echo '<b>'.$filter .''. $suche?></b> ergab <?php echo htmlspecialchars($somany)?> Treffer
+        <div id="output">
+            <?php
+                if($filter != "random" && $filter != "latest"){
+                    echo 'Deine Suche nach <b>'.$filter .''. $suche.'</b> ergab '.htmlspecialchars($somany).' Treffer.';
+                }
+            ?>
         </div>
         <div id="results">
             <?php
