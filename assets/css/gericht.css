@@ -17,6 +17,7 @@ h1{
     min-width: 100%;
     object-fit: cover;
     border-radius: 5px;
+    object-position: center;
 }
 #img2,
 #img3{
@@ -115,6 +116,9 @@ button:hover{
     padding-bottom: 1rem;
     border-top: 2px solid var(--bg-color);
     border-bottom: 2px solid var(--bg-color);
+}
+fieldset{
+    border:none;
 }
 #bewerten input{
     display: none;

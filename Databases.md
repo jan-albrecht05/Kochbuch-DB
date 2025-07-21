@@ -1,3 +1,4 @@
+## gerichte.db
 Table Gerichte:
  - id
  - titel
@@ -19,6 +20,7 @@ Table Gerichte:
  - timecode_erstellt
  - timecode_lastchange
  - error_msg
+ - status
 
 Table Zutaten:
  - id
@@ -31,3 +33,22 @@ Tabelle Schritte:
  - id
  - gerichte_id
  - Schritt
+
+
+## users.db
+Table users:
+ - id
+ - name
+ - password
+ - Profilbild
+ - Rolle (user, editor, admin)
+ - badge (newcommer, profi, ..)
+ - saved recepies
+
+Table Einlaufsliste
+ - id
+ - user id
+ - menge
+ - einheit
+ - zutat
+ - status (0 = offen, 1 = abgehakt)

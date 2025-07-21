@@ -39,12 +39,12 @@
             <!--Bilder-->
             <h2>Bilder hinzufügen:</h2><br>
             <div id="images">
-                <label for="img1" class="img-drop center"><span class="material-symbols-outlined">image_arrow_up</span></label>
-                <input type="file" id="img1" name="img1" required>
-                <label for="img2" class="img-drop center"><span class="material-symbols-outlined">image_arrow_up</span></label>
-                <input type="file" id="img2" name="img2">
-                <label for="img3" class="img-drop center"><span class="material-symbols-outlined">image_arrow_up</span></label>
-                <input type="file" id="img3" name="img3">
+                <label for="img1" class="img-drop center" id="label-img1"><span class="material-symbols-outlined">image_arrow_up</span></label>
+                <input type="file" accept="image/png, image/jpeg" id="img1" name="img1" required>
+                <label for="img2" class="img-drop center" id="label-img2"><span class="material-symbols-outlined">image_arrow_up</span></label>
+                <input type="file" accept="image/png, image/jpeg" id="img2" name="img2">
+                <label for="img3" class="img-drop center" id="label-img3"><span class="material-symbols-outlined">image_arrow_up</span></label>
+                <input type="file" accept="image/png, image/jpeg" id="img3" name="img3">
             </div>
             <span class="info">Du kannst bis zu 3 Bilder hinzufügen. Das erste Bild wird als Hauptbild verwendet.</span><br>
             <span class="info">Die Bilder sollten im JPG oder PNG Format vorliegen.</span><br>
@@ -148,6 +148,26 @@
                 <button type="submit" id="speichern">Rezept speichern</button>
             </div>
         </form>
+        <script>
+            function setImagePreview(inputId, labelId) {
+                const input = document.getElementById(inputId);
+                const label = document.getElementById(labelId);
+                input.addEventListener('change', function(e) {
+                    if (input.files && input.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(ev) {
+                            label.style.backgroundImage = 'url(' + ev.target.result + ')';
+                        }
+                        reader.readAsDataURL(input.files[0]);
+                    } else {
+                        label.style.backgroundImage = '';
+                    }
+                });
+            }
+            setImagePreview('img1', 'label-img1');
+            setImagePreview('img2', 'label-img2');
+            setImagePreview('img3', 'label-img3');
+        </script>
         <?php
             // Verbindung zur SQLite-Datenbank
             $db = new SQLite3('../assets/db/gerichte.db');

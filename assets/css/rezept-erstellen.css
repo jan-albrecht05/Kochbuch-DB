@@ -34,6 +34,11 @@ label.img-drop{
     border-radius: 5px;
     background-color: var(--bg-color-transparent);
     border-color: var(--grey);
+    user-select: none;
+}
+label.img-drop {
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 label.img-drop:hover{
     background-color: var(--lightgrey);

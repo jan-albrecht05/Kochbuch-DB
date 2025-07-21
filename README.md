@@ -59,17 +59,17 @@
  - ❌ fetch error messages
 
 ## ▶ login.php
- - ❌ login-form
- - ❌ users.db
+ - ✅ login-form
+ - ✅ users.db
 
 ## ◀ logout.php
- - ❌ logout logic
+ - ✅ logout logic
 
 ## 🚹 benutzer.php
  - ❌ "meine Rezepte"
  - ❌ "meine Einkaufsliste"
  - ❌ gespeicherte Rezepte
- - ❌ users.db
+ - ✅ users.db
 
 ## einkaufsliste.php
  - ❌ needs everything
