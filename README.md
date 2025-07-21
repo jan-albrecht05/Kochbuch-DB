@@ -44,7 +44,7 @@
  - ❌ calculation for ingredients
  - ❌ save-button-logik
  - ✅ share-link
- - ❌ Banner for action "saved" and "link copied" 
+ - ✅ Banner for action "saved" and "link copied" 
  - ❌ metadaten mit PHP anpassen
  - ❌ star input-logik + cooldown
  - ✅ star output

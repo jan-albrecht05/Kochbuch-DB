@@ -82,4 +82,8 @@ option:hover{
     #results > .rezeptlink{
         width: auto !important;
     }
+    .infotag{
+        display: block !important;
+    }
+    
 }

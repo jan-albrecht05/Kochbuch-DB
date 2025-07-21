@@ -55,6 +55,15 @@
     <div id="heading">
         <!-- Code gets injected by heading.js -->
     </div>
+    <!-- Popups -->
+    <div class="popup positive center" id="link_copied">
+        <span class="material-symbols-outlined">check</span>
+        Link wurde Kopiert!
+    </div>
+    <div class="popup positive center" id="saved">
+        <span class="material-symbols-outlined">check</span>
+        Rezept wurde gespeichert!
+    </div>
     <div id="main">
         <h1 id="ID"><?php echo ($row["titel"])?></h1>
         <div id="image-container">
