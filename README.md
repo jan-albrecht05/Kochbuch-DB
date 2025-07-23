@@ -71,5 +71,12 @@
  - ❌ gespeicherte Rezepte
  - ✅ users.db
 
+## admin-panel.php
+ - ✅ Statistics (user, recepies, errors)
+ - ✅ Benutzer anzeigen
+ - ✅ Funktion zum hinzufügen/bearbeiten/löschen von usern
+ - ❌ offene Rezepte anzeigen
+ - ❌ Rezepte mit Fehlern anzeigen
+
 ## einkaufsliste.php
  - ❌ needs everything

@@ -33,13 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
-    $stmt = $db->prepare("SELECT * FROM users WHERE username = :username");
+    $stmt = $db->prepare("SELECT * FROM users WHERE name = :username");
     $stmt->bindValue(':username', $username, SQLITE3_TEXT);
     $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
 
     if ($result && password_verify($password, $result['password'])) {
         $_SESSION['user_id'] = $result['id'];
-        $_SESSION['username'] = $result['username'];
+        $_SESSION['name'] = $result['name'];
         $_SESSION['rolle'] = $result['rolle'];
         $_SESSION['profile_picture'] = $result['profile_picture'];
 

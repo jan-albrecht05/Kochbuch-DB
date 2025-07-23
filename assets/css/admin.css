@@ -1,0 +1,143 @@
+.section{
+    border: 2px solid var(--bg-color);
+    background-color: var(--bg-color-transparent);
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+.section:last-child{
+    margin-bottom: 0rem;
+}
+
+.inner{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+.stat{
+    text-align: center;
+    cursor: pointer;
+}
+.stat h1{
+    font-size: 400%;
+    margin: 0;
+    cursor: pointer;
+}
+.stat h3{
+    cursor: pointer;
+    margin: 0;
+}
+.user{
+    display: flex;
+    justify-content: space-around;
+}
+.popup{
+    position: fixed;
+    width: 100%;
+    height: 113vh;
+    top: 0;
+    left: 0;
+    backdrop-filter: blur(5px);
+    margin: 0;
+    border: none;
+}
+.popup form{
+    width: 30%;
+    background-color: var(--bg-color-transparent);
+    color: black;
+    border: 2px solid var(--bg-color);
+    padding: 1.5rem;
+    border-radius: 5px;
+    backdrop-filter: blur(10px);
+}
+.popup form input{
+    width: 100%;
+    background-color: var(--bg-color-transparent);
+    border-radius: 5px;
+    border: 2px solid var(--bg-color);
+    height: 2rem;
+    padding: 0rem 0.3rem;
+}
+.popup form input[type="text"]:active{
+    border-color: var(--orange);
+    outline: none;
+}
+label{
+    margin-top: 1rem;
+    display: inline-block;
+}
+select{
+    width: 20%;
+    background-color: var(--lightgrey);
+    border: none;
+    border-radius: 5px;
+    padding: .3rem;
+}
+#pic-drop{
+    width: 10rem;
+    height: 10rem;
+    margin-top: 1rem;
+    background-color: var(--bg-color-transparent);
+    border-radius: 5px;
+    border: 2px solid var(--bg-color);
+}
+#pic-drop span{
+    font-size: 200%;
+    transition: all .2s;
+}
+#pic-drop:hover span{
+    font-size: 220%;
+}
+.popup form input[type="file"]{
+    display: none;
+}
+.buttons{
+    display: flex;
+    justify-content: space-evenly;
+}
+.buttons button{
+    padding: .3rem 1rem;
+    border-radius: 5px;
+    font-size: 120%;
+    border: 2px solid var(--grey);
+}
+#close-popup,
+#close-popup-edit{
+    background: none;
+}
+#add_user,
+#edit_user{
+    background-image: linear-gradient(-45deg, var(--yellow) -20%, var(--orange) 150%);
+}
+.user{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 120%;
+    border-bottom: 1px solid black;
+    padding: 0rem .5rem;
+}
+.user img{
+    object-fit: cover;
+}
+.user:last-child{
+    border-bottom: none;
+}
+#user-heading{
+    font-size: 100%;
+    border-bottom: 2px solid  black;
+    margin-bottom: .5rem;
+}
+.user img{
+    width: 5rem;
+    aspect-ratio: 1/1;
+    border-radius: 3rem;
+}
+.user button{
+    background: none;
+    border: none;
+}
+#delete:hover{
+    color: var(--red);
+}
