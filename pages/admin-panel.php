@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
         while ($rezept = $result->fetchArray(SQLITE3_ASSOC)) {
             $rezeptcount ++;
         };
-        $result2 = $rezepte->query("SELECT * FROM gerichte WHERE error_msg != null");
+        $result2 = $rezepte->query("SELECT * FROM gerichte WHERE error_msg != ''");
         while ($rezept2 = $result2->fetchArray(SQLITE3_ASSOC)) {
     // CHECK THIS
             $fehler ++;
@@ -167,8 +167,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                     <h3 class="beschreibung">offene Rezepte</h3>
                 </a>
                 <a class="stat" href="#errors">
-                    <h1 class="zahl"><?php echo htmlspecialchars($fehler)?></h1>
-                    <h3 class="beschreibung">Fehler</h3>
+                    <h1 class="zahl" style="color:red"><?php echo htmlspecialchars($fehler)?></h1>
+                    <h3 class="beschreibung" style="color:red">Fehler</h3>
                 </a>
             </div>
         </div>
@@ -298,11 +298,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
     </script>
         <div id="open_recepies" class="section">
             <h1>offene Rezepte</h1>
-    <!-- TO DO: Rezepte mit "status != 0" anzeigen, status auf 0 setzen wenn Haken -->
+        <!-- TO DO: Status auf 0 setzen wenn Haken -->
+            <div class="rezept" id="rezept-heading">
+                <h2 class="id">ID</h2>
+                <h2 class="titel">Titel</h2>
+                <h2 class="timecode">Timecode</h2>
+                <div class="buttons" style="width:11rem"></div>
+            </div>
+            <?php
+                $rezepte = new SQLite3("../assets/db/gerichte.db");
+                $result = $rezepte->query("SELECT * FROM gerichte WHERE status == 1");
+                while ($rezept = $result->fetchArray(SQLITE3_ASSOC)) {
+                    echo '
+                    <div class="rezept" id="'.htmlspecialchars($rezept['id']).'">
+                        <div class="id">#'.htmlspecialchars($rezept['id']).'</div>
+                        <div class="titel">'.htmlspecialchars($rezept['titel']).'</div>
+                        <div class="timecode">'.htmlspecialchars($rezept['timecode_erstellt']).'</div>
+                        <div class="buttons">
+                            <button class="btn-tick"><span class="material-symbols-outlined">check</span></button>
+                            <button class="btn-edit"><span class="material-symbols-outlined">edit</span></button>
+                            <button id="delete"><span class="material-symbols-outlined">delete</span></button>
+                        </div>
+                    </div>
+                    ';
+                }
+            ?>
         </div>
         <div id="errors" class="section">
             <h1>Fehlermeldungen</h1>
     <!-- TO DO: Rezepte mit Fehlermeldungen anzeigen-->
+            <div class="rezept" id="rezept-heading">
+                <h2 class="id">ID</h2>
+                <h2 class="titel">Titel</h2>
+                <h2 class="error_msg">Fehler</h2>
+                <h2 class="timecode">Timecode</h2>
+                <div class="buttons" style="width:8rem"></div>
+            </div>
+            <?php
+                $rezepte = new SQLite3("../assets/db/gerichte.db");
+                $result = $rezepte->query("SELECT * FROM gerichte WHERE error_msg != ''");
+                while ($rezept = $result->fetchArray(SQLITE3_ASSOC)) {
+                    echo '
+                    <div class="rezept" id="'.htmlspecialchars($rezept['id']).'">
+                        <div class="id">#'.htmlspecialchars($rezept['id']).'</div>
+                        <div class="titel">'.htmlspecialchars($rezept['titel']).'</div>
+                        <div class="error_msg">'.htmlspecialchars($rezept['error_msg']).'</div>
+                        <div class="timecode">'.htmlspecialchars($rezept['timecode_erstellt']).'</div>
+                        <div class="buttons">
+                            <button id=""><span class="material-symbols-outlined">edit</span></button>
+                            <button class="btn-tick"><span class="material-symbols-outlined">check</span></button>
+                        </div>
+                    </div>
+                    ';
+                }
+            ?>
         </div>
     </div>
 </body>

@@ -28,6 +28,16 @@
     cursor: pointer;
     margin: 0;
 }
+#add-user{
+    background-color: var(--lightgrey);
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: .3rem .5rem;
+    transition: all .2s;
+}
+#add-user:hover{
+    background-color: var(--lightgrey2);
+}
 .user{
     display: flex;
     justify-content: space-around;
@@ -117,14 +127,17 @@ select{
     font-size: 120%;
     border-bottom: 1px solid black;
     padding: 0rem .5rem;
+    margin-bottom: .5rem;
 }
 .user img{
     object-fit: cover;
 }
-.user:last-child{
+.user:last-child,
+.rezept:last-child{
     border-bottom: none;
 }
-#user-heading{
+#user-heading,
+#rezept-heading{
     font-size: 100%;
     border-bottom: 2px solid  black;
     margin-bottom: .5rem;
@@ -134,10 +147,80 @@ select{
     aspect-ratio: 1/1;
     border-radius: 3rem;
 }
-.user button{
+.user button,
+.rezept button{
     background: none;
     border: none;
+    width: min-content;
 }
 #delete:hover{
     color: var(--red);
+}
+.btn-tick:hover{
+    color: var(--green);
+}
+.rezept{
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+    border-bottom: 1px solid black;
+}
+.rezept:nth-child(2n+1){
+    background-color: var(--bg-color-transparent);
+}
+.id{
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 130%;
+    width: 10%;
+}
+h2.id{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 150%;
+}
+.timecode{
+    width: 10%;
+    margin-left: auto;
+}
+.titel,
+.error_msg{
+    width: 40%;
+}
+@media (max-width:600px) {
+    h3.beschreibung{
+        font-size: 80%;
+    }
+    #user-heading{
+        display: none;
+    }
+    #add-user{
+        margin-bottom: 1rem;
+    }
+    .popup form{
+        width: 90%;
+    }
+    .user img{
+        width: 3rem;
+        aspect-ratio: 1/1;
+    }
+    .section{
+        padding: .3rem;
+    }
+    .buttons{
+        width: min-content;
+        justify-content: end;
+    }
+    .user .buttons,
+    .rezept .buttons{
+        width: 30%;
+    }
+    .user .buttons button,
+    .rezept .buttons button{
+        width: 1rem;
+    }
+    #errors{
+        display: none;
+    }
+    .section:last-child{
+        margin-bottom: .3rem;
+    }
 }

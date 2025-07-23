@@ -75,8 +75,11 @@
  - ✅ Statistics (user, recepies, errors)
  - ✅ Benutzer anzeigen
  - ✅ Funktion zum hinzufügen/bearbeiten/löschen von usern
- - ❌ offene Rezepte anzeigen
- - ❌ Rezepte mit Fehlern anzeigen
+ - ✅ offene Rezepte anzeigen
+ - ✅ Rezepte mit Fehlern anzeigen
+ - ❌ Links zu rezept-bearbeiten.php
+ - ❌ Logik status zu 0 setzen
+ - ❌ Rezept löschen (maybe auch Bilder)
 
 ## einkaufsliste.php
  - ❌ needs everything
