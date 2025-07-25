@@ -108,6 +108,9 @@ h2 span{
     overflow: hidden;
     border-radius: 5px;
     margin-top: -2.1rem;
+    background-image: url('../../assets/icons/no-img.png');
+    background-size: cover;
+    background-position: 50%;
 }
 .rezeptlink img{
     min-height: 100% !important;

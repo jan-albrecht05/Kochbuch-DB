@@ -6,6 +6,12 @@
     ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Home - Kochbuch" />
+    <meta property="og:description" content="Ein digitales Kochbuch, in das jeder seine Lieblingsrezepte hinzufügen kann." />
+    <meta property="og:image" content="assets/icons/Topficon.png" />
+    <meta property="og:url" content="https://mein-kochbuch-free.nf" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Home - Kochbuch" />
     <title>Home - Kochbuch</title>
     <link rel="icon" href="assets/icons/Topficon.png">
     <link rel="stylesheet" href="assets/css/root.css">
@@ -54,7 +60,7 @@
                                 echo '  </div>
                                         <div class="img-container">';
                                         if(!empty($row['bild1'])){
-                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="Rezeptbild">';
+                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                         }
                                         else{
                                             echo '<img src="" alt="Bild konnte nicht geladen werden">';
@@ -105,7 +111,7 @@
                                 echo '  </div>
                                         <div class="img-container">';
                                         if(!empty($row['bild1'])){
-                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="Rezeptbild">';
+                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                         }
                                         else{
                                             echo '<img src="" alt="Bild konnte nicht geladen werden">';
@@ -137,8 +143,8 @@
         <div id="Favoriten" class="container">
             <h2 onclick="window.location.href = '#'"><span>Meine Favoriten</span> <span class="material-symbols-outlined">chevron_right</span></h2>
             <div class="inner-container">
-                <p>Melde dich an, um deine Favoriten zu sehen.
-                <a style="color:var(--orange)"onclick="window.location = `pages/login.php`">login</a></p>
+                <p>Melde dich an, um deine Favoriten zu sehen.<br>
+                <a style="color:var(--orange)!important; display:flex;align-items:center;cursor:pointer" onclick="window.location = `pages/login.php`">login<span class="material-symbols-outlined">open_in_new</span></a></p>
             </div>
         </div>
     </div>

@@ -1,3 +1,22 @@
+summary h1{
+    width: 99%;
+    display: flex;
+    justify-content: space-between;
+}
+summary{
+    list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary h1 span{
+    transform: rotateZ(45deg);
+    transition: all .4s;
+    cursor: pointer;
+}
+details[open] summary h1 span{
+    transform: rotateZ(135deg);
+}
 .section{
     border: 2px solid var(--bg-color);
     background-color: var(--bg-color-transparent);
@@ -184,6 +203,7 @@ h2.id{
 .titel,
 .error_msg{
     width: 40%;
+    margin-right: 1rem;
 }
 @media (max-width:600px) {
     h3.beschreibung{

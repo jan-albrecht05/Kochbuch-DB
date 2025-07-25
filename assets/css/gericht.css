@@ -18,6 +18,8 @@ h1{
     object-fit: cover;
     border-radius: 5px;
     object-position: center;
+    background-image: url('../../assets/icons/no-img.png');
+    background-size: contain;
 }
 #img2,
 #img3{
@@ -67,9 +69,14 @@ button:hover{
 #savebtn:hover{
     color: var(--green);
 }
+#info{
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+}
 .hashtag{
     font-size: 120%;
-    padding: .2rem .5rem;
+    padding: .3rem .5rem;
     background-color: var(--lightgrey);
 }
 #countanddate{
@@ -171,8 +178,22 @@ fieldset{
 #profilbild{
     width: 8rem;
     height: 8rem;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 4rem;
+    background-image: url('../../assets/icons/user.png');
+    background-size: cover;
+}
+#userinfo{
+    width: max-content;
+}
+#userinfo a{
+    margin-left: 1rem;
+}
+#userinfo a:hover{
+    text-decoration: underline;
+}
+#userinfo a:hover > .material-symbols-outlined{
+    text-decoration: none !important;
 }
 #problem{
     margin-bottom: 2rem;
@@ -210,9 +231,13 @@ fieldset{
     }
     #sidebar{
         margin-top: .5rem;
+        flex-direction: row;
+        width: 100%;
     }
     #sidebar img{
-        width: 4rem;
+        width: 4rem !important;
+        height: 4rem;
+        aspect-ratio: 1/1;
     }
     #sidebar img:hover{
         filter: drop-shadow(0px 3px 3px var(--grey));
@@ -238,15 +263,16 @@ fieldset{
     #info{
         min-height: 5.5rem;
         margin-top: .5rem;
+        margin-bottom: .5rem;
         width: auto;
         max-width: 80%;
+    }
+    .hashtag{
+        padding: .3rem .5rem;
     }
     #countanddate{
         display: block;
         margin-top: 0rem;
-    }
-    .hashtag{
-        margin-top: .5rem !important;
     }
     #zutaten{
         margin-top: 1rem;
@@ -276,6 +302,13 @@ fieldset{
     .zahl{
         width: 3rem;
         margin-left: -3rem;
+    }
+    #userinfo{
+        width: calc(100% - 6rem);
+    }
+    #userinfo a{
+        margin-top: -1rem;
+        margin-left:0rem;
     }
     #profilbild{
         width: 5rem;

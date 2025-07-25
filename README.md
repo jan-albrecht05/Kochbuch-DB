@@ -17,7 +17,7 @@
  - ✅ Header w/ Links to all tags
  - ✅ 3 different sections: random, latest, favorites
  - ❌ arrows for horizontal scrolling
- - ❕ different order/sorting 
+ - ❌ fill favorites section
  ### random section
  - ✅ shows 6 random entries
  ```php
@@ -35,6 +35,7 @@
  - ❌ PHP paging (25, 50, 100 Gerichte)
  - ✅ sort by A-Z, Z-A
  - ✅ advanced search (search in ingredients too)
+ - ❌ filter nach user
 
 ## 💥 gericht.php
  - ✅ connect to gerichte.db
@@ -45,10 +46,10 @@
  - ❌ save-button-logik
  - ✅ share-link
  - ✅ Banner for action "saved" and "link copied" 
- - ❌ metadaten mit PHP anpassen
+ - ✅ metadaten mit PHP anpassen
  - ❌ star input-logik + cooldown
  - ✅ star output
- - ❌ link to user
+ - ✅ link to user
  - ❌ "Fehler melden" Popup mit textarea → cell in gerichte.db
  - ❌ add ingredients to einkaufsliste.php
 
@@ -57,6 +58,8 @@
  - ✅ connect so SQL
  - ✅ Image-Handling+Upload
  - ❌ fetch error messages
+ - ❌ set user id if user is logged in
+ - ❌ show banner if user is not logged in
 
 ## ▶ login.php
  - ✅ login-form

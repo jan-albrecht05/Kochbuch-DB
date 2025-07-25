@@ -167,13 +167,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                     <h3 class="beschreibung">offene Rezepte</h3>
                 </a>
                 <a class="stat" href="#errors">
-                    <h1 class="zahl" style="color:red"><?php echo htmlspecialchars($fehler)?></h1>
-                    <h3 class="beschreibung" style="color:red">Fehler</h3>
+                    <h1 class="zahl" <?php if($fehler!=0){echo 'style="color:red"';}?>><?php echo htmlspecialchars($fehler)?></h1>
+                    <h3 class="beschreibung" <?php if($fehler!=0){echo 'style="color:red"';}?>>Fehler</h3>
                 </a>
             </div>
         </div>
-        <div id="benutzer-hinzufügen" class="section">
-            <h1>Benutzer</h1>
+        <details id="benutzer-hinzufügen" class="section" open>
+            <summary><h1>Benutzer<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
             <button id="add-user" class="center">
                 <span class="material-symbols-outlined">add</span> Benutzer hinzufügen
             </button>
@@ -217,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             echo '  </div>';
         }
         ?>
-        </div>
+        </details>
     <div class="popup center" id="add-user-popup" style="display:none;">
         <form id="add-user-form" method="POST" action="" enctype="multipart/form-data">
             <h2>Benutzer hinzufügen</h2>
@@ -296,8 +296,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             });
         });
     </script>
-        <div id="open_recepies" class="section">
-            <h1>offene Rezepte</h1>
+        <details id="open_recepies" class="section">
+            <summary><h1>offene Rezepte<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
         <!-- TO DO: Status auf 0 setzen wenn Haken -->
             <div class="rezept" id="rezept-heading">
                 <h2 class="id">ID</h2>
@@ -323,9 +323,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                     ';
                 }
             ?>
-        </div>
-        <div id="errors" class="section">
-            <h1>Fehlermeldungen</h1>
+        </details>
+        <details id="errors" class="section">
+            <summary><h1>Fehlermeldungen<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
     <!-- TO DO: Rezepte mit Fehlermeldungen anzeigen-->
             <div class="rezept" id="rezept-heading">
                 <h2 class="id">ID</h2>
@@ -352,7 +352,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                     ';
                 }
             ?>
-        </div>
+        </details>
     </div>
 </body>
 </html>

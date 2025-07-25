@@ -5,6 +5,7 @@
         session_start();
         if(file_exists("../assets/db/gerichte.db")){
             $db = new SQlite3("../assets/db/gerichte.db");
+            
             $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             if ($id > 0) {
                 // Rezept holen
@@ -12,6 +13,7 @@
                 $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
                 $result = $stmt->execute();
                 $row = $result->fetchArray(SQLITE3_ASSOC);
+                $username = $row["made_by_id"];
 
                 // Zutaten holen
                 $zutatenStmt = $db->prepare("SELECT * FROM zutaten WHERE gerichte_id = :id");
@@ -31,6 +33,7 @@
                     $_SESSION['viewed_' . $id] = true;
                     $row['viewcount']++;
                 }
+
             } else {
             // Invalid or missing id, show error or redirect
                 die("Ungültige Rezept-ID.");
@@ -39,6 +42,12 @@
     ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="<?php echo htmlspecialchars($row["titel"])?> - Kochbuch" />
+    <meta property="og:description" content="<?php echo htmlspecialchars($row["beschreibung"])?>" />
+    <meta property="og:image" content="../assets/icons/Topficon.png" />
+    <meta property="og:url" content="https://mein-kochbuch-free.nf" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="<?php echo htmlspecialchars($row["titel"])?> - Kochbuch" />
     <title><?php echo htmlspecialchars($row["titel"])?> - Kochbuch</title>
     <link rel="icon" href="../assets/icons/Topficon.png">
     <link rel="stylesheet" href="../assets/css/root.css">
@@ -69,17 +78,17 @@
         <h1 id="ID"><?php echo ($row["titel"])?></h1>
         <div id="image-container">
             <div id="big-image">
-                <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild1"])?>" id="img1">
-                <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild2"])?>" id="img2">
-                <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild3"])?>" id="img3">
+                <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild1"])?>" id="img1" alt="">
+                <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild2"])?>" id="img2" alt="">
+                <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild3"])?>" id="img3" alt="">
             </div>
             <div id="sidebar">
-                <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild1"])?>"onclick = "showImg1()">
+                <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild1"])?>"onclick = "showImg1()" alt="">
                 <?php if(!empty($row["bild2"])){
-                    echo '<img src="../assets/img/uploads/gerichte/'. ($row["bild2"]).'"onclick = "showImg2()">';
+                    echo '<img src="../assets/img/uploads/gerichte/'. ($row["bild2"]).'"onclick = "showImg2()" alt="">';
                 }?>
                 <?php if(!empty($row["bild3"])){
-                    echo '<img src="../assets/img/uploads/gerichte/'. ($row["bild3"]).'"onclick = "showImg3()">';
+                    echo '<img src="../assets/img/uploads/gerichte/'. ($row["bild3"]).'"onclick = "showImg3()" alt="">';
                 }?>
             </div>
         </div>
@@ -89,7 +98,7 @@
                 if (!empty($row['tags'])) {
                     $tags = explode(',', $row['tags']);
                     foreach ($tags as $tag) {
-                        echo '<span class="hashtag">' . htmlspecialchars(trim($tag)) . '</span> ';
+                        echo '<span class="hashtag center">' . htmlspecialchars(trim($tag)) . '</span> ';
                     }
                 };
                 ?>
@@ -189,7 +198,7 @@
                                 }else{
                                     $avg = '0.0';
                                 }
-                                echo htmlspecialchars($avg);
+                                echo htmlspecialchars(round($avg,1));
                             ?>
                         </h1>
                     </div>
@@ -266,10 +275,30 @@
                 </div>
             </div>
             <div id="user" class="center">
-                <div class="inneruser" id=""><!-- ID mit PHP einfügen, Link via JS -->
-                    <img id="profilbild" src="../assets/icons/user.png" alt="profilbild">
+                <?php 
+                $somany = 0;
+                $query = "SELECT * FROM gerichte WHERE made_by_id = $username";
+                $result = $db->query($query);
+                // Count results
+                if($result){
+                    while ($row = $result->fetchArray(SQLITE3_ASSOC)){
+                        $somany++;
+                    }
+                }
+                // User Daten bestimmen
+                $users = new SQlite3("../assets/db/users.db");
+                //echo ('Name:'.$username);
+                $stmt2 = $users->prepare("SELECT * FROM users WHERE id = $username");
+                $stmt2->bindValue('id', $username, SQLITE3_INTEGER);
+                $result = $stmt2->execute();
+                $row = $result->fetchArray(SQLITE3_ASSOC);
+                $user = $row['name'];
+                ?>
+                <div class="inneruser">
+                    <img id="profilbild" src="../assets/img/uploads/users/<?php echo htmlspecialchars($row['profilbild'])?>" alt="">
                     <div id="userinfo">
-                        <h1>Username</h1>
+                        <h1><?php echo htmlspecialchars($user);?></php></h1>
+                        <a href="../pages/suche.php?filter=<?php echo htmlspecialchars($user);?>" class="center"><?php echo htmlspecialchars($somany);?> weitere Rezepte anzeigen<span class="material-symbols-outlined">keyboard_arrow_right</span></a>
                     </div>
                 </div>
             </div>

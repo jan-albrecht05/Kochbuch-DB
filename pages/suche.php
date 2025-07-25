@@ -79,6 +79,12 @@
     ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Suche nach <?php echo $filter .''. $suche?> - Kochbuch" />
+    <meta property="og:description" content="Ein digitales Kochbuch, in das jeder seine Lieblingsrezepte hinzufügen kann." />
+    <meta property="og:image" content="../assets/icons/Topficon.png" />
+    <meta property="og:url" content="https://mein-kochbuch-free.nf" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Suche nach <?php echo $filter .''. $suche?> - Kochbuch" />
     <title>Suche nach <?php echo $filter .''. $suche?> - Kochbuch</title>
     <link rel="icon" href="../assets/icons/Topficon.png">
     <link rel="stylesheet" href="../assets/css/root.css">
