@@ -74,6 +74,15 @@
         <span class="material-symbols-outlined">check</span>
         Rezept wurde gespeichert!
     </div>
+    <?php
+    //Banner if recepie is not validated
+        if ($row['status'] != 0) { 
+            echo '
+                <div class="banner">
+                    <p>Dieses Rezept wurde noch nicht überprüft!</p>
+                </div>
+            ';}
+    ?>
     <div id="main">
         <h1 id="ID"><?php echo ($row["titel"])?></h1>
         <div id="image-container">
@@ -286,19 +295,28 @@
                     }
                 }
                 // User Daten bestimmen
-                $users = new SQlite3("../assets/db/users.db");
-                //echo ('Name:'.$username);
-                $stmt2 = $users->prepare("SELECT * FROM users WHERE id = $username");
-                $stmt2->bindValue('id', $username, SQLITE3_INTEGER);
-                $result = $stmt2->execute();
-                $row = $result->fetchArray(SQLITE3_ASSOC);
-                $user = $row['name'];
+                if ($username != 0){
+                    $users = new SQlite3("../assets/db/users.db");
+                    $stmt2 = $users->prepare("SELECT * FROM users WHERE id = $username");
+                    $stmt2->bindValue('id', $username, SQLITE3_INTEGER);
+                    $result = $stmt2->execute();
+                    $userrow = $result->fetchArray(SQLITE3_ASSOC);
+                    $user = $userrow['name'];
+                }else{
+                    $user = 'annonym';
+                }
                 ?>
                 <div class="inneruser">
                     <img id="profilbild" src="../assets/img/uploads/users/<?php echo htmlspecialchars($row['profilbild'])?>" alt="">
                     <div id="userinfo">
                         <h1><?php echo htmlspecialchars($user);?></php></h1>
-                        <a href="../pages/suche.php?filter=<?php echo htmlspecialchars($user);?>" class="center"><?php echo htmlspecialchars($somany);?> weitere Rezepte anzeigen<span class="material-symbols-outlined">keyboard_arrow_right</span></a>
+                        <?php
+                            if($username != 0){
+                                echo '
+                                    <a href="../pages/suche.php?filter=<?php echo htmlspecialchars($user);?>" class="center">'.htmlspecialchars($somany -1).' weitere Rezepte anzeigen<span class="material-symbols-outlined">keyboard_arrow_right</span></a>
+                                ';
+                            }
+                        ?>
                     </div>
                 </div>
             </div>

@@ -58,8 +58,8 @@
  - ✅ connect so SQL
  - ✅ Image-Handling+Upload
  - ❌ fetch error messages
- - ❌ set user id if user is logged in
- - ❌ show banner if user is not logged in
+ - ✅ set user id if user is logged in
+ - ✅ show banner if user is not logged in
 
 ## ▶ login.php
  - ✅ login-form

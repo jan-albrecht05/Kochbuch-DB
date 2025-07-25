@@ -36,6 +36,17 @@
         <span class="material-symbols-outlined">report</span>
         Datei muss .PNG oder .JPG sein!
     </div>
+    <?php
+    //Banner if User is not logged in
+        if (!isset($_SESSION['rolle'])) { //if user is not logged in
+            echo '
+                <div class="banner">
+                    <p>Du bist nicht eingelogt!</p>
+                    <p>Alle Rezepte, die du hinzufügst werden erst überprüft, bevor sie für alle sichtbar sind. Dieser Vorgang kann bis zu 48 Stunden dauern.</p>
+                    <a href="login.php?redirect=rezept-erstellen.php">logge dich ein</a> um dies zu umgehen.
+                </div>
+            ';}
+    ?>
     <div id="main">
         <h1>Rezept erstellen</h1>
         <form method="post" enctype="multipart/form-data">
@@ -147,8 +158,6 @@
             <input type="number" id="zubereitungszeit" name="zubereitungszeit" required placeholder="25"><br>
             <!--Hidden inputs-->
             <input type="hidden" id="timecode" name="timecode" value="<?php echo time(); ?>">
-            <!--<input type="hidden" id="userid" name="made_by_id" value="<?php //echo $_SESSION['user_id']; ?>">-->
-            <input type="hidden" id="ID" name="ID">
             <div id="buttons">
                 <button type="reset" id="abbrechen">Abbrechen</button>
                 <button type="submit" id="speichern">Rezept speichern</button>
@@ -189,7 +198,6 @@
                 $personen = $_POST['portionen'] ?? 1;
                 $vorbereitungszeit = $_POST['vorbereitungszeit'] ?? 0;
                 $zubereitungszeit = $_POST['zubereitungszeit'] ?? 0;
-                $made_by_id = $_POST['made_by_id'] ?? null;
 
             // Handle file uploads
                 if (!empty($_FILES['img1']['name'])) {
@@ -231,9 +239,12 @@
                     $Img3Name = null;
                 }
                 
+            // set right user
+                $made_by_user = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
+                $status = ($made_by_user === 0) ? 1 : 0;
             // Rezept einfügen
-                $stmt = $db->prepare("INSERT INTO gerichte (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, made_by_id) 
-                    VALUES (:titel, :beschreibung, :tags, :vorbereitungszeit, :zubereitungszeit, :bild1, :bild2, :bild3, :personen, :made_by_id)");
+                $stmt = $db->prepare("INSERT INTO gerichte (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, made_by_id, status) 
+                    VALUES (:titel, :beschreibung, :tags, :vorbereitungszeit, :zubereitungszeit, :bild1, :bild2, :bild3, :personen, :made_by_id, :status)");
                     $stmt->bindValue(':titel', $titel, SQLITE3_TEXT);
                     $stmt->bindValue(':beschreibung', $beschreibung, SQLITE3_TEXT);
                     $stmt->bindValue(':tags', $tags, SQLITE3_TEXT);
@@ -243,7 +254,8 @@
                     $stmt->bindValue(':bild2', $Img2Name, SQLITE3_TEXT);
                     $stmt->bindValue(':bild3', $Img3Name, SQLITE3_TEXT);
                     $stmt->bindValue(':personen', $personen, SQLITE3_TEXT);
-                    $stmt->bindValue(':made_by_id', $made_by_id, SQLITE3_TEXT);
+                    $stmt->bindValue(':made_by_id', $made_by_user, SQLITE3_TEXT);
+                    $stmt->bindValue(':status', $status, SQLITE3_TEXT);
                 $stmt->execute();
 
             // Zutaten auslesen (mehrere Einträge)

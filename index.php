@@ -43,7 +43,7 @@
                 <?php
                     if(file_exists("assets/db/gerichte.db")){
                         $db = new SQlite3("assets/db/gerichte.db");
-                        $query = "SELECT * FROM gerichte ORDER BY RANDOM() LIMIT 6";
+                        $query = "SELECT * FROM gerichte WHERE status = 0 ORDER BY RANDOM() LIMIT 6";
                         $result = $db->query($query);
                         // Get the maximum id
                         $maxId = $db->querySingle("SELECT MAX(id) FROM gerichte");
@@ -95,7 +95,7 @@
                 <?php
                     if(file_exists("assets/db/gerichte.db")){
                         $db = new SQlite3("assets/db/gerichte.db");
-                        $query = "SELECT * FROM gerichte ORDER BY id DESC LIMIT 6";
+                        $query = "SELECT * FROM gerichte WHERE status = 0 ORDER BY id DESC LIMIT 6";
                         $result = $db->query($query);
                         // Get the maximum id
                         $maxId = $db->querySingle("SELECT MAX(id) FROM gerichte");
