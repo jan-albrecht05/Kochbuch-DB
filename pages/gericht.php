@@ -13,20 +13,28 @@
                 $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
                 $result = $stmt->execute();
                 $row = $result->fetchArray(SQLITE3_ASSOC);
-                $username = $row["made_by_id"];                // Zutaten holen
+                $username = $row["made_by_id"];
+
+                // Zutaten holen
                 $zutatenStmt = $db->prepare("SELECT * FROM zutaten WHERE gerichte_id = :id");
                 $zutatenStmt->bindValue(':id', $id, SQLITE3_INTEGER);
-                $zutatenResult = $zutatenStmt->execute();                // schritte holen
+                $zutatenResult = $zutatenStmt->execute();
+
+                // schritte holen
                 $schrittStmt = $db->prepare("SELECT * FROM schritte WHERE gerichte_id = :id");
                 $schrittStmt->bindValue(':id', $id, SQLITE3_INTEGER);
-                $schrittResult = $schrittStmt->execute();                // Increase viewcount by 1 only if not already counted in this session
+                $schrittResult = $schrittStmt->execute();
+
+                // Increase viewcount by 1 only if not already counted in this session
                 if ($row && !isset($_SESSION['viewed_' . $id])) {
                     $updateStmt = $db->prepare("UPDATE gerichte SET viewcount = viewcount + 1 WHERE id = :id");
                     $updateStmt->bindValue(':id', $id, SQLITE3_INTEGER);
                     $updateStmt->execute();
                     $_SESSION['viewed_' . $id] = true;
                     $row['viewcount']++;
-                }            } else {
+                }
+
+            } else {
             // Invalid or missing id, show error or redirect
                 die("Ungültige Rezept-ID.");
             }
@@ -276,7 +284,8 @@
                 </div>
             </div>
             <div id="user" class="center">
-                <?php                 $somany = 0;
+                <?php 
+                $somany = 0;
                 $query = "SELECT * FROM gerichte WHERE made_by_id = $username";
                 $result = $db->query($query);
                 // Count results
@@ -286,13 +295,16 @@
                     }
                 }
                 // User Daten bestimmen
-                $users = new SQlite3("../assets/db/users.db");
-                //echo ('Name:'.$username);
-                $stmt2 = $users->prepare("SELECT * FROM users WHERE id = $username");
-                $stmt2->bindValue('id', $username, SQLITE3_INTEGER);
-                $result = $stmt2->execute();
-                $row = $result->fetchArray(SQLITE3_ASSOC);
-                $user = $row['name'];
+                if ($username != 0){
+                    $users = new SQlite3("../assets/db/users.db");
+                    $stmt2 = $users->prepare("SELECT * FROM users WHERE id = $username");
+                    $stmt2->bindValue('id', $username, SQLITE3_INTEGER);
+                    $result = $stmt2->execute();
+                    $userrow = $result->fetchArray(SQLITE3_ASSOC);
+                    $user = $userrow['name'];
+                }else{
+                    $user = 'anonym';
+                }
                 ?>
                 <div class="inneruser">
                     <img id="profilbild" src="../assets/img/uploads/users/<?php echo htmlspecialchars($row['profilbild'])?>" alt="">
