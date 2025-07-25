@@ -35,7 +35,7 @@
  - ❌ PHP paging (25, 50, 100 Gerichte)
  - ✅ sort by A-Z, Z-A
  - ✅ advanced search (search in ingredients too)
- - ❌ filter nach user
+ - ✅ filter nach user
 
 ## 💥 gericht.php
  - ✅ connect to gerichte.db

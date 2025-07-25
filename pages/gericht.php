@@ -303,7 +303,7 @@
                     $userrow = $result->fetchArray(SQLITE3_ASSOC);
                     $user = $userrow['name'];
                 }else{
-                    $user = 'annonym';
+                    $user = 'anonym';
                 }
                 ?>
                 <div class="inneruser">
@@ -313,7 +313,7 @@
                         <?php
                             if($username != 0){
                                 echo '
-                                    <a href="../pages/suche.php?filter=<?php echo htmlspecialchars($user);?>" class="center">'.htmlspecialchars($somany -1).' weitere Rezepte anzeigen<span class="material-symbols-outlined">keyboard_arrow_right</span></a>
+                                    <a href="../pages/suche.php?user='.htmlspecialchars($user).'" class="center">'.htmlspecialchars($somany -1).' weitere Rezepte anzeigen<span class="material-symbols-outlined">keyboard_arrow_right</span></a>
                                 ';
                             }
                         ?>

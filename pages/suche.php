@@ -5,6 +5,7 @@
         session_start();
         $suche = isset($_GET['suche']) ? trim($_GET['suche']) : '';
         $filter = isset($_GET['filter']) ? trim($_GET['filter']) : null;
+        $searchforuser = isset($_GET['user']) ? trim($_GET['user']) : null;
         $somany = 0;
         $where = ["status = 0"];
         $advanced = isset($_GET['a_search']);
@@ -76,16 +77,36 @@
                 }
             }
         }
+        if(isset($searchforuser)){
+            $users = new SQlite3("../assets/db/users.db");
+            $stmt2 = $users->prepare("SELECT * FROM users WHERE name LIKE '%$searchforuser%'");
+            $stmt2->bindValue('id', $searchforuser, SQLITE3_INTEGER);
+            $result = $stmt2->execute();
+            $userrow = $result->fetchArray(SQLITE3_ASSOC);
+            $userid = $userrow['id'];
+            // count results
+            $query = "SELECT * FROM gerichte WHERE made_by_id = $userid";
+            $result = $db->query($query);
+            // Count results
+            if ($userid !== null) {
+                $stmt = $db->prepare("SELECT COUNT(*) as count FROM gerichte WHERE made_by_id = $userid");
+                $stmt->bindValue(':uid', $userid, SQLITE3_INTEGER);
+                $res = $stmt->execute();
+                $row = $res->fetchArray(SQLITE3_ASSOC);
+                $somany = $row ? $row['count'] : 0;
+            }
+        }
+        
     ?>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="Suche nach <?php echo $filter .''. $suche?> - Kochbuch" />
+    <meta property="og:title" content="Suche nach <?php echo $filter.''.$suche.''.$searchforuser?> - Kochbuch" />
     <meta property="og:description" content="Ein digitales Kochbuch, in das jeder seine Lieblingsrezepte hinzufügen kann." />
     <meta property="og:image" content="../assets/icons/Topficon.png" />
     <meta property="og:url" content="https://mein-kochbuch-free.nf" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Suche nach <?php echo $filter .''. $suche?> - Kochbuch" />
-    <title>Suche nach <?php echo $filter .''. $suche?> - Kochbuch</title>
+    <meta property="og:site_name" content="Suche nach <?php echo $filter.''.$suche.''.$searchforuser?> - Kochbuch" />
+    <title>Suche nach <?php echo $filter .''. $suche.''.$searchforuser?> - Kochbuch</title>
     <link rel="icon" href="../assets/icons/Topficon.png">
     <link rel="stylesheet" href="../assets/css/root.css">
     <link rel="stylesheet" href="../assets/css/main.css">
@@ -104,13 +125,13 @@
         <form id="controls" method="get">
             <input type="hidden" name="suche" value="<?php echo htmlspecialchars($suche);?>">
             <label for="a_search" id="advanced_search" class="center">
-                <input type="checkbox" name="a_search" id="a_search" <?php if(isset($_GET['a_search'])){ echo 'checked';};if(isset($filter)){echo ' disabled';}; ?>>
+                <input type="checkbox" name="a_search" id="a_search" <?php if(isset($_GET['a_search'])){ echo 'checked';};if($filter == null || $searchforuser == null){echo ' disabled';}; ?>>
                 <div id="toggle">
                     <span id="toggle_btn"></span>
                 </div>
                 <span>erweiterte Suche</span>
             </label>
-            <select id="sorting" name="sorting">
+            <select id="sorting" name="sorting" <?php if($searchforuser != null){echo ' disabled';}?>>
                 <option value="ASC" <?php if(isset($_GET['sorting']) && $_GET['sorting'] === 'ASC') echo 'selected'; ?>>A - Z</option>
                 <option value="DESC" <?php if(isset($_GET['sorting']) && $_GET['sorting'] === 'DESC') echo 'selected'; ?>>Z - A</option>
             </select>
@@ -126,7 +147,7 @@
         <div id="output">
             <?php
                 if($filter != "random" && $filter != "latest"){
-                    echo 'Deine Suche nach <b>'.$filter .''. $suche.'</b> ergab '.htmlspecialchars($somany).' Treffer.';
+                    echo 'Deine Suche nach <b>'.$filter .''. $suche.''. $searchforuser.'</b> ergab '.htmlspecialchars($somany).' Treffer.';
                 }
             ?>
         </div>
@@ -148,7 +169,7 @@
                             echo '  </div>
                                     <div class="img-container">';
                                     if(!empty($row['bild1'])){
-                                        echo '<img src="../assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="Rezeptbild">';
+                                        echo '<img src="../assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                     }
                                     else{
                                         echo '<img src="" alt="Bild konnte nicht geladen werden">';
