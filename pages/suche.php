@@ -125,7 +125,7 @@
         <form id="controls" method="get">
             <input type="hidden" name="suche" value="<?php echo htmlspecialchars($suche);?>">
             <label for="a_search" id="advanced_search" class="center">
-                <input type="checkbox" name="a_search" id="a_search" <?php if(isset($_GET['a_search'])){ echo 'checked';};if($filter == null || $searchforuser == null){echo ' disabled';}; ?>>
+                <input type="checkbox" name="a_search" id="a_search" <?php if(isset($_GET['a_search'])){ echo 'checked';};if($filter == null xor $searchforuser == null){echo ' disabled';}; ?>>
                 <div id="toggle">
                     <span id="toggle_btn"></span>
                 </div>
