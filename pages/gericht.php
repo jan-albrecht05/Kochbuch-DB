@@ -112,9 +112,14 @@
                 };
                 ?>
             </div>
-            <!-- Bookmark and Share Buttons -->
+            <!-- Bookmark, Edit and Share Buttons -->
             <div id="buttons">
                 <button id="savebtn"><span class="material-symbols-outlined">bookmark</span></button>
+                <?php // Fehler mit $_Session['rolle']
+                if (isset($_SESSION['rolle']) && $_SESSION['rolle'] == 'admin' xor $_SESSION['rolle'] == 'editor') {
+                    echo '<button id="editbtn" onclick="window.location.href = \'rezept-bearbeiten.php?id='.$id.'\'"><span class="material-symbols-outlined">edit</span></button>';
+                }
+                ?>
                 <button id="sharebtn" onclick="copyTextToClipBoard()"><span class="material-symbols-outlined">share</span></button>
             </div>
         </div>

@@ -92,6 +92,7 @@ button:hover{
     font-size: 120%;
     padding: .3rem .5rem;
     background-color: var(--lightgrey);
+    height: min-content;
 }
 #countanddate{
     margin-top: 1rem;

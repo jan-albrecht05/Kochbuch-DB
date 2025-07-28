@@ -42,7 +42,7 @@
  - ✅ container w/ different images
  - ✅ logic for switching images 
  - ✅ steps
- - ❌ calculation for ingredients
+ - ❌ show/hide edit-button
  - ❌ save-button-logik
  - ✅ share-link
  - ✅ Banner for action "saved" and "link copied" 
@@ -51,6 +51,7 @@
  - ✅ star output
  - ✅ link to user
  - ❌ "Fehler melden" Popup mit textarea → cell in gerichte.db
+ - ❌ calculation for ingredients
  - ❌ add ingredients to einkaufsliste.php
 
 ## ➕ rezept-erstellen.php
@@ -80,9 +81,16 @@
  - ✅ Funktion zum hinzufügen/bearbeiten/löschen von usern
  - ✅ offene Rezepte anzeigen
  - ✅ Rezepte mit Fehlern anzeigen
- - ❌ Links zu rezept-bearbeiten.php
+ - ✅ Links zu rezept-bearbeiten.php
  - ❌ Logik status zu 0 setzen
  - ❌ Rezept löschen (maybe auch Bilder)
+
+## rezept-bearbeiten.php
+ - ✅ basic functionality
+ - ❌ TAG buttons bearbeiten
+ - ❌ Mengen setzen
+ - ❌ tabellen entsprechend bearbieten (alte Einträge komplett löschen?)
+ - ❌ Datum setzen
 
 ## einkaufsliste.php
  - ❌ needs everything

@@ -316,7 +316,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                         <div class="timecode">'.htmlspecialchars($rezept['timecode_erstellt']).'</div>
                         <div class="buttons">
                             <button class="btn-tick"><span class="material-symbols-outlined">check</span></button>
-                            <button class="btn-edit"><span class="material-symbols-outlined">edit</span></button>
+                            <button class="btn-edit" onclick="window.location.href = \'rezept-bearbeiten.php?id='.htmlspecialchars($rezept['id']).'\'"><span class="material-symbols-outlined">edit</span></button>
                             <button id="delete"><span class="material-symbols-outlined">delete</span></button>
                         </div>
                     </div>
@@ -326,7 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
         </details>
         <details id="errors" class="section">
             <summary><h1>Fehlermeldungen<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
-    <!-- TO DO: Rezepte mit Fehlermeldungen anzeigen-->
+    <!-- TO DO: Tunktion zum abhaken hinzufügen-->
             <div class="rezept" id="rezept-heading">
                 <h2 class="id">ID</h2>
                 <h2 class="titel">Titel</h2>
@@ -345,7 +345,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                         <div class="error_msg">'.htmlspecialchars($rezept['error_msg']).'</div>
                         <div class="timecode">'.htmlspecialchars($rezept['timecode_erstellt']).'</div>
                         <div class="buttons">
-                            <button id=""><span class="material-symbols-outlined">edit</span></button>
+                            <button id="" onclick="window.location.href = \'rezept-bearbeiten.php?id='.htmlspecialchars($rezept['id']).'\'"><span class="material-symbols-outlined">edit</span></button>
                             <button class="btn-tick"><span class="material-symbols-outlined">check</span></button>
                         </div>
                     </div>
