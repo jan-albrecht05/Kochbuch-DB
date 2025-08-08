@@ -68,6 +68,34 @@ label.img-drop:hover span{
 input[type="file"]{
     display: none;
 }
+#forfototipps{
+    text-decoration: underline;
+}
+#fototipps{
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-color-transparent);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--bg-color);
+    border-radius: 10px;
+    z-index: 50;
+    width: 50%;
+    margin-left: 24%;
+    margin-top: 2rem;
+    padding: 1rem;
+    display: none;
+}
+#fototipps.open{
+    display: block;
+}
+#fototipps h3{
+    font-size: 130%;
+}
+#fototipps p{
+    font-size: 120%;
+    margin-left: .5rem;
+}
 form input[type="text"],
 textarea,
 input[type="number"]{

@@ -138,19 +138,18 @@
             <div id="ingredients">
                 <?php 
                 while ($zutat = $zutatenResult->fetchArray(SQLITE3_ASSOC)) {
-                    // richtige Einheit auswählen
                     echo '
                     <div class="ingredient">
                         <input class="menge" name="menge[]" type="number" required placeholder="Menge" value="'.htmlspecialchars($zutat["menge"]).'">
                         <select class="einheit" name="einheit[]" required value="'.htmlspecialchars($zutat["einheit"]).'">
-                            <option value="g">g</option>
-                            <option value="kg">kg</option>
-                            <option value="ml">ml</option>
-                            <option value="l">l</option>
-                            <option value="EL">EL</option>
-                            <option value="TL">TL</option>
-                            <option value="%">%</option>
-                            <option value="Stk.">Stk.</option>
+                            <option value="g"'; if($zutat["einheit"] == 'g'){echo 'selected';}echo'>g</option>
+                            <option value="kg"'; if($zutat["einheit"] == 'kg'){echo 'selected';}echo'>kg</option>
+                            <option value="ml"'; if($zutat["einheit"] == 'ml'){echo 'selected';}echo'>ml</option>
+                            <option value="l"'; if($zutat["einheit"] == 'l'){echo 'selected';}echo'>l</option>
+                            <option value="EL"'; if($zutat["einheit"] == 'EL'){echo 'selected';}echo'>EL</option>
+                            <option value="TL"'; if($zutat["einheit"] == 'TL'){echo 'selected';}echo'>TL</option>
+                            <option value="%"'; if($zutat["einheit"] == '%'){echo 'selected';}echo'>%</option>
+                            <option value="Stk."'; if($zutat["einheit"] == 'Stk.'){echo 'selected';}echo'>Stk.</option>
                         </select>
                         <input class="zutat" name="zutat[]" type="text" required placeholder="Zutat" value="'.htmlspecialchars($zutat["name"]).'">
                         <button type="button" class="remove-ingredient center" onclick="removeIngredient(this)" title="Löschen"><span class="material-symbols-outlined">close</span></button>

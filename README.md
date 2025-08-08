@@ -88,8 +88,8 @@
 ## rezept-bearbeiten.php
  - ✅ basic functionality
  - ❌ TAG buttons bearbeiten
- - ❌ Mengen setzen
- - ❌ tabellen entsprechend bearbieten (alte Einträge komplett löschen?)
+ - ✅ Mengen setzen
+ - ✅ tabellen entsprechend bearbieten (alte Einträge komplett löschen?)
  - ❌ Datum setzen
 
 ## einkaufsliste.php

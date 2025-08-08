@@ -36,6 +36,20 @@
         <span class="material-symbols-outlined">report</span>
         Datei muss .PNG oder .JPG sein!
     </div>
+    <div id="fototipps" class="">
+        <h2>Fototipps</h2>
+        <h3>Bildausschnitt</h3>
+        <p>Die Bilder werden im 4:3 Querformat dargestellt. Nimm sie also so auf, dass das Gericht in diesem Ausschnitt gut zu erkennen ist.</p>
+        <h3>Helligkeit</h3>
+        <p>Achte darauf, dass die Bilder nicht zu dunkel sind. Beleuchte das Gericht mit hellem künstlichen Licht oder im draußen im Schatten.</p>
+        <h3>Schärfe</h3>
+        <p>Achte auf einen guten Fokus, um dein Gericht am besten zu präsentieren. Ein schönes Foto ist einladend.</p>
+        <h3>Umgebung</h3>
+        <p>Vermeide ablenkende Objekte. Richte das Gericht gern schön auf einem Teller an, achte aber auf die Umgebung.</p>
+        <h3>Details</h3>
+        <p>Zeige schwierige oder besondere Arbeitsschritte oder Zutaten gern auf einem zweiten oder dritten Foto.</p>
+        <button onclick="fototipps()">schließen</button>
+    </div>
     <?php
     //Banner if User is not logged in
         if (!isset($_SESSION['rolle'])) { //if user is not logged in
@@ -65,6 +79,7 @@
             </div>
             <span class="info">Du kannst bis zu 3 Bilder hinzufügen. Das erste Bild wird als Hauptbild verwendet.</span><br>
             <span class="info">Die Bilder sollten im JPG oder PNG Format vorliegen.</span><br>
+            <span class="info">Bitte beachte <span id="forfototipps" onclick="fototipps()">diese Fototipps</span>.</span><br>
             <!--Kurzbeschreibung-->
             <label class="heading" for="kbeschreibung">Kurzbeschreibung:</label><br>
             <textarea id="kbeschreibung" name="kbeschreibung" rows="3" required placeholder="Beschreibe es kurz, damit andere wissen, worum es geht."></textarea><br>
