@@ -76,7 +76,7 @@
             <h2>Bilder hinzufügen:</h2><br>
             <div id="images">
                 <label for="img1" class="img-drop center" id="label-img1" style="background-image:url('../assets/img/uploads/gerichte/<?php echo htmlspecialchars($row['bild1'])?>')"><span class="material-symbols-outlined">image_arrow_up</span></label>
-                <input type="file" accept="image/png, image/jpeg" id="img1" name="img1" required>
+                <input type="file" accept="image/png, image/jpeg" id="img1" name="img1">
                 <label for="img2" class="img-drop center" id="label-img2" style="background-image:url('../assets/img/uploads/gerichte/<?php echo htmlspecialchars($row['bild2'])?>')"><span class="material-symbols-outlined">image_arrow_up</span></label>
                 <input type="file" accept="image/png, image/jpeg" id="img2" name="img2">
                 <label for="img3" class="img-drop center" id="label-img3" style="background-image:url('../assets/img/uploads/gerichte/<?php echo htmlspecialchars($row['bild3'])?>')"><span class="material-symbols-outlined">image_arrow_up</span></label>
@@ -92,46 +92,34 @@
             <h3>Bitte wähle <u>alle</u> passenden Themenbereiche aus.</h4>
             <div id="tag-container">
                 <?php
-            // Tags need to be filled in
-                if (!empty($row['tags'])) {
-                    $tags = explode(',', $row['tags']);
-                    foreach ($tags as $tag) {
-                        //echo '<span class="hashtag center">' . htmlspecialchars(trim($tag)) . '</span> ';
+                    $allTags = [
+                        "Asiatisch" => "🥡 Asiatisch",
+                        "Nudeln" => "🍝 Nudeln",
+                        "Kartoffeln" => "🥔 Kartoffeln",
+                        "Reis" => "🍚 Reis",
+                        "Fleisch" => "🥩 Fleisch",
+                        "Hühnchen" => "🍗 Hühnchen",
+                        "Schwein" => "🍖Schwein",
+                        "Rind" => "🐮 Rind",
+                        "Fisch" => "🐟 Fisch",
+                        "Suppe" => "🥣 Suppe",
+                        "Soße" => "🍲 Soße",
+                        "Dessert" => "🍮 Dessert",
+                        "Kuchen" => "🥧 Kuchen",
+                        "Vegan" => "🌿 Vegan",
+                        "vegetarisch" => "🥗 Vegetarisch",
+                        "Getränk" => "🥤 Getränk",
+                        "Cocktail" => "🍹 Cocktail",
+                        "Mocktail" => "🍸 Mocktail"
+                    ];
+                    $tags = !empty($row['tags']) ? array_map('trim', explode(',', $row['tags'])) : [];
+                    foreach ($allTags as $tagValue => $tagLabel) {
+                        $isChecked = in_array($tagValue, $tags) ? 'checked' : '';
+                        $isActive = in_array($tagValue, $tags) ? 'active' : '';
+                        echo '<label class="tag '.$isActive.'" for="'.$tagValue.'">'.$tagLabel.'</label>';
+                        echo '<input type="checkbox" id="'.$tagValue.'" name="tags[]" value="'.$tagValue.'" '.$isChecked.'>';
                     }
-                };
                 ?>
-                <label class="tag" for="Asiatisch">🥡 Asiatisch</label>
-                <input type="checkbox" id="Asiatisch" name="tags[]" value="Asiatisch">
-                <label class="tag" for="Nudeln">🍝 Nudeln</label>
-                <input type="checkbox" id="Nudeln" name="tags[]" value="Nudeln">
-                <label class="tag" for="Kartoffeln">🥔 Kartoffeln</label>
-                <input type="checkbox" id="Kartoffeln" name="tags[]" value="Kartoffeln">
-                <label class="tag" for="Reis">🍚 Reis</label>
-                <input type="checkbox" id="Reis" name="tags[]" value="Reis">
-                <label class="tag" for="Fleisch">🥩 Fleisch</label>
-                <input type="checkbox" id="Fleisch" name="tags[]" value="Fleisch">
-                <label class="tag" for="Hühnchen">🍗 Hühnchen</label>
-                <input type="checkbox" id="Hühnchen" name="tags[]" value="Hühnchen">
-                <label class="tag" for="Schwein">🍖Schwein</label>
-                <input type="checkbox" id="Schwein" name="tags[]" value="Schwein">
-                <label class="tag" for="Rind">🐮 Rind</label>
-                <input type="checkbox" id="Rind" name="tags[]" value="Rind">
-                <label class="tag" for="Fisch">🐟 Fisch</label>
-                <input type="checkbox" id="Fisch" name="tags[]" value="Fisch">
-                <label class="tag" for="Suppe">🥣 Suppe</label>
-                <input type="checkbox" id="Suppe" name="tags[]" value="Suppe">
-                <label class="tag" for="Soße">🍲 Soße</label>
-                <input type="checkbox" id="Soße" name="tags[]" value="Soße">
-                <label class="tag" for="Dessert">🍮 Dessert</label>
-                <input type="checkbox" id="Dessert" name="tags[]" value="Dessert">
-                <label class="tag" for="Kuchen">🥧 Kuchen</label>
-                <input type="checkbox" id="Kuchen" name="tags[]" value="Kuchen">
-                <label class="tag" for="Vegan">🌿 Vegan</label>
-                <input type="checkbox" id="Vegan" name="tags[]" value="Vegan">
-                <label class="tag" for="vegetarisch">🥗 Vegetarisch</label>
-                <input type="checkbox" id="vegetarisch" name="tags[]" value="vegetarisch">
-                <label class="tag" for="Getränk">🍹 Getränk</label>
-                <input type="checkbox" id="Getränk" name="tags[]" value="Getränk">
             </div>
             <!--Zutaten-->
             <h2>Zutaten:</h2><br>
@@ -162,17 +150,13 @@
             <br>
             <h3>Für wie viele Personen sind die Mengen angegeben?</h3>
             <select name="portionen" id="portionen" required>
-                <option value="" disabled selected>Bitte wählen</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
+                <option value="" disabled>Bitte wählen</option>
+                <?php
+                    for ($p = 1; $p <= 10; $p++) {
+                        $selected = ($row['personen'] == $p) ? 'selected' : '';
+                        echo "<option value=\"$p\" $selected>$p</option>";
+                    }
+                ?>
             </select><br><br>
             <h3>Wie lange dauert die Vorbereitung?</h3>
             <span>Gib die Zeit in Minuten an.</span><br>
@@ -237,103 +221,113 @@
             $allowedimgtypes = array("png", "jpeg", "jpg", "JPG", "JPEG", "PNG", "ICO", "ico");
 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Rezeptdaten erfassen
-                $titel = $_POST['titel'] ?? '';
-                $beschreibung = $_POST['kbeschreibung'] ?? '';
-                $tags = isset($_POST['tags']) ? implode(",", $_POST['tags']) : '';
-                $personen = $_POST['portionen'] ?? 1;
-                $vorbereitungszeit = $_POST['vorbereitungszeit'] ?? 0;
-                $zubereitungszeit = $_POST['zubereitungszeit'] ?? 0;
+                // Image handling
+                $imgFields = ['img1', 'img2', 'img3'];
+                $imgNames = [];
+                foreach ($imgFields as $imgField) {
+                    if (isset($_FILES[$imgField]) && $_FILES[$imgField]['error'] === UPLOAD_ERR_OK) {
+                        $tmpName = $_FILES[$imgField]['tmp_name'];
+                        $ext = strtolower(pathinfo($_FILES[$imgField]['name'], PATHINFO_EXTENSION));
+                        if (in_array($ext, $allowedimgtypes)) {
+                            $newName = uniqid($imgField . '_') . '.' . $ext;
+                            $targetPath = '../assets/img/uploads/gerichte/' . $newName;
+                            move_uploaded_file($tmpName, $targetPath);
+                            $imgNames[] = $newName;
+                        } else {
+                            // keep old image if upload fails
+                            $imgNames[] = $row['bild' . substr($imgField, -1)];
+                        }
+                    } else {
+                        // keep old image if not uploaded
+                        $imgNames[] = $row['bild' . substr($imgField, -1)];
+                    }
+                }
 
-            // Handle file uploads
-                if (!empty($_FILES['img1']['name'])) {
-                    $Img1 = $_FILES['img1']['name'];
-                    $img_extention = pathinfo($Img1, PATHINFO_EXTENSION);
-                    if(in_array($img_extention, $allowedimgtypes)){
-                        $tmpNameImg1 = $_FILES['img1']['tmp_name'];
-                        $Img1Name = $gericht_id . '.1.' . $img_extention;
-                        $targetpathImg1 = "../assets/img/uploads/gerichte/" . $Img1Name;
-                        move_uploaded_file($tmpNameImg1, $targetpathImg1);
-                    }
-                }else{
-                    $Img1Name = null;
-                }
-                if (!empty($_FILES['img2']['name'])) {
-                    $Img2 = $_FILES['img2']['name'];
-                    $img_extention = pathinfo($Img2, PATHINFO_EXTENSION);
-                    if(in_array($img_extention, $allowedimgtypes)){
-                        $tmpNameImg2 = $_FILES['img2']['tmp_name'];
-                        $Img2Name = $gericht_id . '.2.' . $img_extention;
-                        $targetpathImg2 = "../assets/img/uploads/gerichte/" . $Img2Name;
-                        move_uploaded_file($tmpNameImg2, $targetpathImg2);
-                    }
-                }
-                else{
-                    $Img2Name = null;
-                }
-                if (!empty($_FILES['img3']['name'])) {
-                    $Img3 = $_FILES['img3']['name'];
-                    $img_extention = pathinfo($Img3, PATHINFO_EXTENSION);
-                    if(in_array($img_extention, $allowedimgtypes)){
-                        $tmpNameImg3 = $_FILES['img3']['tmp_name'];
-                        $Img3Name = $gericht_id . '.3.' . $img_extention;
-                        $targetpathImg3 = "../assets/img/uploads/gerichte/" . $Img3Name;
-                        move_uploaded_file($tmpNameImg3, $targetpathImg3);
-                    }
-                }
-                else{
-                    $Img3Name = null;
-                }
-                
-            // set right user
-                $made_by_user = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
-                $status = ($made_by_user === 0) ? 1 : 0;
-            // Rezept einfügen
-                $stmt = $db->prepare("INSERT INTO gerichte (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, made_by_id, status) 
-                    VALUES (:titel, :beschreibung, :tags, :vorbereitungszeit, :zubereitungszeit, :bild1, :bild2, :bild3, :personen, :made_by_id, :status)");
-                    $stmt->bindValue(':titel', $titel, SQLITE3_TEXT);
-                    $stmt->bindValue(':beschreibung', $beschreibung, SQLITE3_TEXT);
-                    $stmt->bindValue(':tags', $tags, SQLITE3_TEXT);
-                    $stmt->bindValue(':vorbereitungszeit', $vorbereitungszeit, SQLITE3_INTEGER);
-                    $stmt->bindValue(':zubereitungszeit', $zubereitungszeit, SQLITE3_INTEGER);
-                    $stmt->bindValue(':bild1', $Img1Name, SQLITE3_TEXT);
-                    $stmt->bindValue(':bild2', $Img2Name, SQLITE3_TEXT);
-                    $stmt->bindValue(':bild3', $Img3Name, SQLITE3_TEXT);
-                    $stmt->bindValue(':personen', $personen, SQLITE3_TEXT);
-                    $stmt->bindValue(':made_by_id', $made_by_user, SQLITE3_TEXT);
-                    $stmt->bindValue(':status', $status, SQLITE3_TEXT);
+                // Update gerichte with new image names
+                $stmt = $db->prepare("UPDATE gerichte SET titel = :titel, beschreibung = :beschreibung, tags = :tags, vorbereitungszeit = :vorbereitungszeit, zubereitungszeit = :zubereitungszeit, bild1 = :bild1, bild2 = :bild2, bild3 = :bild3, personen = :personen WHERE id = :id");
+                $stmt->bindValue(':titel', $_POST['titel'], SQLITE3_TEXT);
+                $stmt->bindValue(':beschreibung', $_POST['kbeschreibung'], SQLITE3_TEXT);
+                $stmt->bindValue(':tags', isset($_POST['tags']) ? implode(",", $_POST['tags']) : '', SQLITE3_TEXT);
+                $stmt->bindValue(':vorbereitungszeit', $_POST['vorbereitungszeit'], SQLITE3_INTEGER);
+                $stmt->bindValue(':zubereitungszeit', $_POST['zubereitungszeit'], SQLITE3_INTEGER);
+                $stmt->bindValue(':bild1', $imgNames[0], SQLITE3_TEXT);
+                $stmt->bindValue(':bild2', $imgNames[1], SQLITE3_TEXT);
+                $stmt->bindValue(':bild3', $imgNames[2], SQLITE3_TEXT);
+                $stmt->bindValue(':personen', $_POST['portionen'], SQLITE3_TEXT);
+                $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
                 $stmt->execute();
 
-            // Zutaten auslesen (mehrere Einträge)
-            if (!empty($_POST['zutat']) && is_array($_POST['zutat'])) {
-                for ($i = 0; $i < count($_POST['zutat']); $i++) {
-                    $name = $_POST['zutat'][$i] ?? '';
-                    $menge = $_POST['menge'][$i] ?? '';
-                    $einheit = $_POST['einheit'][$i] ?? '';
-                    if ($name !== '') {
-                        $stmt = $db->prepare("INSERT INTO zutaten (gerichte_id, name, menge, einheit) 
-                        VALUES (:gerichte_id, :name, :menge, :einheit)");
-                        $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
-                        $stmt->bindValue(':name', $name, SQLITE3_TEXT);
+                // 2. Update zutaten
+                $existingZutaten = []; // fetch all zutaten IDs for this recipe
+                $zutatenResult = $db->query("SELECT id FROM zutaten WHERE gerichte_id = $id");
+                while ($row = $zutatenResult->fetchArray(SQLITE3_ASSOC)) {
+                    $existingZutaten[] = $row['id'];
+                }
+                $submittedZutaten = $_POST['zutat'] ?? [];
+                $submittedZutatenIds = $_POST['zutat_id'] ?? [];
+                $submittedMengen = $_POST['menge'] ?? [];
+                $submittedEinheiten = $_POST['einheit'] ?? [];
+                for ($i = 0; $i < count($submittedZutaten); $i++) {
+                    $zutat = $submittedZutaten[$i];
+                    $zutat_id = $submittedZutatenIds[$i] ?? null;
+                    $menge = $submittedMengen[$i] ?? '';
+                    $einheit = $submittedEinheiten[$i] ?? '';
+                    if ($zutat_id) {
+                        // Update
+                        $stmt = $db->prepare("UPDATE zutaten SET name = :name, menge = :menge, einheit = :einheit WHERE id = :id");
+                        $stmt->bindValue(':name', $zutat, SQLITE3_TEXT);
+                        $stmt->bindValue(':menge', $menge, SQLITE3_TEXT);
+                        $stmt->bindValue(':einheit', $einheit, SQLITE3_TEXT);
+                        $stmt->bindValue(':id', $zutat_id, SQLITE3_INTEGER);
+                        $stmt->execute();
+                    } else {
+                        // Insert
+                        $stmt = $db->prepare("INSERT INTO zutaten (gerichte_id, name, menge, einheit) VALUES (:gerichte_id, :name, :menge, :einheit)");
+                        $stmt->bindValue(':gerichte_id', $id, SQLITE3_INTEGER);
+                        $stmt->bindValue(':name', $zutat, SQLITE3_TEXT);
                         $stmt->bindValue(':menge', $menge, SQLITE3_TEXT);
                         $stmt->bindValue(':einheit', $einheit, SQLITE3_TEXT);
                         $stmt->execute();
                     }
                 }
-            }
+                // Delete removed zutaten
+                foreach ($existingZutaten as $db_id) {
+                    if (!in_array($db_id, $submittedZutatenIds)) {
+                        $db->exec("DELETE FROM zutaten WHERE id = $db_id");
+                    }
+                }
 
-            // Schritte auslesen (mehrere Einträge)
-if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
-    for ($j = 0; $j < count($_POST['schritt']); $j++) {
-        $schritt = $_POST['schritt'][$j] ?? '';
-        if ($schritt !== '') {
-            $stmt = $db->prepare("INSERT INTO schritte (gerichte_id, schritt) VALUES (:gerichte_id, :schritt)");
-            $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
-            $stmt->bindValue(':schritt', $schritt, SQLITE3_TEXT);
-            $stmt->execute();
-        }
-    }
-}
+                // 3. Repeat similar logic for schritte
+                $existingSchritte = []; // fetch all schritte IDs for this recipe
+                $schritteResult = $db->query("SELECT id FROM schritte WHERE gerichte_id = $id");
+                while ($row = $schritteResult->fetchArray(SQLITE3_ASSOC)) {
+                    $existingSchritte[] = $row['id'];
+                }
+                $submittedSchritte = $_POST['schritt'] ?? [];
+                $submittedSchritteIds = $_POST['schritt_id'] ?? [];
+                for ($i = 0; $i < count($submittedSchritte); $i++) {
+                    $schritt = $submittedSchritte[$i];
+                    $schritt_id = $submittedSchritteIds[$i] ?? null;
+                    if ($schritt_id) {
+                        // Update
+                        $stmt = $db->prepare("UPDATE schritte SET schritt = :schritt WHERE id = :id");
+                        $stmt->bindValue(':schritt', $schritt, SQLITE3_TEXT);
+                        $stmt->bindValue(':id', $schritt_id, SQLITE3_INTEGER);
+                        $stmt->execute();
+                    } else {
+                        // Insert
+                        $stmt = $db->prepare("INSERT INTO schritte (gerichte_id, schritt) VALUES (:gerichte_id, :schritt)");
+                        $stmt->bindValue(':gerichte_id', $id, SQLITE3_INTEGER);
+                        $stmt->bindValue(':schritt', $schritt, SQLITE3_TEXT);
+                        $stmt->execute();
+                    }
+                }
+                // Delete removed schritte
+                foreach ($existingSchritte as $db_id) {
+                    if (!in_array($db_id, $submittedSchritteIds)) {
+                        $db->exec("DELETE FROM schritte WHERE id = $db_id");
+                    }
+                }
 
                 //Positiv Popup
                 echo '
@@ -341,7 +335,7 @@ if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
                         <div class="inner-popup">
                             <h1>Danke!</h1>
                             <p>Dein Rezept wurde erfolgreich gespeichert!</p>
-                            <p>Du kannst es <a href="../gericht.php?id='.$gericht_id.'"><u>hier</u></a> ansehen und teilen.</p>
+                            <p>Du kannst es <a href="../pages/gericht.php?id='.$id.'"><u>hier</u></a> ansehen und teilen.</p>
                             <div class="buttons">
                                 <button onclick="window.location.href = `../pages/rezept-erstellen.php`" id="btn-mehr">mehr erstellen</button>
                                 <button onclick="closeErfolg()" id="btn-close">schließen</button>

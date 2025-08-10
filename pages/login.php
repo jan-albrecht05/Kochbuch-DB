@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             $redirect = trim(str_replace(array("\r", "\n"), '', $_POST['redirect']));
             header("Location: " . $redirect);
         } else {
-            header("Location: ../index.php");
+            header("Location: ../index.php?login=success");
         }
         exit;
     } else {

@@ -117,8 +117,12 @@
                 <input type="checkbox" id="Vegan" name="tags[]" value="Vegan">
                 <label class="tag" for="vegetarisch">🥗 Vegetarisch</label>
                 <input type="checkbox" id="vegetarisch" name="tags[]" value="vegetarisch">
-                <label class="tag" for="Getränk">🍹 Getränk</label>
+                <label class="tag" for="Getränk">🥤 Getränk</label>
                 <input type="checkbox" id="Getränk" name="tags[]" value="Getränk">
+                <label class="tag" for="Cocktail">🍹 Cocktail</label>
+                <input type="checkbox" id="cocktail" name="tags[]" value="Cocktail">
+                <label class="tag" for="Mocktail">🍸 Mocktail</label>
+                <input type="checkbox" id="mocktail" name="tags[]" value="Mocktail">
             </div>
             <!--Zutaten-->
             <h2>Zutaten:</h2><br>

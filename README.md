@@ -16,6 +16,7 @@
 ## 🎯 index.php
  - ✅ Header w/ Links to all tags
  - ✅ 3 different sections: random, latest, favorites
+ - ❌ ?login status + popup
  - ❌ arrows for horizontal scrolling
  - ❌ fill favorites section
  ### random section
@@ -42,6 +43,7 @@
  - ✅ container w/ different images
  - ✅ logic for switching images 
  - ✅ steps
+ - ❌ error if recepies does not exist
  - ❌ show/hide edit-button
  - ❌ save-button-logik
  - ✅ share-link
@@ -65,6 +67,7 @@
 ## ▶ login.php
  - ✅ login-form
  - ✅ users.db
+ - ❌ Account beantragen
 
 ## ◀ logout.php
  - ✅ logout logic
@@ -87,10 +90,16 @@
 
 ## rezept-bearbeiten.php
  - ✅ basic functionality
- - ❌ TAG buttons bearbeiten
+ - ✅ TAG buttons bearbeiten
  - ✅ Mengen setzen
  - ✅ tabellen entsprechend bearbieten (alte Einträge komplett löschen?)
- - ❌ Datum setzen
+ - ✅ Datum setzen
+ - ✅ logic for saving changes in the additional tables
 
 ## einkaufsliste.php
  - ❌ needs everything
+ - ❌ shops hinzufügen (nicht mandatory)
+
+## feedback-form.php
+ - ❌ needs everything
+ - ❌ extra db

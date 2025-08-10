@@ -22,6 +22,14 @@
     <script src="assets/js/horizontal_scroll.js" defer></script>
     <script>
         let homepage = true;
+        //check if url contains "login=success" parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const loginSuccessPopup = document.getElementById("login-success");
+        if (urlParams.has('login=success')) {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById("login-success").classList.add("open");
+            });
+        }
     </script>
     <script src="assets/js/heading.js" defer></script>
     <script src="assets/js/links.js" defer></script>
@@ -29,6 +37,10 @@
 <body>
     <div id="heading">
         <!-- Code gets injected by heading.js -->
+    </div>
+    <div class="popup positive center" id="login-success">
+        <span class="material-symbols-outlined">tick</span>
+        Du bist erfolgreich eingelogged!
     </div>
     <div id="main">
         <div id="random-Rezepte" class="container">
@@ -63,7 +75,7 @@
                                             echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                         }
                                         else{
-                                            echo '<img src="" alt="Bild konnte nicht geladen werden">';
+                                            echo '<img src="" alt="">';
                                         };
                                 echo '
                                         </div>
@@ -114,7 +126,7 @@
                                             echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                         }
                                         else{
-                                            echo '<img src="" alt="Bild konnte nicht geladen werden">';
+                                            echo '<img src="" alt="">';
                                         };
                                 echo '
                                         </div>
