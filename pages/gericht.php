@@ -333,7 +333,7 @@
                 }
                 ?>
                 <div class="inneruser">
-                    <img id="profilbild" src="../assets/img/uploads/users/<?php echo htmlspecialchars($row['profilbild'])?>" alt="">
+                    <img id="profilbild" src="../assets/img/uploads/users/<?php echo htmlspecialchars($userrow['profilbild'])?>" alt="">
                     <div id="userinfo">
                         <h1><?php echo htmlspecialchars($user);?></php></h1>
                         <?php
