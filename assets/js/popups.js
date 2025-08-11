@@ -3,5 +3,5 @@ function closeErfolg(){
 }
 function fototipps(){
     console.log("clicked");
-    document.getElementById("fototipps").classList.toggle = "open";
+    document.getElementById("fototipps").classList.toggle("open");
 }

@@ -52,3 +52,14 @@ Table Einlaufsliste
  - einheit
  - zutat
  - status (0 = offen, 1 = abgehakt)
+
+
+## feedback
+Table feedback:
+- timecode
+- device width
+- device height
+- browser
+- operating system
+- message
+- contact (not nessesary)

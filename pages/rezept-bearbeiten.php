@@ -60,6 +60,20 @@
         <span class="material-symbols-outlined">report</span>
         Datei muss .PNG oder .JPG sein!
     </div>
+    <div id="fototipps" class="">
+        <h2>Fototipps</h2>
+        <h3>Bildausschnitt</h3>
+        <p>Die Bilder werden im 4:3 Querformat dargestellt. Nimm sie also so auf, dass das Gericht in diesem Ausschnitt gut zu erkennen ist.</p>
+        <h3>Helligkeit</h3>
+        <p>Achte darauf, dass die Bilder nicht zu dunkel sind. Beleuchte das Gericht mit hellem künstlichen Licht oder im draußen im Schatten.</p>
+        <h3>Schärfe</h3>
+        <p>Achte auf einen guten Fokus, um dein Gericht am besten zu präsentieren. Ein schönes Foto ist einladend.</p>
+        <h3>Umgebung</h3>
+        <p>Vermeide ablenkende Objekte. Richte das Gericht gern schön auf einem Teller an, achte aber auf die Umgebung.</p>
+        <h3>Details</h3>
+        <p>Zeige schwierige oder besondere Arbeitsschritte oder Zutaten gern auf einem zweiten oder dritten Foto.</p>
+        <button onclick="fototipps()">schließen</button>
+    </div>
     <?php
     //if User is not logged in
         if (!isset($_SESSION['rolle'])) {
@@ -84,6 +98,7 @@
             </div>
             <span class="info">Du kannst bis zu 3 Bilder hinzufügen. Das erste Bild wird als Hauptbild verwendet.</span><br>
             <span class="info">Die Bilder sollten im JPG oder PNG Format vorliegen.</span><br>
+            <span class="info">Bitte beachte <span id="forfototipps" onclick="fototipps()">diese Fototipps</span>.</span><br>
             <!--Kurzbeschreibung-->
             <label class="heading" for="kbeschreibung">Kurzbeschreibung:</label><br>
             <textarea id="kbeschreibung" name="kbeschreibung" rows="3" required placeholder="Beschreibe es kurz, damit andere wissen, worum es geht."><?php echo htmlspecialchars($row['beschreibung'])?></textarea><br>
@@ -186,8 +201,7 @@
             <h3>Wie lange dauert die reine Zubereitung?</h3>
             <span>Gib die Zeit in Minuten an.</span><br>
             <input type="number" id="zubereitungszeit" name="zubereitungszeit" required placeholder="25" value="<?php echo htmlspecialchars($row['zubereitungszeit'])?>"><br>
-            <!--Hidden inputs-->
-            <input type="hidden" id="timecode" name="timecode" value="<?php echo time(); ?>">
+            
             <div id="buttons">
                 <button type="reset" id="abbrechen">Abbrechen</button>
                 <button type="submit" id="speichern">Rezept speichern</button>
@@ -244,7 +258,8 @@
                 }
 
                 // Update gerichte with new image names
-                $stmt = $db->prepare("UPDATE gerichte SET titel = :titel, beschreibung = :beschreibung, tags = :tags, vorbereitungszeit = :vorbereitungszeit, zubereitungszeit = :zubereitungszeit, bild1 = :bild1, bild2 = :bild2, bild3 = :bild3, personen = :personen WHERE id = :id");
+                $timecode_geaendert = gmdate('Y-m-d H:i:s');
+                $stmt = $db->prepare("UPDATE gerichte SET titel = :titel, beschreibung = :beschreibung, tags = :tags, vorbereitungszeit = :vorbereitungszeit, zubereitungszeit = :zubereitungszeit, bild1 = :bild1, bild2 = :bild2, bild3 = :bild3, personen = :personen, timecode_geaendert = :geaendert WHERE id = :id");
                 $stmt->bindValue(':titel', $_POST['titel'], SQLITE3_TEXT);
                 $stmt->bindValue(':beschreibung', $_POST['kbeschreibung'], SQLITE3_TEXT);
                 $stmt->bindValue(':tags', isset($_POST['tags']) ? implode(",", $_POST['tags']) : '', SQLITE3_TEXT);
@@ -254,6 +269,7 @@
                 $stmt->bindValue(':bild2', $imgNames[1], SQLITE3_TEXT);
                 $stmt->bindValue(':bild3', $imgNames[2], SQLITE3_TEXT);
                 $stmt->bindValue(':personen', $_POST['portionen'], SQLITE3_TEXT);
+                $stmt->bindValue(':geaendert', $timecode_geaendert, SQLITE3_TEXT);
                 $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
                 $stmt->execute();
 

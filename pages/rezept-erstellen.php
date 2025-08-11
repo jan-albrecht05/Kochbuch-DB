@@ -23,9 +23,6 @@
     <script src="../assets/js/steps.js"></script>
     <script src="../assets/js/tags.js"></script>
     <script src="../assets/js/popups.js"></script>
-    <script>
-        //let homepage = false;
-    </script>
     <script src="../assets/js/heading.js" defer></script>
 </head>
 <body>

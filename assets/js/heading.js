@@ -37,7 +37,7 @@ window.addEventListener('load', function(event) {
             </div>
             <div class="row">
                 <a href="pages/suche.php?filter=suppe" class="filter-link">Suppe</a>
-                <a href="pages/suche.php?filter=soße" class="filter-link">Soße</a>
+                <a href="pages/suche.php?filter=soße" class="filter-link">Soßen</a>
             </div>
             <div class="row">
                 <a href="pages/suche.php?filter=dessert" class="filter-link">Dessert</a>
@@ -48,7 +48,9 @@ window.addEventListener('load', function(event) {
                 <a href="pages/suche.php?filter=vegetarisch" class="filter-link">Vegetarisch</a>
             </div>
             <div class="row">
+                <a href="pages/suche.php?filter=cocktail" class="filter-link">Cocktails</a>
                 <a href="pages/suche.php?filter=getränk" class="filter-link">Getränke</a>
+                <a href="pages/suche.php?filter=mocktail" class="filter-link">Mocktails</a>
             </div>
             <button id="rezept-erstellen" onclick="window.location.href = 'pages/rezept-erstellen.php'"><span>Rezept erstellen</span></button>
         </div>
@@ -89,7 +91,7 @@ window.addEventListener('load', function(event) {
             </div>
             <div class="row">
                 <a href="../pages/suche.php?filter=suppe" class="filter-link">Suppe</a>
-                <a href="../pages/suche.php?filter=soße" class="filter-link">Soße</a>
+                <a href="../pages/suche.php?filter=soße" class="filter-link">Soßen</a>
             </div>
             <div class="row">
                 <a href="../pages/suche.php?filter=dessert" class="filter-link">Dessert</a>
@@ -100,13 +102,15 @@ window.addEventListener('load', function(event) {
                 <a href="../pages/suche.php?filter=vegetarisch" class="filter-link">Vegetarisch</a>
             </div>
             <div class="row">
+                <a href="../pages/suche.php?filter=cocktail" class="filter-link">Cocktails</a>
                 <a href="../pages/suche.php?filter=getränk" class="filter-link">Getränke</a>
+                <a href="../pages/suche.php?filter=mocktail" class="filter-link">Mocktails</a>
             </div>
             <button id="rezept-erstellen" onclick="window.location.href = '../pages/rezept-erstellen.php'"><span>Rezept erstellen</span></button>
         </div>
         `;
     }
-    //insertfooter();
+    insertfooter();
     // Add event listener for Enter key on search input
     setTimeout(function() {
         var searchInput = document.getElementById("search");

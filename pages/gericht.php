@@ -33,6 +33,10 @@
                     $_SESSION['viewed_' . $id] = true;
                     $row['viewcount']++;
                 }
+                // check if id exists
+                if (!$row) {
+                    header("Location: 404.php");
+                }
 
             } else {
             // Invalid or missing id, show error or redirect
@@ -114,11 +118,15 @@
             </div>
             <!-- Bookmark, Edit and Share Buttons -->
             <div id="buttons">
-                <button id="savebtn"><span class="material-symbols-outlined">bookmark</span></button>
-                <?php // Fehler mit $_Session['rolle']
-                if (isset($_SESSION['rolle']) && $_SESSION['rolle'] == 'admin' xor $_SESSION['rolle'] == 'editor') {
-                    echo '<button id="editbtn" onclick="window.location.href = \'rezept-bearbeiten.php?id='.$id.'\'"><span class="material-symbols-outlined">edit</span></button>';
-                }
+                <form method="POST">
+                    <button id="savebtn" name="savebtn" type="submit">
+                        <span class="material-symbols-outlined">bookmark</span>
+                    </button>
+                </form>
+                <?php
+                    if (isset($_SESSION['rolle']) && ($_SESSION['rolle'] == 'admin' || $_SESSION['rolle'] == 'editor')) {
+                        echo '<button id="editbtn" onclick="window.location.href = \'rezept-bearbeiten.php?id='.$id.'\'"><span class="material-symbols-outlined">edit</span></button>';
+                    }
                 ?>
                 <button id="sharebtn" onclick="copyTextToClipBoard()"><span class="material-symbols-outlined">share</span></button>
             </div>
@@ -130,7 +138,12 @@
             </div>
             <div id="date_created">
                 <span class="material-symbols-outlined">calendar_month</span>
-                <span><?php echo htmlspecialchars($row['timecode_erstellt'])?></span>
+                <span>
+                    <?php
+                        $dt = new DateTime($row['timecode_erstellt'], new DateTimeZone('UTC'));
+                        echo $dt->format('d.m.Y');
+                    ?>
+                </span>
             </div>
         </div>
         <div id="zutaten">
@@ -159,38 +172,46 @@
                 }
             ?>
         </div>
+        <div id="zuletzt-geändert">
+            <?php
+                if ($row['timecode_geaendert'] != '0000-00-00 00:00:00') {
+                    $dt = new DateTime($row['timecode_geaendert'], new DateTimeZone('UTC'));
+                    echo 'Zuletzt geändert am: ' . $dt->format('d.m.Y');
+                }
+            ?>
+        </div>
         <div id="bewerten">
-            <form id="bewertungsform" method="POST" class="center">
+            <form id="bewertungsform" method="POST" class="center" onchange="">
                 <fieldset id="star_fieldset">
-                    <input type="radio" value="1" class="rating-input" id="1star" name="star">
+                    <input type="radio" value="1" class="rating-input" id="1star"  name="star_rating">
                     <label for="1star" id="star1">
                         <span class="material-symbols-outlined">star</span>
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="33" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                         </svg>
                     </label>
-                    <input type="radio" value="2" class="rating-input" id="2star" name="star">
+                    <input type="radio" value="2" class="rating-input" id="2star"  name="star_rating">
                     <label for="2star" id="star2">
                         <span class="material-symbols-outlined">star</span>
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="33" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                         </svg>
                     </label>
-                    <input type="radio" value="3" class="rating-input" id="3star" name="star">
+                    <input type="radio" value="3" class="rating-input" id="3star"  name="star_rating">
                     <label for="3star" id="star3">
                         <span class="material-symbols-outlined">star</span>
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="33" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                         </svg>
                     </label>
-                    <input type="radio" value="4" class="rating-input" id="4star" name="star">
+                    <input type="radio" value="4" class="rating-input" id="4star"  name="star_rating">
                     <label for="4star" id="star4">
                         <span class="material-symbols-outlined">star</span>
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="33" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                             <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                         </svg>
                     </label>
-                    <input type="radio" value="5" class="rating-input" id="5star" name="star">
+                    <input type="radio" value="5" class="rating-input" id="5star"  name="star_rating">
                     <label for="5star" id="star5">
                         <span class="material-symbols-outlined">star</span>
                         <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="33" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
@@ -334,5 +355,108 @@
         </div>
     </div>
     <div id="footer"></div>
+    <?php
+    // save button functionality
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['savebtn'])) {
+    $user_id = $_SESSION['user_id'];
+    $recipe_id = $id;
+    $users = new SQLite3("../assets/db/users.db");
+    $stmt = $users->prepare("SELECT saved_recepies FROM users WHERE id = :id");
+    $stmt->bindValue(':id', $user_id, SQLITE3_INTEGER);
+    $result = $stmt->execute();
+    $row = $result->fetchArray(SQLITE3_ASSOC);
+    $saved = $row['saved_recepies'] ?? '';
+    $saved_array = array_filter(array_map('trim', explode(',', $saved)));
+    if (!in_array($recipe_id, $saved_array)) {
+        $saved_array[] = $recipe_id;
+        $new_saved = implode(',', $saved_array);
+        $update = $users->prepare("UPDATE users SET saved_recepies = :saved WHERE id = :id");
+        $update->bindValue(':saved', $new_saved, SQLITE3_TEXT);
+        $update->bindValue(':id', $user_id, SQLITE3_INTEGER);
+        $update->execute();
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['star_rating'])) {
+    $rating = intval($_POST['star_rating']);
+    if ($rating >= 1 && $rating <= 5) {
+        $column = 'star' . $rating;
+        $stmt = $db->prepare("UPDATE gerichte SET $column = $column + 1 WHERE id = :id");
+        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+        $stmt->execute();
+    }
+}
+?>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const radios = document.querySelectorAll('.rating-input');
+    const recipeId = '<?php echo $id; ?>';
+    const cooldownKey = 'ratingCooldown_' + recipeId;
+    const selectedStarKey = 'selectedStar_' + recipeId;
+
+    // Restore selected star from localStorage
+    const lastSelected = localStorage.getItem(selectedStarKey);
+    if (lastSelected) {
+        const radio = document.getElementById(lastSelected + 'star');
+        if (radio) {
+            radio.checked = true;
+            updateStars(lastSelected);
+        }
+    }
+
+    // Disable rating if cooldown is active
+    function isCooldownActive() {
+        const cooldown = localStorage.getItem(cooldownKey);
+        if (!cooldown) return false;
+        return (Date.now() - parseInt(cooldown, 10)) < 5 * 60 * 1000; // 5 minutes
+    }
+
+    function updateStars(selected) {
+        for (let i = 1; i <= 5; i++) {
+            const label = document.getElementById('star' + i);
+            if (i <= selected) {
+                label.querySelector('.material-symbols-outlined').style.display = 'none';
+                label.querySelector('.svg').style.display = 'inline';
+            } else {
+                label.querySelector('.material-symbols-outlined').style.display = 'inline';
+                label.querySelector('.svg').style.display = 'none';
+            }
+        }
+    }
+
+    radios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (isCooldownActive()) {
+                alert('Du kannst dieses Rezept erst in 5 Minuten erneut bewerten.');
+                // Optionally reset radio selection
+                radios.forEach(r => r.checked = false);
+                return;
+            }
+            const selected = parseInt(this.value);
+            updateStars(selected);
+            localStorage.setItem(selectedStarKey, selected);
+            localStorage.setItem(cooldownKey, Date.now().toString());
+            // AJAX submit
+            fetch(window.location.pathname + '?id=<?php echo $id; ?>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'star_rating=' + selected
+            })
+            .then(response => response.ok ? response.text() : Promise.reject())
+            .then(data => {
+                // Optionally show a message
+            });
+        });
+        // Disable radio if cooldown is active
+        radio.disabled = isCooldownActive();
+    });
+
+    // Optionally, re-enable after cooldown expires (not strictly necessary for 5min)
+    setInterval(() => {
+        const active = isCooldownActive();
+        radios.forEach(radio => radio.disabled = active);
+    }, 10000); // check every 10s
+});
+</script>
 </body>
 </html>

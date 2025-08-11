@@ -20,6 +20,70 @@ if (!isset($_SESSION['rolle']) || $_SESSION['rolle'] !== 'admin') {
     header("Location: login.php?redirect=admin-panel.php");
     exit;
 }
+// sets status to 0 (= active)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['set_status'])) {
+    $rezepte = new SQLite3("../assets/db/gerichte.db");
+    $id = intval($_POST['set_status_id']);
+    $stmt = $rezepte->prepare("UPDATE gerichte SET status = 0 WHERE id = :id");
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    if ($stmt->execute()) {
+        header("Location: admin-panel.php");
+        exit;
+    } else {
+        echo "<div style='color:red;'>Fehler beim Status-Update!</div>";
+    }
+}
+// deletes a recepie
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_rezept'])) {
+    $rezepte = new SQLite3("../assets/db/gerichte.db");
+    $id = intval($_POST['delete_rezept_id']);
+
+    // 1. Delete images
+    $stmt = $rezepte->prepare("SELECT bild1, bild2, bild3 FROM gerichte WHERE id = :id");
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+    foreach (['bild1', 'bild2', 'bild3'] as $imgField) {
+        if (!empty($result[$imgField])) {
+            $imgPath = "../assets/img/uploads/gerichte/" . $result[$imgField];
+            if (file_exists($imgPath)) {
+                @unlink($imgPath);
+            }
+        }
+    }
+
+    // 2. Delete zutaten
+    $stmt = $rezepte->prepare("DELETE FROM zutaten WHERE gerichte_id = :id");
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    $stmt->execute();
+
+    // 3. Delete schritte
+    $stmt = $rezepte->prepare("DELETE FROM schritte WHERE gerichte_id = :id");
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    $stmt->execute();
+
+    // 4. Delete gerichte entry
+    $stmt = $rezepte->prepare("DELETE FROM gerichte WHERE id = :id");
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    if ($stmt->execute()) {
+        header("Location: admin-panel.php");
+        exit;
+    } else {
+        echo "<div style='color:red;'>Fehler beim Löschen des Rezepts!</div>";
+    }
+}
+//clears error message
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clear_error'])) {
+    $rezepte = new SQLite3("../assets/db/gerichte.db");
+    $id = intval($_POST['clear_error_id']);
+    $stmt = $rezepte->prepare("UPDATE gerichte SET error_msg = '' WHERE id = :id");
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    if ($stmt->execute()) {
+        header("Location: admin-panel.php");
+        exit;
+    } else {
+        echo "<div style='color:red;'>Fehler beim Entfernen der Fehlermeldung!</div>";
+    }
+}
 $usercount = 0;
 $rezeptcount = 0;
 $offene_rezepte = 0;
@@ -315,9 +379,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                         <div class="titel">'.htmlspecialchars($rezept['titel']).'</div>
                         <div class="timecode">'.htmlspecialchars($rezept['timecode_erstellt']).'</div>
                         <div class="buttons">
-                            <button class="btn-tick"><span class="material-symbols-outlined">check</span></button>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="set_status_id" value="'.htmlspecialchars($rezept['id']).'">
+                                <button class="btn-tick" type="submit" name="set_status"><span class="material-symbols-outlined">check</span></button>
+                            </form>
                             <button class="btn-edit" onclick="window.location.href = \'rezept-bearbeiten.php?id='.htmlspecialchars($rezept['id']).'\'"><span class="material-symbols-outlined">edit</span></button>
-                            <button id="delete"><span class="material-symbols-outlined">delete</span></button>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="delete_rezept_id" value="'.htmlspecialchars($rezept['id']).'">
+                                <button class="btn-delete" type="submit" name="delete_rezept" onclick="return confirm(\'Wirklich löschen?\');">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </form>
                         </div>
                     </div>
                     ';
@@ -326,7 +398,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
         </details>
         <details id="errors" class="section">
             <summary><h1>Fehlermeldungen<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
-    <!-- TO DO: Tunktion zum abhaken hinzufügen-->
+    <!-- TO DO: Funktion zum abhaken hinzufügen-->
             <div class="rezept" id="rezept-heading">
                 <h2 class="id">ID</h2>
                 <h2 class="titel">Titel</h2>
@@ -345,8 +417,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                         <div class="error_msg">'.htmlspecialchars($rezept['error_msg']).'</div>
                         <div class="timecode">'.htmlspecialchars($rezept['timecode_erstellt']).'</div>
                         <div class="buttons">
-                            <button id="" onclick="window.location.href = \'rezept-bearbeiten.php?id='.htmlspecialchars($rezept['id']).'\'"><span class="material-symbols-outlined">edit</span></button>
-                            <button class="btn-tick"><span class="material-symbols-outlined">check</span></button>
+                            <button class="btn-edit" onclick="window.location.href = \'rezept-bearbeiten.php?id='.htmlspecialchars($rezept['id']).'\'"><span class="material-symbols-outlined">edit</span></button>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="clear_error_id" value="'.htmlspecialchars($rezept['id']).'">
+                                <button class="btn-tick" type="submit" name="clear_error"><span class="material-symbols-outlined">check</span></button>
+                            </form>
                         </div>
                     </div>
                     ';

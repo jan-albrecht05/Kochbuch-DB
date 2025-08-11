@@ -24,10 +24,14 @@
         let homepage = true;
         //check if url contains "login=success" parameter
         const urlParams = new URLSearchParams(window.location.search);
-        const loginSuccessPopup = document.getElementById("login-success");
-        if (urlParams.has('login=success')) {
+        if (urlParams.get('login') === 'success') {
             document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById("login-success").classList.add("open");
+            });
+        }
+        if (urlParams.get('logout') === 'success') {
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById("logout-success").classList.add("open");
             });
         }
     </script>
@@ -39,8 +43,12 @@
         <!-- Code gets injected by heading.js -->
     </div>
     <div class="popup positive center" id="login-success">
-        <span class="material-symbols-outlined">tick</span>
+        <span class="material-symbols-outlined">check</span>
         Du bist erfolgreich eingelogged!
+    </div>
+    <div class="popup positive center" id="logout-success">
+        <span class="material-symbols-outlined">check</span>
+        Du hast dich erfolgreich abgemeldet!
     </div>
     <div id="main">
         <div id="random-Rezepte" class="container">
@@ -155,17 +163,75 @@
         <div id="Favoriten" class="container">
             <h2 onclick="window.location.href = '#'"><span>Meine Favoriten</span> <span class="material-symbols-outlined">chevron_right</span></h2>
             <div class="inner-container">
-                <p>Melde dich an, um deine Favoriten zu sehen.<br>
-                <a style="color:var(--orange)!important; display:flex;align-items:center;cursor:pointer" onclick="window.location = `pages/login.php`">login<span class="material-symbols-outlined">open_in_new</span></a></p>
+                <?php
+                if (!isset($_SESSION['user_id'])) {
+                    // Not logged in
+                    echo '<p>Melde dich an, um deine Favoriten zu sehen.<br>
+                        <a style="color:var(--orange)!important; display:flex;align-items:center;cursor:pointer" onclick="window.location = `pages/login.php`">login<span class="material-symbols-outlined">open_in_new</span></a></p>';
+                } else {
+                    // Logged in
+                    $usersdb = new SQLite3("assets/db/users.db");
+                    $user_id = $_SESSION['user_id'];
+                    $row = $usersdb->query("SELECT saved_recepies FROM users WHERE id = $user_id")->fetchArray(SQLITE3_ASSOC);
+                    $saved = $row['saved_recepies'] ?? '';
+                    $saved_array = array_filter(array_map('trim', explode(',', $saved)));
+                    if (empty($saved_array)) {
+                        echo '<p>Du hast noch keine Rezepte gespeichert.</p>';
+                    } else {
+                        $db = new SQLite3("assets/db/gerichte.db");
+                        $ids = implode(',', array_map('intval', $saved_array));
+                        $query = "SELECT * FROM gerichte WHERE id IN ($ids) AND status = 0";
+                        $result = $db->query($query);
+                        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+                            echo '
+                                <div class="rezeptlink" id="'.htmlspecialchars($row['id']).'">
+                                    <div class="tag-bereich">
+                                        <div class="tag time">'.htmlspecialchars($row['zubereitungszeit']).'min</div>';
+                                        if ($row['id'] >= $maxId - 5) {
+                                            echo '<div class="tag neu">NEU!</div>';
+                                        }
+                            echo '  </div>
+                                    <div class="img-container">';
+                                        if(!empty($row['bild1'])){
+                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
+                                        } else {
+                                            echo '<img src="" alt="">';
+                                        }
+                            echo '
+                                    </div>
+                                    <div class="rezept-titel">
+                                        <h2>'.htmlspecialchars($row['titel']).'</h2>
+                                    </div>
+                                    <div class="rezept-info">
+                                        <p class="info">'.htmlspecialchars($row['beschreibung']).'</p>
+                                    </div>
+                                    <div class="tags">';
+                                        if (!empty($row['tags'])) {
+                                            $tags = explode(',', $row['tags']);
+                                            foreach ($tags as $tag) {
+                                                echo '<span class="infotag">' . htmlspecialchars(trim($tag)) . '</span> ';
+                                            }
+                                        }
+                            echo '      </div>
+                                </div>
+                            ';
+                        }
+                    }
+                }
+                ?>
             </div>
         </div>
     </div>
     <div id="footer">
         <div id="inner-footer">
             <a href="pages/FAQ.html" class="center">FAQ <span class="material-symbols-outlined">open_in_new</span></a>
-            <p>© 2023 Kochbuch</p>
+            <p>© 2025 Kochbuch</p>
             <p>Alle Rechte vorbehalten.</p>
-            <a href="pages/login.php"class="center">login <span class="material-symbols-outlined">open_in_new</span></a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="pages/logout.php" class="center">logout <span class="material-symbols-outlined">open_in_new</span></a>
+            <?php else: ?>
+                <a href="pages/login.php" class="center">login <span class="material-symbols-outlined">open_in_new</span></a>
+            <?php endif; ?>
         </div>
     </div>
 </body>
