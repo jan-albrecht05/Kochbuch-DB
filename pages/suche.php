@@ -114,8 +114,21 @@
     <link rel="stylesheet" href="../assets/css/heading.css">
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <script>
+        var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    </script>
     <script src="../assets/js/heading.js" defer></script>
+    <script src="../assets/js/footer.js" defer></script>
     <script src="../assets/js/links2.js" defer></script>
+    <style>
+        body{
+            min-height: 100vh;
+        }
+        #footer{
+            bottom: 0;
+            position: relative;
+        }
+    </style>
 </head>
 <body>
     <div id="heading">
@@ -198,4 +211,7 @@
         </div>
     </div>
 </body>
+    <div id="footer">
+        <!-- Code gets injected by footer.js -->
+    </div>
 </html>

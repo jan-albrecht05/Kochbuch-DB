@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <script src="assets/js/horizontal_scroll.js" defer></script>
     <script>
+        var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
         let homepage = true;
         //check if url contains "login=success" parameter
         const urlParams = new URLSearchParams(window.location.search);
@@ -36,6 +37,7 @@
         }
     </script>
     <script src="assets/js/heading.js" defer></script>
+    <script src="assets/js/footer.js" defer></script>
     <script src="assets/js/links.js" defer></script>
 </head>
 <body>
@@ -223,16 +225,7 @@
         </div>
     </div>
     <div id="footer">
-        <div id="inner-footer">
-            <a href="pages/FAQ.html" class="center">FAQ <span class="material-symbols-outlined">open_in_new</span></a>
-            <p>© 2025 Kochbuch</p>
-            <p>Alle Rechte vorbehalten.</p>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="pages/logout.php" class="center">logout <span class="material-symbols-outlined">open_in_new</span></a>
-            <?php else: ?>
-                <a href="pages/login.php" class="center">login <span class="material-symbols-outlined">open_in_new</span></a>
-            <?php endif; ?>
-        </div>
+        
     </div>
 </body>
 </html>

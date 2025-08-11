@@ -62,6 +62,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <script src="../assets/js/copytoclipboard.js"></script>
     <script src="../assets/js/gericht_images.js"></script>
+    <script>
+        var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    </script>
     <script src="../assets/js/heading.js" defer></script>
     <script src="../assets/js/footer.js" defer></script>
 </head>
@@ -181,7 +184,7 @@
             ?>
         </div>
         <div id="bewerten">
-            <form id="bewertungsform" method="POST" class="center" onchange="">
+            <form id="bewertungsform" method="POST" class="center">
                 <fieldset id="star_fieldset">
                     <input type="radio" value="1" class="rating-input" id="1star"  name="star_rating">
                     <label for="1star" id="star1">
@@ -349,12 +352,44 @@
         </div>
     </div>
     <div id="problem" class="center">
-        <div id="melden" class="center">
+        <div id="melden" class="center" onclick="document.getElementById('problem-form').style.display = 'flex';">
             <span class="material-symbols-outlined">emergency_home</span>
             Problem melden
         </div>
     </div>
-    <div id="footer"></div>
+    <div id="problem-form">
+        <form method="POST">
+            <h1><span class="material-symbols-outlined" style="margin-right:1rem">emergency_home</span>Problem melden</h1>
+            <p>Bitte beschreibe das Problem oder den Fehler so genau wie möglich, damit wir es schnellstmöglich beheben können.</p>
+            <textarea name="problem" id="problem-textarea" placeholder="Deine Nachricht..."></textarea>
+            <input type="hidden" name="recipe_id" value="<?php echo htmlspecialchars($id); ?>">
+            <button type="submit">Absenden</button>
+            <button type="button" onclick="document.getElementById('problem-form').style.display = 'none';">Abbrechen</button>
+        </form>
+    </div>
+    <?php
+    // insert problem report into gerichte.db
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['problem']) && isset($_POST['recipe_id'])) {
+        $problem = trim($_POST['problem']);
+        $recipe_id = intval($_POST['recipe_id']);
+        if (!empty($problem)) {
+            $stmt = $db->prepare("UPDATE gerichte SET error_msg = :problem WHERE id = :id");
+            $stmt->bindValue(':problem', $problem, SQLITE3_TEXT);
+            $stmt->bindValue(':id', $recipe_id, SQLITE3_INTEGER);
+            $stmt->execute();
+            // Optional: show a success message or reload
+            echo '
+            <script>
+                alert("Danke für die Rückmeldung!");
+                document.getElementById("problem-form").style.display = "none";
+            </script>';
+            
+        }
+    }
+    ?>
+    <div id="footer">
+        <!-- Code gets injected by footer.js -->
+    </div>
     <?php
     // save button functionality
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['savebtn'])) {

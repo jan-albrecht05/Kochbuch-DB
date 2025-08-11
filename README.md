@@ -16,31 +16,24 @@
 ## 🎯 index.php
  - ❌ arrows for horizontal scrolling
 
-## 🌐 suche.php
- - ❌ PHP paging (25, 50, 100 Gerichte)
-
 ## 💥 gericht.php
- - ❌ "Fehler melden" Popup mit textarea → cell in gerichte.db
+ - ❌ save-btn ohne login -> redirect
  - ❌ calculation for ingredients
  - ❌ add ingredients to einkaufsliste.php
 
 ## ➕ rezept-erstellen.php
  - ❌ fetch error messages
 
-## ▶ login.php
- - ❌ Account beantragen
+## 🌐 suche.php
+ - ❌ PHP paging (25, 50, 100 Gerichte)
 
 ## 🚹 benutzer.php
  - ❌ "meine Rezepte"
  - ❌ "meine Einkaufsliste"
  - ❌ gespeicherte Rezepte
- - ✅ users.db
 
-## admin-panel.php
- - ✅ done
-
-## rezept-bearbeiten.php
- - ✅ done
+## ▶ login.php
+ - ❌ Account beantragen
 
 ## einkaufsliste.php
  - ❌ needs everything

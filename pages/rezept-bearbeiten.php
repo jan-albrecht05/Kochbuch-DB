@@ -44,13 +44,18 @@
     <link rel="stylesheet" href="../assets/css/root.css">
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/heading.css">
+    <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/rezept-erstellen.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <script src="../assets/js/ingredients.js"></script>
     <script src="../assets/js/steps.js"></script>
     <script src="../assets/js/tags.js"></script>
     <script src="../assets/js/popups.js"></script>
+    <script>
+        var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    </script>
     <script src="../assets/js/heading.js" defer></script>
+    <script src="../assets/js/footer.js" defer></script>
 </head>
 <body>
     <div id="heading">
@@ -361,6 +366,9 @@
                 ';
             }
         ?>
+    </div>
+    <div id="footer">
+        
     </div>
 </body>
 </html>
