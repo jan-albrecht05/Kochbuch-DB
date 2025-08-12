@@ -322,9 +322,10 @@ fieldset{
         margin-left: 0rem;
     }
     #buttons{
-        width: 3rem;
-        display: block;
-        margin-left: .5rem;
+        width: auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        margin-inline: .5rem;
         position: sticky;
     }
     button{
@@ -392,5 +393,44 @@ fieldset{
     #problem-form form{
         width: 80%;
         padding: 1rem;
+    }
+}
+@media print{
+    #heading,
+    #footer,
+    #problem-form,
+    #sidebar,
+    #problem,
+    #buttons,
+    #bewerten,
+    #userinfo a{
+        display: none;
+    }
+    html{
+        background-color: white;
+        width: 100%;
+    }
+    div {
+        break-inside: avoid;
+    }
+    #main{
+        width: auto;
+        margin: 0;
+        padding-right: 1rem;
+        background-color: white;
+    }
+    #big-image{
+        width: 50%;
+        padding: 0;
+        margin-left: 1rem;
+    }
+    span.hashtag{
+        background-color: var(--lightgrey) !important;
+    }
+    #bottom_section{
+        font-size: 80%;
+        margin-top: 2rem;
+        border-top: 2px solid var(--lightgrey);
+        padding-top: .5rem;
     }
 }

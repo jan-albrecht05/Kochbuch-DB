@@ -185,7 +185,7 @@
                                         echo '<img src="../assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                     }
                                     else{
-                                        echo '<img src="" alt="Bild konnte nicht geladen werden">';
+                                        echo '<img src="" alt="">';
                                     };
                             echo '
                                     </div>

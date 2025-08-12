@@ -121,6 +121,7 @@
             </div>
             <!-- Bookmark, Edit and Share Buttons -->
             <div id="buttons">
+                <button id="printbtn" onclick="window.print();"><span class="material-symbols-outlined">print</span></button>
                 <form method="POST">
                     <button id="savebtn" name="savebtn" type="submit">
                         <span class="material-symbols-outlined">bookmark</span>
