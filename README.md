@@ -33,7 +33,13 @@
  - ❌ gespeicherte Rezepte
 
 ## ▶ login.php
- - ❌ Account beantragen
+ - ❌ Link Account erstelllen
+
+## 🔄 Account erstellen
+ - ❌ UI: username, pw, Picture, Mail
+ - ❌ Mail zum Bestätigen
+ - ❌ random hash for verification in DB and Mail
+ - ❌ verification via hash
 
 ## einkaufsliste.php
  - ❌ needs everything
