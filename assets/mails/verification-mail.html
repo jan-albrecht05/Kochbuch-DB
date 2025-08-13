@@ -1,0 +1,42 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Verifizierungs-E-Mail</title>
+    <style>
+        :root{
+            --bg-color: #f0f0f0;
+            --bg-color-transparent: #f0f0f080;
+            --text-color: #111111;
+            --yellow: #fffe00;
+            --orange: #ff7400;
+        }
+        body{
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            font-size: x-large;
+        }
+        a{
+            height: 4rem;
+            width: 30%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--orange);
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+    </style>
+    <body>
+        <h1>Willkommen beim Kochbuch!</h1>
+        <p>Hallo {USERNAME},</p>
+        <p>Vielen Dank für dein Interesse an diesem Kochbuch! Um dein Konto zu aktivieren, klicke bitte auf den folgenden Link:</p>
+        <br>
+        <p><a href="https://mein-kochbuch.nf.free/pages/verifizieren.php?login={VERIFICATION_LINK}">Konto verifizieren</a></p>
+        <br>
+        <p>Falls diese E-Mail nicht angefordert wurde, ignorieren Sie bitte diese Nachricht.</p>
+        <p>Mit freundlichen Grüßen,<br>Jan Albrecht</p>
+    </body>
+</html>

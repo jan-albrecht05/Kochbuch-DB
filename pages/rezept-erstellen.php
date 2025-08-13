@@ -316,7 +316,7 @@ if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
                         <div class="inner-popup">
                             <h1>Danke!</h1>
                             <p>Dein Rezept wurde erfolgreich gespeichert!</p>
-                            <p>Du kannst es <a href="../gericht.php?id='.$gericht_id.'"><u>hier</u></a> ansehen und teilen.</p>
+                            <p>Du kannst es <a href="../pages/gericht.php?id='.$gericht_id.'"><u>hier</u></a> ansehen und teilen.</p>
                             <div class="buttons">
                                 <button onclick="window.location.href = `../pages/rezept-erstellen.php`" id="btn-mehr">mehr erstellen</button>
                                 <button onclick="closeErfolg()" id="btn-close">schließen</button>

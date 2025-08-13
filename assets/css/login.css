@@ -1,5 +1,14 @@
+html{
+    height: 90%;
+}
+#main{
+    width: 35%;
+    margin-inline: auto;
+    padding: 1rem;
+    border-radius: 15px;
+}
 #login-form{
-    width: 50%;
+    width: 85%;
     min-height: 40lvh;
     margin-inline: auto;
     border-radius: 15px;
@@ -52,7 +61,13 @@ input:focus{
 #login-button:hover span{
     margin-left: 1rem;
 }
+#erstellen{
+    margin-left: 2rem;
+}
 @media (max-width: 600px) {
+    #main{
+        width: 90%;
+    }
     #login-form{
         width: 90%;
         padding: 1rem;
@@ -64,5 +79,10 @@ input:focus{
     #login-form #login-button{
         width: 95%;
         margin-bottom: 1rem;
+        margin-top: 2rem;
+    }
+    #erstellen{
+        margin-left: 0;
+        margin-top: 1rem;
     }
 }

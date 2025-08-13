@@ -32,13 +32,11 @@
  - ❌ "meine Einkaufsliste"
  - ❌ gespeicherte Rezepte
 
-## ▶ login.php
- - ❌ Link Account erstelllen
+## admin-panel.php
+ - ❌ Accountstatus + Emal mit einbauen
 
 ## 🔄 Account erstellen
- - ❌ UI: username, pw, Picture, Mail
  - ❌ Mail zum Bestätigen
- - ❌ random hash for verification in DB and Mail
  - ❌ verification via hash
 
 ## einkaufsliste.php

@@ -10,19 +10,6 @@
     <link rel="stylesheet" href="../assets/css/heading.css">
     <link rel="stylesheet" href="../assets/css/login.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <script src="../assets/js/footer.js"></script>
-    <script>
-        window.onload = () =>{
-            footer();
-        }
-    </script>
-    <style>
-        @media (min-height:644px) {
-            #footer{
-                position: absolute;
-            }
-        }
-    </style>
 </head>
 <body>
 <?php
@@ -61,16 +48,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         <form id="login-form" method="post" action="">
             <h1>Login</h1>
             <div class="part">
-                <label for="username">Username:</label><br>
-                <input type="text" id="username" name="username" placeholder="Username">
+                <label for="username">Benutzername:</label><br>
+                <input type="text" id="username" name="username" placeholder="Benutzername">
             </div>
             <div class="part">
-                <label for="password">Password:</label><br>
-                <input type="password" id="password" name="password" placeholder="Password">
+                <label for="password">Passwort:</label><br>
+                <input type="password" id="password" name="password" placeholder="Passwort">
                 <div class="pass-alert">
                     <?php if (isset($login_error)) echo "<div style='color:red;'>$login_error</div>"; ?>
                 </div>
             </div>
+                <div id="erstellen">
+                    Noch kein Konto? <a href="register.php"><u>Konto erstellen</u></a>
+                </div>
             <?php if (isset($_GET['redirect'])): ?>
                 <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($_GET['redirect'] ?? ''); ?>">
             <?php endif; ?>
@@ -79,9 +69,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     </div>
     
 </body>
-<footer id="footer" class="center">
-    <div id="footer-content">
-        <!--code gets injected by footer.js-->
-    </div>
 </footer>
 </html>
