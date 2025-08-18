@@ -151,6 +151,18 @@ select{
 .user img{
     object-fit: cover;
 }
+#username{
+    height: auto;
+    width: 10%;
+    text-align: right;
+    display: flex;
+    justify-content: right;
+}
+.status{
+    color: rgb(0, 110, 255);
+    margin-left: .5rem;
+    cursor: pointer;
+}
 .user:last-child,
 .rezept:last-child{
     border-bottom: none;
@@ -242,5 +254,8 @@ h2.id{
     }
     .section:last-child{
         margin-bottom: .3rem;
+    }
+    #username{
+        width: auto;
     }
 }

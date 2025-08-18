@@ -31,6 +31,7 @@
  - ❌ "meine Rezepte"
  - ❌ "meine Einkaufsliste"
  - ❌ gespeicherte Rezepte
+ - ❌ Profileinstellungen
 
 ## admin-panel.php
  - ❌ Accountstatus + Email mit einbauen

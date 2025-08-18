@@ -178,7 +178,7 @@ function insertSidebar() {
                     <span class="material-symbols-outlined">person</span>
                     <span>meine Rezepte</span>
                 </a>
-                <a href="pages/Admin-panel.php" class="sidebar-link" id="admin-link">
+                <a href="pages/admin-panel.php" class="sidebar-link" id="admin-link">
                     <span class="material-symbols-outlined">shield_person</span>
                     <span>Admin-Panel</span>
                 </a>
@@ -199,7 +199,7 @@ function insertSidebar() {
                 </a>
             `;
         }
-        document.getElementById("sidebar").innerHTML = `<div class="sidebar-content">${sidebarLinks}</div>`;
+        document.getElementById("sidebar").innerHTML = `<div id="sidebar-content">${sidebarLinks}</div>`;
     } else {
         sidebarLinks += `
             <a href="../index.php" class="sidebar-link" id="home-link">
@@ -229,7 +229,7 @@ function insertSidebar() {
                     <span class="material-symbols-outlined">person</span>
                     <span>meine Rezepte</span>
                 </a>
-                <a href="../pages/Admin-panel.php" class="sidebar-link" id="admin-link">
+                <a href="../pages/admin-panel.php" class="sidebar-link" id="admin-link">
                     <span class="material-symbols-outlined">shield_person</span>
                     <span>Admin-Panel</span>
                 </a>
@@ -250,7 +250,7 @@ function insertSidebar() {
                 </a>
             `;
         }
-        document.getElementById("sidebar").innerHTML = `<div class="sidebar-content">${sidebarLinks}</div>`;
+        document.getElementById("sidebar").innerHTML = `<div id="sidebar-content">${sidebarLinks}</div>`;
     }
 }
 function showSidebar() {

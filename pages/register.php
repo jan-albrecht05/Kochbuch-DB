@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $password = $_POST['password'];
     $password2 = $_POST['password2'];
     $email = trim($_POST['email']);
+    $status = 1; // Default status for unverified users
 
     if ($password !== $password2) {
         $login_error = "Passwörter stimmen nicht überein!";
@@ -28,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $stmt = $db->prepare("SELECT * FROM users WHERE name = :username");
         $stmt->bindValue(':username', $username, SQLITE3_TEXT);
         $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
+        $timestamp_register = date('Y-m-d H:i:s', time());
 
         if ($result) {
             $login_error = "Benutzername bereits vergeben!";
@@ -35,11 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             //random hash for verification
             $verification_hash = bin2hex(random_bytes(16));
-            $stmt = $db->prepare("INSERT INTO users (name, password, email_address, random_hash) VALUES (:username, :password, :email, :verification_hash)");
+            $stmt = $db->prepare("INSERT INTO users (name, password, email_address, status, random_hash, timestamp_register) VALUES (:username, :password, :email, :status, :verification_hash, :timestamp_register)");
             $stmt->bindValue(':username', $username, SQLITE3_TEXT);
             $stmt->bindValue(':password', $hashed_password, SQLITE3_TEXT);
             $stmt->bindValue(':email', $email, SQLITE3_TEXT);
+            $stmt->bindValue(':status', $status, SQLITE3_TEXT);
             $stmt->bindValue(':verification_hash', $verification_hash, SQLITE3_TEXT);
+            $stmt->bindValue(':timestamp_register', $timestamp_register, SQLITE3_TEXT);
             if ($stmt->execute()) {
                 // Verification mail sending logic
                 $to = $email;
@@ -93,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                 
                 $headers = "MIME-Version: 1.0" . "\r\n";
                 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                $headers .= 'From: <register@mein-kochbuch.nf.free>' . "\r\n";
+                $headers .= "From: Kochbuch <noreply.kochbuch@jan-alb.de>\r\n";
                 mail($to,$subject,$message,$headers);                
                 
                 //positive feedback

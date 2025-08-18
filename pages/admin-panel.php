@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Kochbuch</title>
+    <script>
+        var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    </script>
     <link rel="icon" href="../assets/icons/Topficon.png">
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/root.css">
@@ -264,8 +267,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             : $default_img;
             echo '<img src="../' . htmlspecialchars($profile_img) . '" alt="">';
             echo '  </div>';
-            echo '  <div id="username">';
+            echo '  <div id="username" class="center">';
             echo '    <span>' . htmlspecialchars($user['name']) . '</span>';
+            if ($user['status'] == 1) {
+                echo ' <span class="material-symbols-outlined status" style="color:red" title="Unverified">error</span>';
+            } elseif ($user['status'] == 2) {
+                echo ' <span class="material-symbols-outlined status" title="Verified">check_circle</span>';
+            }
             echo '  </div>';
             echo '  <div id="role">';
             echo '    <span id="user-role">' . htmlspecialchars($user['rolle']) . '</span>';
