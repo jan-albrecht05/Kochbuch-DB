@@ -214,7 +214,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             $offene_rezepte ++;
         };
 ?>
-    <div id="heading"></div>
+    <div id="heading">
+        <!-- Code gets injected by heading.js -->
+    </div>
+    <div id="sidebar">
+        <!-- Code gets injected by heading.js -->
+    </div>
     <div id="main">
         <div id="stats" class="section">
             <div class="inner">

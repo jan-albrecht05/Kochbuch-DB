@@ -5,9 +5,9 @@ window.addEventListener('load', function(event) {
     if (homepage){
         document.getElementById('heading').innerHTML = `
         <div id="inner-heading">
-            <a href="#" id="logo">
+            <span id="logo" onclick="showSidebar()">
                 <img src="assets/icons/Topficon.png" alt="Kochbuch Icon">
-            </a>
+            </span>
             <p id="filter" onclick="openfilter()">
                 <span class="material-symbols-outlined">filter_list</span>
             </p>
@@ -59,9 +59,9 @@ window.addEventListener('load', function(event) {
     else{
         document.getElementById('heading').innerHTML = `
         <div id="inner-heading">
-            <a href="../index.php" id="logo">
+            <span id="logo" onclick="showSidebar()">
                 <img src="../assets/icons/Topficon.png" alt="Kochbuch Icon">
-            </a>
+            </span>
             <p id="filter" onclick="openfilter()">
                 <span class="material-symbols-outlined">filter_list</span>
             </p>
@@ -110,6 +110,7 @@ window.addEventListener('load', function(event) {
         </div>
         `;
     }
+    insertSidebar();
     insertfooter();
     // Add event listener for Enter key on search input
     setTimeout(function() {
@@ -143,4 +144,116 @@ function suchen(){
     }else{
         window.location.href = "../pages/suche.php?suche="+searchterm;
     }
+}
+function insertSidebar() {
+    // Use window.isLoggedIn (set by PHP)
+    var isLoggedIn = window.isLoggedIn === true || window.isLoggedIn === "true";
+    var sidebarLinks = '';
+    if (homepage) {
+        sidebarLinks += `
+            <a onclick="showSidebar()" class="sidebar-link" id="home-link">
+                <span class="material-symbols-outlined">home</span>
+                <span>Home</span>
+            </a>
+            <a href="pages/rezept-erstellen.php" class="sidebar-link" id="rezept-erstellen-link">
+                    <span class="material-symbols-outlined">add</span>
+                    <span>Rezept erstellen</span>
+                </a>
+                <a href="#" class="sidebar-link" id="feedback-link">
+                    <span class="material-symbols-outlined">feedback</span>
+                    <span>Feedback geben</span>
+                </a>
+        `;
+        if (isLoggedIn) {
+            sidebarLinks += `
+                <a href="#" class="sidebar-link" id="saved-rezepte-link">
+                    <span class="material-symbols-outlined">bookmark</span>
+                    <span>gespeicherte Rezepte</span>
+                </a>
+                <a href="#" class="sidebar-link" id="list-link">
+                    <span class="material-symbols-outlined">list</span>
+                    <span>Einkaufsliste</span>
+                </a>
+                <a href="#" class="sidebar-link" id="meine-rezepte-link">
+                    <span class="material-symbols-outlined">person</span>
+                    <span>meine Rezepte</span>
+                </a>
+                <a href="pages/Admin-panel.php" class="sidebar-link" id="admin-link">
+                    <span class="material-symbols-outlined">shield_person</span>
+                    <span>Admin-Panel</span>
+                </a>
+                <a href="#" class="sidebar-link" id="meine-rezepte-link">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span>Einstellungen</span>
+                </a>
+                <a href="pages/logout.php" class="sidebar-link" id="logout-link">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>Logout</span>
+                </a>
+            `;
+        } else {
+            sidebarLinks += `
+                <a href="pages/login.php" class="sidebar-link" id="login-link">
+                    <span class="material-symbols-outlined">login</span>
+                    <span>Login</span>
+                </a>
+            `;
+        }
+        document.getElementById("sidebar").innerHTML = `<div class="sidebar-content">${sidebarLinks}</div>`;
+    } else {
+        sidebarLinks += `
+            <a href="../index.php" class="sidebar-link" id="home-link">
+                <span class="material-symbols-outlined">home</span>
+                <span>Home</span>
+            </a>
+            <a href="../pages/rezept-erstellen.php" class="sidebar-link" id="rezept-erstellen-link">
+                <span class="material-symbols-outlined">add</span>
+                <span>Rezept erstellen</span>
+            </a>
+            <a href="#" class="sidebar-link" id="feedback-link">
+                <span class="material-symbols-outlined">feedback</span>
+                <span>Feedback geben</span>
+            </a>
+        `;
+        if (isLoggedIn) {
+            sidebarLinks += `
+                <a href="#" class="sidebar-link" id="saved-rezepte-link">
+                    <span class="material-symbols-outlined">bookmark</span>
+                    <span>gespeicherte Rezepte</span>
+                </a>
+                <a href="#" class="sidebar-link" id="list-link">
+                    <span class="material-symbols-outlined">list</span>
+                    <span>Einkaufsliste</span>
+                </a>
+                <a href="#" class="sidebar-link" id="meine-rezepte-link">
+                    <span class="material-symbols-outlined">person</span>
+                    <span>meine Rezepte</span>
+                </a>
+                <a href="../pages/Admin-panel.php" class="sidebar-link" id="admin-link">
+                    <span class="material-symbols-outlined">shield_person</span>
+                    <span>Admin-Panel</span>
+                </a>
+                <a href="#" class="sidebar-link" id="meine-rezepte-link">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span>Einstellungen</span>
+                </a>
+                <a href="../pages/logout.php" class="sidebar-link" id="logout-link">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>Logout</span>
+                </a>
+            `;
+        } else {
+            sidebarLinks += `
+                <a href="../pages/login.php" class="sidebar-link" id="login-link">
+                    <span class="material-symbols-outlined">login</span>
+                    <span>Login</span>
+                </a>
+            `;
+        }
+        document.getElementById("sidebar").innerHTML = `<div class="sidebar-content">${sidebarLinks}</div>`;
+    }
+}
+function showSidebar() {
+    document.getElementById("sidebar").classList.toggle("open");
+    document.body.classList.toggle("no-scroll");
 }

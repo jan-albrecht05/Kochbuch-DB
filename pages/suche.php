@@ -134,6 +134,9 @@
     <div id="heading">
         <!-- Code gets injected by heading.js -->
     </div>
+    <div id="sidebar">
+        <!-- Code gets injected by heading.js -->
+    </div>
     <div id="main">
         <form id="controls" method="get">
             <input type="hidden" name="suche" value="<?php echo htmlspecialchars($suche);?>">

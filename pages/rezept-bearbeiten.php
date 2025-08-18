@@ -61,6 +61,9 @@
     <div id="heading">
         <!-- Code gets injected by heading.js -->
     </div>
+    <div id="sidebar">
+        <!-- Code gets injected by heading.js -->
+    </div>
     <div class="popup negative center" id="link_copied">
         <span class="material-symbols-outlined">report</span>
         Datei muss .PNG oder .JPG sein!

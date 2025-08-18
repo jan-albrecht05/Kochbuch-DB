@@ -72,6 +72,9 @@
     <div id="heading">
         <!-- Code gets injected by heading.js -->
     </div>
+    <div id="sidebar">
+        <!-- Code gets injected by heading.js -->
+    </div>
     <!-- Popups -->
     <div class="popup positive center" id="link_copied">
         <span class="material-symbols-outlined">check</span>

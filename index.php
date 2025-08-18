@@ -44,6 +44,9 @@
     <div id="heading">
         <!-- Code gets injected by heading.js -->
     </div>
+    <div id="sidebar">
+        <!-- Code gets injected by heading.js -->
+    </div>
     <div class="popup positive center" id="login-success">
         <span class="material-symbols-outlined">check</span>
         Du bist erfolgreich eingelogged!

@@ -33,7 +33,7 @@
  - ❌ gespeicherte Rezepte
 
 ## admin-panel.php
- - ❌ Accountstatus + Emal mit einbauen
+ - ❌ Accountstatus + Email mit einbauen
 
 ## 🔄 Account erstellen
  - ❌ Mail zum Bestätigen
