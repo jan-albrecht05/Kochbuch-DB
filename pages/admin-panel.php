@@ -12,9 +12,11 @@
     <link rel="stylesheet" href="../assets/css/main.css">
     <link rel="stylesheet" href="../assets/css/root.css">
     <link rel="stylesheet" href="../assets/css/heading.css">
+    <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
     <script src="../assets/js/heading.js"></script>
+    <script src="../assets/js/footer.js"></script>
 </head>
 <body>
 <?php
@@ -442,5 +444,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             ?>
         </details>
     </div>
+    <div id="footer">
+        <!-- Code gets injected by heading.js -->
+    </div
 </body>
 </html>

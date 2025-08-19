@@ -263,5 +263,6 @@ a.sidebar-link span:first-child{
     #sidebar{
         width: 100%;
         padding-top: 3rem;
+        height: 94lvh;
     }
 }

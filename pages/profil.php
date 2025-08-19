@@ -5,6 +5,11 @@ session_start();
 $usersdb = new SQLite3("../assets/db/users.db");
 $user_id = $_SESSION['user_id'];
 
+// Check if user is logged in
+if (!isset($user_id)) {
+    header("Location: login.php?redirect=profil.php");
+    exit;
+}
 // Redirect to meineRezepte if no query is set or query is invalid
 $allowed_queries = ['meineRezepte', 'bookmarks', 'settings'];
 $query = isset($_GET['query']) ? $_GET['query'] : '';
