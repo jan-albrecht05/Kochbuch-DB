@@ -166,15 +166,15 @@ function insertSidebar() {
         `;
         if (isLoggedIn) {
             sidebarLinks += `
-                <a href="#" class="sidebar-link" id="saved-rezepte-link">
+                <a href="pages/profil.php?query=bookmarks" class="sidebar-link" id="saved-rezepte-link">
                     <span class="material-symbols-outlined">bookmark</span>
                     <span>gespeicherte Rezepte</span>
                 </a>
-                <a href="#" class="sidebar-link" id="list-link">
+                <a href="pages/einkaufsliste.php" class="sidebar-link" id="list-link">
                     <span class="material-symbols-outlined">list</span>
                     <span>Einkaufsliste</span>
                 </a>
-                <a href="#" class="sidebar-link" id="meine-rezepte-link">
+                <a href="pages/profil.php?query=meineRezepte" class="sidebar-link" id="meine-rezepte-link">
                     <span class="material-symbols-outlined">person</span>
                     <span>meine Rezepte</span>
                 </a>
@@ -182,7 +182,7 @@ function insertSidebar() {
                     <span class="material-symbols-outlined">shield_person</span>
                     <span>Admin-Panel</span>
                 </a>
-                <a href="#" class="sidebar-link" id="meine-rezepte-link">
+                <a href="pages/profil.php?query=settings" class="sidebar-link" id="einstellungen-link">
                     <span class="material-symbols-outlined">settings</span>
                     <span>Einstellungen</span>
                 </a>
@@ -217,15 +217,15 @@ function insertSidebar() {
         `;
         if (isLoggedIn) {
             sidebarLinks += `
-                <a href="#" class="sidebar-link" id="saved-rezepte-link">
+                <a href="../pages/profil.php?query=bookmarks" class="sidebar-link" id="saved-rezepte-link">
                     <span class="material-symbols-outlined">bookmark</span>
                     <span>gespeicherte Rezepte</span>
                 </a>
-                <a href="#" class="sidebar-link" id="list-link">
+                <a href="../pages/einkaufsliste.php" class="sidebar-link" id="list-link">
                     <span class="material-symbols-outlined">list</span>
                     <span>Einkaufsliste</span>
                 </a>
-                <a href="#" class="sidebar-link" id="meine-rezepte-link">
+                <a href="../pages/profil.php?query=meineRezepte" class="sidebar-link" id="meine-rezepte-link">
                     <span class="material-symbols-outlined">person</span>
                     <span>meine Rezepte</span>
                 </a>
@@ -233,7 +233,7 @@ function insertSidebar() {
                     <span class="material-symbols-outlined">shield_person</span>
                     <span>Admin-Panel</span>
                 </a>
-                <a href="#" class="sidebar-link" id="meine-rezepte-link">
+                <a href="../pages/profil.php?query=settings" class="sidebar-link" id="einstelungen-link">
                     <span class="material-symbols-outlined">settings</span>
                     <span>Einstellungen</span>
                 </a>

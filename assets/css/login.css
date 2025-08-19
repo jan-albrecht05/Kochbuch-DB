@@ -25,6 +25,7 @@ label{
 .pass-alert{
     margin-left: 4.5%;
     margin-top: .5rem;
+    color: red;
 }
 input[type='text'],
 input{

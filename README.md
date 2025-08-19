@@ -27,15 +27,6 @@
 ## 🌐 suche.php
  - ❌ PHP paging (25, 50, 100 Gerichte)
 
-## 🚹 benutzer.php
- - ❌ "meine Rezepte"
- - ❌ "meine Einkaufsliste"
- - ❌ gespeicherte Rezepte
- - ❌ Profileinstellungen
-
-## admin-panel.php
- - ❌ Accountstatus + Email mit einbauen
-
 ## 🔄 Account erstellen
  - ❌ Mail zum Bestätigen
  - ❌ verification via hash

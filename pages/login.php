@@ -24,20 +24,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $stmt->bindValue(':username', $username, SQLITE3_TEXT);
     $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
 
-    if ($result && password_verify($password, $result['password'])) {
-        $_SESSION['user_id'] = $result['id'];
-        $_SESSION['name'] = $result['name'];
-        $_SESSION['rolle'] = $result['rolle'];
-        $_SESSION['profile_picture'] = $result['profile_picture'];
+    if ($result) {
+        if ($result['status'] == 1) {
+            $login_error = "Dieses Konto muss erst verifiziert werden!";
+        } elseif (password_verify($password, $result['password']) && $result['status'] == 2) {
+            $_SESSION['user_id'] = $result['id'];
+            $_SESSION['name'] = $result['name'];
+            $_SESSION['rolle'] = $result['rolle'];
+            $_SESSION['profile_picture'] = $result['profile_picture'];
 
-        // Handle redirect
-        if (!empty($_POST['redirect'])) {
-            $redirect = trim(str_replace(array("\r", "\n"), '', $_POST['redirect']));
-            header("Location: " . $redirect);
+            // Handle redirect
+            if (!empty($_POST['redirect'])) {
+                $redirect = trim(str_replace(array("\r", "\n"), '', $_POST['redirect']));
+                header("Location: " . $redirect);
+            } else {
+                header("Location: ../index.php?login=success");
+            }
+            exit;
         } else {
-            header("Location: ../index.php?login=success");
+            $login_error = "Benutzername oder Passwort falsch!";
         }
-        exit;
     } else {
         $login_error = "Benutzername oder Passwort falsch!";
     }
@@ -54,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             <div class="part">
                 <label for="password">Passwort:</label><br>
                 <input type="password" id="password" name="password" placeholder="Passwort">
-                <div class="pass-alert">
-                    <?php if (isset($login_error)) echo "<div style='color:red;'>$login_error</div>"; ?>
-                </div>
             </div>
-                <div id="erstellen">
-                    Noch kein Konto? <a href="register.php"><u>Konto erstellen</u></a>
-                </div>
+            <div class="pass-alert">
+                <?php if (isset($login_error)) echo $login_error?>
+            </div>
+            <div id="erstellen">
+                Noch kein Konto? <a href="register.php"><u>Konto erstellen</u></a>
+            </div>
             <?php if (isset($_GET['redirect'])): ?>
                 <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($_GET['redirect'] ?? ''); ?>">
             <?php endif; ?>
