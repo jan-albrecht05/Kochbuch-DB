@@ -60,7 +60,7 @@
         if (!isset($_SESSION['rolle'])) { //if user is not logged in
             echo '
                 <div class="banner">
-                    <p>Du bist nicht eingelogt!</p>
+                    <p>Du bist nicht eingeloggt!</p>
                     <p>Alle Rezepte, die du hinzufügst werden erst überprüft, bevor sie für alle sichtbar sind. Dieser Vorgang kann bis zu 48 Stunden dauern.</p>
                     <a href="login.php?redirect=rezept-erstellen.php">logge dich ein</a> um dies zu umgehen.
                 </div>

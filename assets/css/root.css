@@ -1,6 +1,7 @@
 :root{
     --bg-color: #f0f0f0;
     --bg-color-transparent: #f0f0f080;
+    --bg-color-transparent2:rgba(216, 216, 216, 0.473);
     --text-color: #111111;
     --yellow: #fffe00;
     --orange: #ff7400;

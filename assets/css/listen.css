@@ -62,6 +62,126 @@ select{
     color: var(--bg-color);
     border: none;
 }
+#add-item-popup input[type="text"]{
+    width: 5rem !important;
+}
+.item{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: var(--bg-color-transparent);
+    font-size: 120%;
+    height: 3rem;
+}
+.item:nth-child(2n){
+    background-color: var(--bg-color-transparent2);
+}
+.item.checked div{
+    text-decoration: line-through;
+    opacity: 0.6; 
+}
+.item.checked .check-btn span{
+    filter: grayscale(80%);
+}
+.check-btn{
+    background: none !important;
+    border: none;
+    color: var(--green);
+}
+.check-btn span{
+    font-size: 2rem;
+}
+.item form{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: end;
+}
+.item select{
+    margin-right: 1rem;
+    width: 50%;
+}
+.item select:disabled{
+    background-color: var(--lightgrey2);
+    color: var(--text-color);
+}
+#timestamp{
+    font-size: 95%;
+    margin-top: 1rem;
+}
+#controls{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+#controls button{
+    padding: 0.5rem 1rem;
+    background: none;
+    color: var(--text-color);
+    border: 2px solid var(--text-color);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+#controls button span:first-child{
+    margin-right: 0.5rem;
+}
+#clean-list-btn:hover{
+    border-color: var(--green);
+    color: var(--green);
+    background-color: var(--bg-color);
+}
+#delete-list-btn{
+    border-color: var(--red) !important;
+    color: red !important;
+    margin-left: auto;
+}
+#delete-list-btn:hover{
+    background-color: var(--red);
+    color: var(--bg-color) !important;
+    border-color: var(--bg-color)!important;
+}
+#add-item-popup{
+    position: fixed;
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--lightgrey);
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    width: 25%;
+    display: none;
+}
+#add-item-popup form{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+#add-item-popup form input[type="text"],
+#add-item-popup form input[type="number"],
+#add-item-popup form select{
+    width: calc(100% - 1rem) !important;
+    padding: 0.5rem !important;
+    border: 1px solid var(--bg-color);
+    border-radius: 5px;
+    background-color: var(--lightgrey2);
+    font-size: 120%;
+    outline: none;
+}
+#add-item-popup form input[type="number"]{
+    height: 2rem;
+}
+#add-item-popup form select{
+    width: calc(103% - 1rem) !important;
+}
+#add-item-popup form input:focus{
+    border-color: var(--orange);
+}
 @media (max-width: 600px) {
     #new-list-btn {
         font-size: 80%;
@@ -75,5 +195,15 @@ select{
     #add-item-btn{
         margin-bottom: 1rem;
         margin-right: 1rem;
+    }
+    .item select{
+        margin-right: 0;
+    }
+    .item select:disabled{
+        display: none;
+    }
+    #add-item-popup {
+        width: 90%;
+        padding: 1rem;
     }
 }

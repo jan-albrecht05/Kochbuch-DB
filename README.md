@@ -32,8 +32,10 @@
  - ❌ verification via hash
 
 ## einkaufsliste.php
- - ❌ needs everything
- - ❌ shops hinzufügen (nicht mandatory)
+ - ❌ sort by laden
+ - ❌ Logik shops hinzufügen
+ - ❌ Funktion aufräumen
+ - ❌ Funktion Liste löschen
 
 ## feedback-form.php
  - ❌ needs everything
