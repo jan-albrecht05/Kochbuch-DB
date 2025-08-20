@@ -13,6 +13,10 @@
 <br><br>
 
 # SEITEN TO-DO
+## * + Sidebar
+ - ❌ check for Admin
+ - ❌ check for Editor
+
 ## 🎯 index.php
  - ❌ arrows for horizontal scrolling
 
