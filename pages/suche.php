@@ -116,6 +116,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
     <script>
         var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        var isAdmin = <?php if($_SESSION['rolle'] == 'admin') {echo 'true';}else{echo'false';}; ?>;
+        var isEditor = <?php if($_SESSION['rolle'] == 'editor') {echo 'true';}else{echo'false';}; ?>;
     </script>
     <script src="../assets/js/heading.js" defer></script>
     <script src="../assets/js/footer.js" defer></script>
@@ -185,7 +187,7 @@
                             echo '  </div>
                                     <div class="img-container">';
                                     if(!empty($row['bild1'])){
-                                        echo '<img src="../assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
+                                        echo '<img loading="lazy" src="../assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                     }
                                     else{
                                         echo '<img src="" alt="">';

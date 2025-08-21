@@ -22,6 +22,8 @@
     <script src="assets/js/horizontal_scroll.js" defer></script>
     <script>
         var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        var isAdmin = <?php if($_SESSION['rolle'] == 'admin') {echo 'true';}else{echo'false';}; ?>;
+        var isEditor = <?php if($_SESSION['rolle'] == 'editor') {echo 'true';}else{echo'false';}; ?>;
         let homepage = true;
         //check if url contains "login=success" parameter
         const urlParams = new URLSearchParams(window.location.search);
@@ -85,7 +87,7 @@
                                 echo '  </div>
                                         <div class="img-container">';
                                         if(!empty($row['bild1'])){
-                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
+                                            echo '<img loading="lazy" src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                         }
                                         else{
                                             echo '<img src="" alt="">';
@@ -136,7 +138,7 @@
                                 echo '  </div>
                                         <div class="img-container">';
                                         if(!empty($row['bild1'])){
-                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
+                                            echo '<img loading="lazy" src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                         }
                                         else{
                                             echo '<img src="" alt="">';
@@ -198,7 +200,7 @@
                             echo '  </div>
                                     <div class="img-container">';
                                         if(!empty($row['bild1'])){
-                                            echo '<img src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
+                                            echo '<img loading="lazy" src="assets/img/uploads/gerichte/'.htmlspecialchars($row['bild1']).'" alt="">';
                                         } else {
                                             echo '<img src="" alt="">';
                                         }

@@ -94,6 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     <script src="../assets/js/horizontal_scroll.js" defer></script>
     <script>
         var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        var isAdmin = <?php if($_SESSION['rolle'] == 'admin') {echo 'true';}else{echo'false';}; ?>;
+        var isEditor = <?php if($_SESSION['rolle'] == 'editor') {echo 'true';}else{echo'false';}; ?>;
     </script>
     <script src="../assets/js/heading.js" defer></script>
     <script src="../assets/js/footer.js" defer></script>
@@ -124,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
                 $row = $usersdb->query("SELECT name, email_address, profilbild FROM users WHERE id = $user_id")->fetchArray(SQLITE3_ASSOC);
                 $username = $row ? $row['name'] : 'Gast';
                 $email = $row ? $row['email_address'] : '';
-                $profilbild = $row && !empty($row['profilbild']) ? $row['profilbild'] : 'default.png';
+                $profilbild = $row && !empty($row['profilbild']) ? $row['profilbild'] : $row['profilbild'];
                 echo '<img id="profilbild" src="../assets/img/uploads/users/'.htmlspecialchars($profilbild).'"><br>';
             ?>
             <h1>Hallo <?php echo htmlspecialchars($username); ?>!</h1>
@@ -143,7 +145,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
                 foreach ($links as $key => $value) {
                     $class = ($query === $key) ? 'link active' : 'link';
                     echo "<a href='profil.php?query=$key' class='$class'>
-                            <span class='material-symbols-outlined'>" . ($key === 'meineRezepte' ? 'person' : ($key === 'bookmarks' ? 'bookmark' : 'settings')) . "</span>
+                            <span class='material-symbols-outlined'>" . ($key === 'meineRezepte' ? 'person' : ($key === 'bookmarks' ? 'bookmarks' : 'settings')) . "</span>
                             <span>$value</span>
                           </a>";
                 }

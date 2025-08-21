@@ -156,13 +156,13 @@ function insertSidebar() {
                 <span>Home</span>
             </a>
             <a href="pages/rezept-erstellen.php" class="sidebar-link" id="rezept-erstellen-link">
-                    <span class="material-symbols-outlined">add</span>
-                    <span>Rezept erstellen</span>
-                </a>
-                <a href="#" class="sidebar-link" id="feedback-link">
-                    <span class="material-symbols-outlined">feedback</span>
-                    <span>Feedback geben</span>
-                </a>
+                <span class="material-symbols-outlined">add</span>
+                <span>Rezept erstellen</span>
+            </a>
+            <a href="#" class="sidebar-link" id="feedback-link">
+                <span class="material-symbols-outlined">feedback</span>
+                <span>Feedback geben</span>
+            </a>
         `;
         if (isLoggedIn) {
             sidebarLinks += `
@@ -178,19 +178,26 @@ function insertSidebar() {
                     <span class="material-symbols-outlined">person</span>
                     <span>meine Rezepte</span>
                 </a>
-                <a href="pages/admin-panel.php" class="sidebar-link" id="admin-link">
-                    <span class="material-symbols-outlined">shield_person</span>
-                    <span>Admin-Panel</span>
-                </a>
                 <a href="pages/profil.php?query=settings" class="sidebar-link" id="einstellungen-link">
                     <span class="material-symbols-outlined">settings</span>
                     <span>Einstellungen</span>
                 </a>
+            `;
+            if(isAdmin){
+                sidebarLinks += `
+                    <a href="pages/admin-panel.php" class="sidebar-link" id="admin-link">
+                        <span class="material-symbols-outlined">shield_person</span>
+                        <span>Admin-Panel</span>
+                    </a>
+                `;
+            }
+            sidebarLinks += `
                 <a href="pages/logout.php" class="sidebar-link" id="logout-link">
                     <span class="material-symbols-outlined">logout</span>
                     <span>Logout</span>
                 </a>
             `;
+            
         } else {
             sidebarLinks += `
                 <a href="pages/login.php" class="sidebar-link" id="login-link">
@@ -229,14 +236,20 @@ function insertSidebar() {
                     <span class="material-symbols-outlined">person</span>
                     <span>meine Rezepte</span>
                 </a>
-                <a href="../pages/admin-panel.php" class="sidebar-link" id="admin-link">
-                    <span class="material-symbols-outlined">shield_person</span>
-                    <span>Admin-Panel</span>
-                </a>
                 <a href="../pages/profil.php?query=settings" class="sidebar-link" id="einstelungen-link">
                     <span class="material-symbols-outlined">settings</span>
                     <span>Einstellungen</span>
                 </a>
+            `;
+            if(isAdmin){
+                sidebarLinks += `
+                    <a href="../pages/admin-panel.php" class="sidebar-link" id="admin-link">
+                        <span class="material-symbols-outlined">shield_person</span>
+                        <span>Admin-Panel</span>
+                    </a>
+                `;
+            }
+            sidebarLinks += `
                 <a href="../pages/logout.php" class="sidebar-link" id="logout-link">
                     <span class="material-symbols-outlined">logout</span>
                     <span>Logout</span>

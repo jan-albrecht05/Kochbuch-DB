@@ -7,6 +7,8 @@
     <title>Admin Panel - Kochbuch</title>
     <script>
         var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        var isAdmin = <?php if($_SESSION['rolle'] == 'admin') {echo 'true';}else{echo'false';}; ?>;
+        var isEditor = <?php if($_SESSION['rolle'] == 'editor') {echo 'true';}else{echo'false';}; ?>;
     </script>
     <link rel="icon" href="../assets/icons/Topficon.png">
     <link rel="stylesheet" href="../assets/css/main.css">

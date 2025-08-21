@@ -26,10 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['item_id']) && !empty(
 }
 $lists = $usersdb->query("SELECT * FROM shopping_lists WHERE user_id = $user_id");
 $list = $lists->fetchArray(SQLITE3_ASSOC);
+
 if (!$list) {
-    // If no list is selected, redirect to the first list or create a new one
-    $list = 'Einkaufsliste';
-    exit;
+    // Neue Liste für den User anlegen
+    $stmt = $usersdb->prepare("INSERT INTO shopping_lists (user_id, name) VALUES (:user_id, :name)");
+    $stmt->bindValue(':user_id', $user_id, SQLITE3_INTEGER);
+    $stmt->bindValue(':name', 'Meine Einkaufsliste', SQLITE3_TEXT);
+    $stmt->execute();
+
+    // Direkt die neue Liste wieder abrufen
+    $lists = $usersdb->query("SELECT * FROM shopping_lists WHERE user_id = $user_id");
+    $list = $lists->fetchArray(SQLITE3_ASSOC);
 }
 ?>
 <?php
@@ -79,6 +86,8 @@ if (!$list) {
     <script src="../assets/js/horizontal_scroll.js" defer></script>
     <script>
         var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        var isAdmin = <?php if($_SESSION['rolle'] == 'admin') {echo 'true';}else{echo'false';}; ?>;
+        var isEditor = <?php if($_SESSION['rolle'] == 'editor') {echo 'true';}else{echo'false';}; ?>;
     </script>
     <script src="../assets/js/heading.js" defer></script>
     <script src="../assets/js/footer.js" defer></script>
@@ -245,6 +254,9 @@ if (!$list) {
                     </button>
                 </form>
             </div>";
+                    }
+                    if (!$hasItems) {
+                        $hidden = 'style="display:none;"';
                     }
                     echo '
                             <div id="controls">

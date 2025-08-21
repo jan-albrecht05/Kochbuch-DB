@@ -26,6 +26,8 @@
     <script src="../assets/js/popups.js"></script>
     <script>
         var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+        var isAdmin = <?php if($_SESSION['rolle'] == 'admin') {echo 'true';}else{echo'false';}; ?>;
+        var isEditor = <?php if($_SESSION['rolle'] == 'editor') {echo 'true';}else{echo'false';}; ?>;
     </script>
     <script src="../assets/js/heading.js" defer></script>
     <script src="../assets/js/footer.js" defer></script>
