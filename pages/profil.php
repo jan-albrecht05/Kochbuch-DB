@@ -123,6 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
         <div id="profil">
             <?php
                 $user_id = $_SESSION['user_id'];
+                $row = $usersdb->query("SELECT name, email_address, profilbild FROM users WHERE id = $user_id")->fetchArray(SQLITE3_ASSOC);
                 $username = $row ? $row['name'] : 'Gast';
                 $email = $row ? $row['email_address'] : '';
                 $profilbild = $row && !empty($row['profilbild']) ? $row['profilbild'] : $row['profilbild'];
