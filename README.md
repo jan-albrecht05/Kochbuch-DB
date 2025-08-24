@@ -16,6 +16,12 @@
 ## 🎯 index.php
  - ❌ arrows for horizontal scrolling
 
+## ✅ Verifizieren.php 
+ - ❌ update verify logic
+
+## 🚹 admin-panel.php
+ - ❌ update selection for Logs
+
 ## 💥 gericht.php
  - ❌ save-btn ohne login -> redirect
  - ❌ calculation for ingredients

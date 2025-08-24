@@ -469,11 +469,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                     <label for="Logins">Logins</label>
                     <input type="checkbox" name="Registrierungen" checked>
                     <label for="Registrierungen">Registrierungen</label>
-                    <input type="checkbox" name="Rezept-Erstellungen" checked>
-                    <label for="Rezept-Erstellungen">Erstellungen</label>
+                    <input type="checkbox" name="Konto-Löschungen" checked>
+                    <label for="Konto-Löschungen">Konto-Löschungen</label>
+                    <input type="checkbox" name="Gerichte" checked>
+                    <label for="Gerichte">Gerichte</label>
                     <input type="checkbox" name="Rezept-Bearbeitungen" checked>
-                    <label for="Rezept-Bearbeitungen">Bearbeitungen</label>
-                    <input type="checkbox" name="Fehlermeldungen" checked>
                     <label for="Fehlermeldungen">Fehlermeldungen</label>
                     <input type="checkbox" name="Feedbacks" checked>
                     <label for="Feedbacks">Feedbacks</label>

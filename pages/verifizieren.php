@@ -31,7 +31,7 @@ if (!$hash) {
             <small>Du wirst in 5 Sekunden weitergeleitet.</small>
         </span>    
     </p>';
-    header("refresh:5;url=../index.php");
+    //header("refresh:5;url=../index.php");
     exit;
 }
 
@@ -52,7 +52,7 @@ if ($user) {
         $update = $usersdb->prepare("UPDATE users SET status = 2 WHERE id = :id");
         $update->bindValue(':id', $user['id'], SQLITE3_INTEGER);
         $update->execute();
-        $user_row = $usersdb->prepare("SELECT * from users where id = :id");
+        $user_row = $usersdb->query("SELECT * FROM users WHERE id = $user_id")->fetchArray(SQLITE3_ASSOC);
         $user_row->execute();
         $username = $user_row['name'];
         echo '
@@ -69,7 +69,7 @@ if ($user) {
             $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
             $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
             $log_stmt->execute();
-        header("refresh:5;url=login.php");
+        //header("refresh:5;url=login.php");
 
     } else {
         echo '
