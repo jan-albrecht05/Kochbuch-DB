@@ -262,7 +262,7 @@ a.sidebar-link span:first-child{
     }
     #sidebar{
         width: 100%;
+        height: calc(100% - 3rem);
         padding-top: 3rem;
-        height: 94lvh;
     }
 }

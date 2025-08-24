@@ -269,8 +269,8 @@
                 $made_by_user = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
                 $status = ($made_by_user === 0) ? 1 : 0;
             // Rezept einfügen
-                $stmt = $db->prepare("INSERT INTO gerichte (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, made_by_id, status) 
-                    VALUES (:titel, :beschreibung, :tags, :vorbereitungszeit, :zubereitungszeit, :bild1, :bild2, :bild3, :personen, :made_by_id, :status)");
+                $stmt = $db->prepare("INSERT INTO gerichte (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, made_by_id, status, timecode_erstellt) 
+                    VALUES (:titel, :beschreibung, :tags, :vorbereitungszeit, :zubereitungszeit, :bild1, :bild2, :bild3, :personen, :made_by_id, :status, :timecode_erstellt)");
                     $stmt->bindValue(':titel', $titel, SQLITE3_TEXT);
                     $stmt->bindValue(':beschreibung', $beschreibung, SQLITE3_TEXT);
                     $stmt->bindValue(':tags', $tags, SQLITE3_TEXT);
@@ -282,6 +282,7 @@
                     $stmt->bindValue(':personen', $personen, SQLITE3_TEXT);
                     $stmt->bindValue(':made_by_id', $made_by_user, SQLITE3_TEXT);
                     $stmt->bindValue(':status', $status, SQLITE3_TEXT);
+                    $stmt->bindValue(':timecode_erstellt', time(), SQLITE3_INTEGER);
                 $stmt->execute();
 
             // Zutaten auslesen (mehrere Einträge)
@@ -303,17 +304,28 @@
             }
 
             // Schritte auslesen (mehrere Einträge)
-if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
-    for ($j = 0; $j < count($_POST['schritt']); $j++) {
-        $schritt = $_POST['schritt'][$j] ?? '';
-        if ($schritt !== '') {
-            $stmt = $db->prepare("INSERT INTO schritte (gerichte_id, schritt) VALUES (:gerichte_id, :schritt)");
-            $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
-            $stmt->bindValue(':schritt', $schritt, SQLITE3_TEXT);
-            $stmt->execute();
-        }
-    }
-}
+            if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
+                for ($j = 0; $j < count($_POST['schritt']); $j++) {
+                    $schritt = $_POST['schritt'][$j] ?? '';
+                    if ($schritt !== '') {
+                        $stmt = $db->prepare("INSERT INTO schritte (gerichte_id, schritt) VALUES (:gerichte_id, :schritt)");
+                        $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
+                        $stmt->bindValue(':schritt', $schritt, SQLITE3_TEXT);
+                        $stmt->execute();
+                    }
+                }
+            }
+            // Log the event
+            $logs_db = new SQLite3("../assets/db/logs.db");
+            $username = isset($_SESSION['name']) ? $_SESSION['name'] : 'Gast';
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $id = 'Rezept '.$db->querySingle("SELECT MAX(id) FROM gerichte").' erstellt';
+            $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event, timecode, 'IP-Adresse') VALUES (:name, :event, :timecode, :ip)");
+            $log_stmt->bindValue(':name', $username, SQLITE3_TEXT);
+            $log_stmt->bindValue(':event', $id, SQLITE3_TEXT);
+            $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
+            $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
+            $log_stmt->execute();
 
                 //Positiv Popup
                 echo '

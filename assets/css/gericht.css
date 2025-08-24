@@ -114,6 +114,47 @@ button:hover{
 #date_created span.material-symbols-outlined{
     margin-right: .3rem;
 }
+#personen-anpassen{
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+#personenanzahl{
+    height: 2rem;
+    font-size: 120%;
+    font-weight: bold;
+    min-width: 3rem;
+    background-color: var(--lightgrey);
+}
+#personen-anpassen button{
+    width: 2.5rem;
+    height: 2rem;
+    border-radius: 0;
+    border: none;
+    background-color: var(--lightgrey);
+    font-size: 150%;
+    font-weight: bold;
+    line-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+}
+#personen-anpassen button:hover{
+    background-color: var(--lightgrey2);
+    cursor: pointer;
+}
+#personen-anpassen button:disabled{
+    background-color: var(--lightgrey);
+    cursor: not-allowed;
+    color: grey;
+}
+#personen-anpassen button:first-child{
+    border-radius: 10px 0 0 10px;
+}
+#personen-anpassen button:last-child{
+    border-radius: 0 10px 10px 0;
+}
 .zutat{
     margin-bottom: .5rem;
     font-size: 120%;

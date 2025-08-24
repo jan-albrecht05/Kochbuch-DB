@@ -149,16 +149,26 @@
                 <span class="material-symbols-outlined">calendar_month</span>
                 <span>
                     <?php
-                        $dt = new DateTime($row['timecode_erstellt'], new DateTimeZone('UTC'));
-                        echo $dt->format('d.m.Y');
+                        echo date("d.m.Y",$row['timecode_erstellt']+ 6 * 3600); 
                     ?>
                 </span>
             </div>
         </div>
         <div id="zutaten">
             <h2>Zutaten</h2>
-            <p>(für <?php echo ($row["personen"])?> Personen)</p>
-            <?php 
+            <div id="personen-anpassen">
+                <button id="minusBtn">
+                    <span class="material-symbols-outlined">remove</span>
+                </button>
+                <span id="personenanzahl" class="center">
+                    <?php echo ($row["personen"])?>
+                </span>
+                <button id="plusBtn">
+                    <span class="material-symbols-outlined">add</span>
+                </button>
+            </div>
+            <?php
+                // need to implement calculation for ingredients based on persons
                 while ($zutat = $zutatenResult->fetchArray(SQLITE3_ASSOC)) {
                     echo '<div class="zutat">
                             <span class="menge">'.htmlspecialchars($zutat["menge"]).'</span>
@@ -377,6 +387,8 @@
     // insert problem report into gerichte.db
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['problem']) && isset($_POST['recipe_id'])) {
         $problem = trim($_POST['problem']);
+        $timecode_error = time();
+        $db->exec("UPDATE gerichte SET timecode_error = $timecode_error WHERE id = $id");
         $recipe_id = intval($_POST['recipe_id']);
         if (!empty($problem)) {
             $stmt = $db->prepare("UPDATE gerichte SET error_msg = :problem WHERE id = :id");

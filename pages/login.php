@@ -17,6 +17,7 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
     $db = new SQLite3("../assets/db/users.db");
+    $logs_db = new SQLite3("../assets/db/logs.db");
     $username = trim($_POST['username']);
     $password = $_POST['password'];
 
@@ -31,7 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
             $_SESSION['user_id'] = $result['id'];
             $_SESSION['name'] = $result['name'];
             $_SESSION['rolle'] = $result['rolle'];
-            $_SESSION['profile_picture'] = $result['profile_picture'];
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event, timecode, 'IP-Adresse') VALUES (:name, :event, :timecode, :ip)");
+            $log_stmt->bindValue(':name', $result['name'], SQLITE3_TEXT);
+            $log_stmt->bindValue(':event', 'login', SQLITE3_TEXT);
+            $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
+            $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
+            $log_stmt->execute();
 
             // Handle redirect
             if (!empty($_POST['redirect'])) {

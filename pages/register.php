@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $stmt = $db->prepare("SELECT * FROM users WHERE name = :username");
         $stmt->bindValue(':username', $username, SQLITE3_TEXT);
         $result = $stmt->execute()->fetchArray(SQLITE3_ASSOC);
-        $timestamp_register = date('Y-m-d H:i:s', time());
+        $timestamp_register = time();
 
         if ($result) {
             $login_error = "Benutzername bereits vergeben!";
@@ -100,6 +100,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
                 $headers .= "From: Kochbuch <noreply.kochbuch@jan-alb.de>\r\n";
                 mail($to,$subject,$message,$headers);                
                 
+                // Log the event
+                $logs_db = new SQLite3("../assets/db/logs.db");
+                $ip = $_SERVER['REMOTE_ADDR'];
+                $id = 'Konto '.$db->querySingle("SELECT MAX(id) FROM users").' "'.$username.'" erstellt';
+                $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event, timecode, 'IP-Adresse') VALUES (:name, :event, :timecode, :ip)");
+                $log_stmt->bindValue(':name', $username, SQLITE3_TEXT);
+                $log_stmt->bindValue(':event', $id, SQLITE3_TEXT);
+                $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
+                $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
+                $log_stmt->execute();
                 //positive feedback
                 $login_error = "Konto erfolgreich erstellt! Bitte überprüfe deine E-Mails, um dein Konto zu verifizieren.";
             } else {

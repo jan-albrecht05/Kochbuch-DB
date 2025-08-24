@@ -5,6 +5,7 @@ summary h1{
 }
 summary{
     list-style: none;
+    user-select: none;
 }
 summary::-webkit-details-marker {
   display: none;
@@ -217,6 +218,59 @@ h2.id{
     width: 40%;
     margin-right: 1rem;
 }
+#log-selection{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#log-selection select{
+    width: auto;
+    padding: .5rem;
+}
+input[type="checkbox"]{
+    accent-color: var(--orange);
+}
+#log-heading{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid black;
+    margin-bottom: .5rem;
+    text-align: left;
+}
+#log-heading h2{
+    text-align: left;
+}
+#log-heading .timecode,
+.log .timecode{
+    margin-left: 0;
+    width: 12% !important;
+}
+#log-heading .loguser,
+.log .loguser{
+    width: 15% !important;
+}
+#log-heading .event,
+.log .event{
+    width: 58% !important;
+}
+#log-heading .IP-Adresse,
+.log .IP-Adresse{
+    width: 15% !important;
+    text-align: right;
+}
+.log{
+    display: flex;
+    align-items: center;
+    padding: .5rem;
+}
+.log:nth-child(2n+1){
+    background-color: var(--bg-color-transparent);
+}
+.error{
+    color: var(--red);
+    font-weight: bold;
+}
 @media (max-width:600px) {
     h3.beschreibung{
         font-size: 80%;
@@ -236,6 +290,9 @@ h2.id{
     }
     .section{
         padding: .3rem;
+    }
+    details{
+        font-size: 80%;
     }
     .buttons{
         width: min-content;
@@ -257,5 +314,8 @@ h2.id{
     }
     #username{
         width: auto;
+    }
+    #logs{
+        display: none;
     }
 }

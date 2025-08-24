@@ -17,8 +17,8 @@
     <link rel="stylesheet" href="../assets/css/footer.css">
     <link rel="stylesheet" href="../assets/css/admin.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
-    <script src="../assets/js/heading.js"></script>
-    <script src="../assets/js/footer.js"></script>
+    <script src="../assets/js/heading.js" defer></script>
+    <script src="../assets/js/footer.js" defer></script>
 </head>
 <body>
 <?php
@@ -141,9 +141,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
     $db = new SQLite3("../assets/db/users.db");
     $user_id = $_POST['delete_user_id'];
+    $username = $db->querySingle("SELECT name FROM users WHERE id = $user_id");
     $stmt = $db->prepare("DELETE FROM users WHERE id = :id");
     $stmt->bindValue(':id', $user_id, SQLITE3_INTEGER);
     if ($stmt->execute()) {
+        // Log the event
+            $logs_db = new SQLite3("../assets/db/logs.db");
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $id = 'Benutzer '.$username.' gelöscht';
+            $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event, timecode, 'IP-Adresse') VALUES (:name, :event, :timecode, :ip)");
+            $log_stmt->bindValue(':name', $_SESSION['name'], SQLITE3_TEXT);
+            $log_stmt->bindValue(':event', $id, SQLITE3_TEXT);
+            $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
+            $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
+            $log_stmt->execute();
         header("Location: admin-panel.php");
         exit;
     } else {
@@ -248,7 +259,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                 </a>
             </div>
         </div>
-        <details id="benutzer-hinzufügen" class="section" open>
+        <details id="benutzer-hinzufügen" class="section" >
             <summary><h1>Benutzer<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
             <button id="add-user" class="center">
                 <span class="material-symbols-outlined">add</span> Benutzer hinzufügen
@@ -379,7 +390,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
     </script>
         <details id="open_recepies" class="section">
             <summary><h1>offene Rezepte<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
-        <!-- TO DO: Status auf 0 setzen wenn Haken -->
             <div class="rezept" id="rezept-heading">
                 <h2 class="id">ID</h2>
                 <h2 class="titel">Titel</h2>
@@ -394,7 +404,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                     <div class="rezept" id="'.htmlspecialchars($rezept['id']).'">
                         <div class="id">#'.htmlspecialchars($rezept['id']).'</div>
                         <div class="titel">'.htmlspecialchars($rezept['titel']).'</div>
-                        <div class="timecode">'.htmlspecialchars($rezept['timecode_erstellt']).'</div>
+                        <div class="timecode">'.htmlspecialchars($rezept['timecode_erstellt']+ 6 * 3600).'</div>
                         <div class="buttons">
                             <form method="post" style="display:inline;">
                                 <input type="hidden" name="set_status_id" value="'.htmlspecialchars($rezept['id']).'">
@@ -415,7 +425,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
         </details>
         <details id="errors" class="section">
             <summary><h1>Fehlermeldungen<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
-    <!-- TO DO: Funktion zum abhaken hinzufügen-->
             <div class="rezept" id="rezept-heading">
                 <h2 class="id">ID</h2>
                 <h2 class="titel">Titel</h2>
@@ -432,7 +441,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                         <div class="id">#'.htmlspecialchars($rezept['id']).'</div>
                         <div class="titel">'.htmlspecialchars($rezept['titel']).'</div>
                         <div class="error_msg">'.htmlspecialchars($rezept['error_msg']).'</div>
-                        <div class="timecode">'.htmlspecialchars($rezept['timecode_erstellt']).'</div>
+                        <div class="timecode">'.date("d.m.Y H:m",$rezept['timecode_error']+ 6 * 3600).'</div>
                         <div class="buttons">
                             <button class="btn-edit" onclick="window.location.href = \'rezept-bearbeiten.php?id='.htmlspecialchars($rezept['id']).'\'"><span class="material-symbols-outlined">edit</span></button>
                             <form method="post" style="display:inline;">
@@ -445,9 +454,112 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                 }
             ?>
         </details>
+        <details id="logs" class="section" open>
+            <summary><h1>Logs<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
+            <form id="log-selection" onchange="//updateLogDisplay()">
+                <select id="timeselection">
+                    <option value="0" selected>letzte 24h</option>
+                    <option value="letzte 7 Tage">letzte 7 Tage</option>
+                    <option value="letzte 30 Tage">letzte 30 Tage</option>
+                    <option value="letzte 6 Monate">letzte 6 Monate</option>
+                    <option value="alle">alle</option>
+                </select>
+                <div id="log-buttons">
+                    <input type="checkbox" name="Logins" checked>
+                    <label for="Logins">Logins</label>
+                    <input type="checkbox" name="Registrierungen" checked>
+                    <label for="Registrierungen">Registrierungen</label>
+                    <input type="checkbox" name="Rezept-Erstellungen" checked>
+                    <label for="Rezept-Erstellungen">Erstellungen</label>
+                    <input type="checkbox" name="Rezept-Bearbeitungen" checked>
+                    <label for="Rezept-Bearbeitungen">Bearbeitungen</label>
+                    <input type="checkbox" name="Fehlermeldungen" checked>
+                    <label for="Fehlermeldungen">Fehlermeldungen</label>
+                    <input type="checkbox" name="Feedbacks" checked>
+                    <label for="Feedbacks">Feedbacks</label>
+                </div>
+                <?php
+                    // Default values
+                    $timespan_selected = '0'; // last 24 hours
+                    $event_types_selected = "'Login', 'Registrierung', 'Rezept-Erstellung', 'Rezept-Bearbeitung', 'Fehlermeldung', 'Feedback'";
+
+                    // Update based on user selection (this is just a placeholder, actual implementation needed)
+
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                        // Handle timespan selection
+                        if (isset($_POST['timeselection'])) {
+                            switch ($_POST['timeselection']) {
+                                case 'letzte 7 Tage':
+                                    $timespan_selected = strtotime('-7 days');
+                                    break;
+                                case 'letzte 30 Tage':
+                                    $timespan_selected = strtotime('-30 days');
+                                    break;
+                                case 'letzte 6 Monate':
+                                    $timespan_selected = strtotime('-6 months');
+                                    break;
+                                case 'alle':
+                                    $timespan_selected = '0';
+                                    break;
+                                default:
+                                    $timespan_selected = strtotime('-1 day');
+                            }
+                        }
+
+                        // Handle event type selection
+                        $selected_types = [];
+                        if (isset($_POST['Logins'])) $selected_types[] = "'Login'";
+                        if (isset($_POST['Registrierungen'])) $selected_types[] = "'Registrierung'";
+                        if (isset($_POST['Rezept-Erstellungen'])) $selected_types[] = "'Rezept-Erstellung'";
+                        if (isset($_POST['Rezept-Bearbeitungen'])) $selected_types[] = "'Rezept-Bearbeitung'";
+                        if (isset($_POST['Fehlermeldungen'])) $selected_types[] = "'Fehlermeldung'";
+                        if (isset($_POST['Feedbacks'])) $selected_types[] = "'Feedback'";
+
+                        if (!empty($selected_types)) {
+                            $event_types_selected = implode(", ", $selected_types);
+                        } else {
+                            // If no types selected, default to all
+                            $event_types_selected = "'Login', 'Registrierung', 'Rezept-Erstellung', 'Rezept-Bearbeitung', 'Fehlermeldung', 'Feedback'";
+                        }
+                    }
+                ?>
+            </form>
+            <div id="log-heading">
+                <h2 class="timecode">Timecode</h2>
+                <h2 class="loguser">User</h2>
+                <h2 class="event">Event</h2>
+                <h2 class="IP-Adresse">IP-Adresse</h2>
+            </div>
+            <?php
+               
+                $timespan_selected = time() - 86400; // Default to last 24 hours
+                $event_types_selected = "'Login', 'Registrierung', 'Rezept-Erstellung', 'Rezept-Bearbeitung', 'Fehlermeldung', 'Feedback'"; // Default to all types
+                $logs = new SQLite3("../assets/db/logs.db");
+                $result = $logs->query("SELECT * FROM logs ORDER BY timecode DESC");
+                while ($log = $result->fetchArray(SQLITE3_ASSOC)) { 
+                    $class='';
+                    $timecode = date("d.m.Y H:m",$log['timecode']+ 6 * 3600);
+                    if ($timespan_selected != '0' && $log['timecode'] < $timespan_selected) {
+                        continue; // Skip logs outside the selected timespan
+                    }
+                    // if log contains 'error'
+                    if (str_contains($log['event'], 'error')) {
+                        $class=' error';
+                    }
+                    echo '
+                    <div class="log'.$class.'">
+                        <div class="timecode">'.$timecode.'</div>
+                        <div class="loguser">'.htmlspecialchars($log['user']).'</div>
+                        <div class="event">'.htmlspecialchars($log['event']).'</div>
+                        <div class="IP-Adresse">'.htmlspecialchars($log['IP-Adresse']).'</div>
+                    </div>
+                    ';
+                }
+            ?>
+        </details>
     </div>
-    <div id="footer">
-        <!-- Code gets injected by heading.js -->
-    </div
 </body>
+    <div id="footer">
+        <!-- Code gets injected by footer.js -->
+    </div>
 </html>
