@@ -1,0 +1,28 @@
+#message{
+    background-color: var(--bg-color-transparent);
+    width: 50%;
+    min-width: 300px;
+    margin-inline: auto;
+    padding: 2rem;
+    margin-top: 4rem;
+    border: 2px solid var(--bg-color);
+    border-radius: 10px;
+    font-size: 120%;
+}
+small{
+    font-size: 80%;
+}
+span.material-symbols-outlined{
+    font-size: 3rem;
+    margin-right: 1rem;
+}
+.red{
+    color: red;
+}
+.green{
+    color: white;
+    background-color: green;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 1rem;
+}
