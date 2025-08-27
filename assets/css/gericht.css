@@ -366,13 +366,11 @@ fieldset{
     }
     #buttons{
         width: auto;
+        height: min-content;
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         margin-inline: .5rem;
         position: sticky;
-    }
-    button{
-        margin-bottom: .5rem;
     }
     #info{
         min-height: 5.5rem;

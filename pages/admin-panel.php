@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php session_start(); ?>
+    <?php 
+        session_start(); 
+        date_default_timezone_set('Europe/Berlin');
+
+        // CSRF token generation
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+        $csrf_token = $_SESSION['csrf_token'];
+    ?>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Kochbuch</title>
     <script>
         var isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
-        var isAdmin = <?php if($_SESSION['rolle'] == 'admin') {echo 'true';}else{echo'false';}; ?>;
-        var isEditor = <?php if($_SESSION['rolle'] == 'editor') {echo 'true';}else{echo'false';}; ?>;
+        var isAdmin = <?php echo (isset($_SESSION['rolle']) && $_SESSION['rolle'] == 'admin') ? 'true' : 'false'; ?>;
+        var isEditor = <?php echo (isset($_SESSION['rolle']) && $_SESSION['rolle'] == 'editor') ? 'true' : 'false'; ?>;
     </script>
     <link rel="icon" href="../assets/icons/Topficon.png">
     <link rel="stylesheet" href="../assets/css/main.css">
@@ -26,6 +36,10 @@
 if (!isset($_SESSION['rolle']) || $_SESSION['rolle'] !== 'admin') {
     header("Location: login.php?redirect=admin-panel.php");
     exit;
+}
+// CSRF check helper
+function check_csrf() {
+    return isset($_POST['csrf_token']) && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token']);
 }
 // sets status to 0 (= active)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['set_status'])) {
@@ -102,6 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
     $username = trim($_POST['username']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $rolle = $_POST['rolle'];
+    $mail = $_POST['mail'];
     $profileImgName = '';
 
     // Handle profile picture upload
@@ -123,10 +138,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
     if ($res['count'] > 0) {
         echo "<div style='color:red;'>Benutzername existiert bereits!</div>";
     } else {
-        $stmt = $db->prepare("INSERT INTO users (name, password, rolle, profilbild) VALUES (:username, :password, :rolle, :profilbild)");
+        $stmt = $db->prepare("INSERT INTO users (name, password, rolle, profilbild, email_address) VALUES (:username, :password, :rolle, :profilbild, :mail)");
         $stmt->bindValue(':username', $username, SQLITE3_TEXT);
         $stmt->bindValue(':password', $password, SQLITE3_TEXT);
         $stmt->bindValue(':rolle', $rolle, SQLITE3_TEXT);
+        $stmt->bindValue(':mail', $mail, SQLITE3_TEXT);
         $stmt->bindValue(':profilbild', $profileImgName, SQLITE3_TEXT);
         if ($stmt->execute()) {
             header("Location: admin-panel.php");
@@ -138,23 +154,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_user'])) {
 }
 
 // --- Handle Delete User ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user']) && check_csrf()) {
     $db = new SQLite3("../assets/db/users.db");
-    $user_id = $_POST['delete_user_id'];
-    $username = $db->querySingle("SELECT name FROM users WHERE id = $user_id");
+    $user_id = intval($_POST['delete_user_id']);
+    $stmt = $db->prepare("SELECT name FROM users WHERE id = :id");
+    $stmt->bindValue(':id', $user_id, SQLITE3_INTEGER);
+    $username = $stmt->execute()->fetchArray(SQLITE3_ASSOC)['name'];
     $stmt = $db->prepare("DELETE FROM users WHERE id = :id");
     $stmt->bindValue(':id', $user_id, SQLITE3_INTEGER);
     if ($stmt->execute()) {
         // Log the event
-            $logs_db = new SQLite3("../assets/db/logs.db");
-            $ip = $_SERVER['REMOTE_ADDR'];
-            $id = 'Benutzer '.$username.' gelöscht';
-            $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event, timecode, 'IP-Adresse') VALUES (:name, :event, :timecode, :ip)");
-            $log_stmt->bindValue(':name', $_SESSION['name'], SQLITE3_TEXT);
-            $log_stmt->bindValue(':event', $id, SQLITE3_TEXT);
-            $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
-            $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
-            $log_stmt->execute();
+        $logs_db = new SQLite3("../assets/db/logs.db");
+        $ip = $_SERVER['REMOTE_ADDR'];
+        $event = 'Benutzer '.$username.' gelöscht';
+        $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event_type, event, timecode, 'IP-Adresse') VALUES (:name, :event_type, :event, :timecode, :ip)");
+        $log_stmt->bindValue(':name', $_SESSION['name'], SQLITE3_TEXT);
+        $log_stmt->bindValue(':event_type', 'Konto-Löschung', SQLITE3_TEXT);
+        $log_stmt->bindValue(':event', $event, SQLITE3_TEXT);
+        $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
+        $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
+        $log_stmt->execute();
         header("Location: admin-panel.php");
         exit;
     } else {
@@ -163,16 +182,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user'])) {
 }
 
 // --- Handle Edit User ---
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user']) && check_csrf()) {
     $db = new SQLite3("../assets/db/users.db");
     $user_id = intval($_POST['edit_user_id']);
     $username = trim($_POST['username']);
     $rolle = $_POST['rolle'];
-    $fields = ['name = :username', 'rolle = :rolle'];
+    $mail = $_POST['edit-mail'];
+    $fields = ['name = :username', 'rolle = :rolle', 'email_address = :mail'];
     $params = [
         ':username' => $username,
         ':rolle' => $rolle,
-        ':id' => $user_id
+        ':id' => $user_id,
+        ':mail' => $mail
     ];
 
     // If password is set, update it
@@ -186,14 +207,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
         $allowedimgtypes = array("png", "jpeg", "jpg", "JPG", "ico");
         $img_extention = pathinfo($_FILES['profilbild']['name'], PATHINFO_EXTENSION);
         if (in_array(strtolower($img_extention), $allowedimgtypes)) {
-            $profileImgName = $username . '.' . $img_extention;
+            $profileImgName = strtolower($username) . '.' . $img_extention;
             $targetpathProfileImage = "../assets/img/uploads/users/" . $profileImgName;
             move_uploaded_file($_FILES['profilbild']['tmp_name'], $targetpathProfileImage);
             $fields[] = 'profilbild = :profilbild';
             $params[':profilbild'] = $profileImgName;
         }
     }
-
     $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE id = :id";
     $stmt = $db->prepare($sql);
     foreach ($params as $key => $value) {
@@ -224,7 +244,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
         };
         $result2 = $rezepte->query("SELECT * FROM gerichte WHERE error_msg != ''");
         while ($rezept2 = $result2->fetchArray(SQLITE3_ASSOC)) {
-    // CHECK THIS
             $fehler ++;
         };
         $result3 = $rezepte->query("SELECT * FROM gerichte WHERE status != 0");
@@ -280,7 +299,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             $profile_img = !empty($user['profilbild'])
             ? 'assets/img/uploads/users/' . $user['profilbild']
             : $default_img;
-            echo '<img src="../' . htmlspecialchars($profile_img) . '" alt="">';
+            echo '<img loading="lazy" src="../' . htmlspecialchars($profile_img) . '" alt="">';
             echo '  </div>';
             echo '  <div id="username" class="center">';
             echo '    <span>' . htmlspecialchars($user['name']) . '</span>';
@@ -298,6 +317,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             data-id="' . htmlspecialchars($user['id']) . '"
             data-username="' . htmlspecialchars($user['name']) . '"
             data-rolle="' . htmlspecialchars($user['rolle']) . '"
+            data-mail="' . htmlspecialchars($user['email_address']) . '"
             data-profilbild="' . htmlspecialchars($user['profilbild']) . '">
             <span class="material-symbols-outlined">edit</span>
             </button>';
@@ -317,6 +337,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             <input type="text" id="username" name="username" required><br>
             <label for="password">Passwort:</label>
             <input type="password" id="password" name="password" required><br>
+            <label for="mail">E-Mail:</label>
+            <input type="text" id="mail" name="mail"><br>
             <label for="role">Rolle:</label>
             <select id="role" name="rolle" required>
                 <option value="user">User</option>
@@ -335,12 +357,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
     </div>
     <div class="popup center" id="edit-user-popup" style="display:none;">
         <form id="edit-user-form" method="POST" action="" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
             <h2>Benutzer bearbeiten</h2>
             <input type="hidden" name="edit_user_id" value="">
             <label for="edit-username">Benutzername:</label>
             <input type="text" id="edit-username" name="username" required><br>
             <label for="edit-password">Passwort:</label>
             <input type="password" id="edit-password" name="password" placeholder="Nur ausfüllen, wenn ändern" autocomplete="new-password"><br>
+            <label for="edit-mail">E-Mail:</label>
+            <input type="text" id="edit-mail" name="edit-mail"><br>
             <label for="edit-role">Rolle:</label>
             <select id="edit-role" name="rolle" required>
                 <option value="user">User</option>
@@ -349,7 +374,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
             </select><br>
             <label for="edit-profilbild">Profilbild:</label>
             <input type="file" name="profilbild" id="edit-profilbild"><br>
-            <img id="current-profile-pic" src="..assets/img/uploads/users/<?php echo htmlspecialchars($user['profilbild']);?>" alt="Aktuelles Profilbild" style="max-width:80px"><br>
+            <img id="current-profile-pic" src="" alt="Aktuelles Profilbild" style="max-width:80px;display:none"><br>
             <div class="buttons">
                 <button type="button" id="close-popup-edit">Abbrechen</button>
                 <button type="submit" name="edit_user" id="edit_user">Aktualisieren</button>
@@ -375,6 +400,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                     document.getElementById("edit-user-form").reset();
                     document.getElementById("edit-user-form").elements["edit_user_id"].value = btn.dataset.id;
                     document.getElementById("edit-username").value = btn.dataset.username;
+                    document.getElementById("edit-mail").value = btn.dataset.mail || '';
                     document.getElementById("edit-role").value = btn.dataset.rolle;
                     // Show current profile picture if available
                     let img = document.getElementById("current-profile-pic");
@@ -454,75 +480,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                 }
             ?>
         </details>
-        <details id="logs" class="section" open>
+        <details id="logs" class="section" <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['timeselection'])) echo 'open'; ?>>
             <summary><h1>Logs<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
-            <form id="log-selection" onchange="//updateLogDisplay()">
-                <select id="timeselection">
-                    <option value="0" selected>letzte 24h</option>
-                    <option value="letzte 7 Tage">letzte 7 Tage</option>
-                    <option value="letzte 30 Tage">letzte 30 Tage</option>
-                    <option value="letzte 6 Monate">letzte 6 Monate</option>
-                    <option value="alle">alle</option>
+            <form id="log-selection" method="POST" action="#logs" onchange="this.submit()">
+                <select id="timeselection" name="timeselection">
+                    <option value="0" <?php if(($_POST['timeselection'] ?? '') === '0') echo 'selected'; ?>>letzte 24h</option>
+                    <option value="letzte 7 Tage" <?php if(($_POST['timeselection'] ?? '') === 'letzte 7 Tage') echo 'selected'; ?>>letzte 7 Tage</option>
+                    <option value="letzte 30 Tage" <?php if(($_POST['timeselection'] ?? '') === 'letzte 30 Tage') echo 'selected'; ?>>letzte 30 Tage</option>
+                    <option value="letzte 6 Monate" <?php if(($_POST['timeselection'] ?? '') === 'letzte 6 Monate') echo 'selected'; ?>>letzte 6 Monate</option>
+                    <option value="alle" <?php if(($_POST['timeselection'] ?? '') === 'alle') echo 'selected'; ?>>alle</option>
                 </select>
                 <div id="log-buttons">
-                    <input type="checkbox" name="Logins" checked>
+                    <input type="checkbox" name="Logins" id="Logins" <?php if(isset($_POST['Logins']) || !$_POST) echo 'checked'; ?>>
                     <label for="Logins">Logins</label>
-                    <input type="checkbox" name="Registrierungen" checked>
+                    <input type="checkbox" name="Registrierungen" id="Registrierungen" <?php if(isset($_POST['Registrierungen']) || !$_POST) echo 'checked'; ?>>
                     <label for="Registrierungen">Registrierungen</label>
-                    <input type="checkbox" name="Konto-Löschungen" checked>
-                    <label for="Konto-Löschungen">Konto-Löschungen</label>
-                    <input type="checkbox" name="Gerichte" checked>
-                    <label for="Gerichte">Gerichte</label>
-                    <input type="checkbox" name="Rezept-Bearbeitungen" checked>
-                    <label for="Fehlermeldungen">Fehlermeldungen</label>
-                    <input type="checkbox" name="Feedbacks" checked>
-                    <label for="Feedbacks">Feedbacks</label>
+                    <input type="checkbox" name="Konto-Verifizierung" id="Konto-Verifizierung" <?php if(isset($_POST['Konto-Verifizierung']) || !$_POST) echo 'checked'; ?>>
+                    <label for="Konto-Verifizierung">Konto-Verifizierungen</label>
+                    <input type="checkbox" name="Konto-Löschung" id="Konto-Löschung" <?php if(isset($_POST['Konto-Löschung']) || !$_POST) echo 'checked'; ?>>
+                    <label for="Konto-Löschung">Konto-Löschungen</label>
+                    <input type="checkbox" name="Rezept-Erstellung" id="Rezept-Erstellung" <?php if(isset($_POST['Rezept-Erstellung']) || !$_POST) echo 'checked'; ?>>
+                    <label for="Rezept-Erstellung">Gerichte</label>
+                    <input type="checkbox" name="Rezept-Bearbeitung" id="Rezept-Bearbeitung" <?php if(isset($_POST['Rezept-Bearbeitung']) || !$_POST) echo 'checked'; ?>>
+                    <label for="Rezept-Bearbeitung">Bearbeitungen</label>
+                    <input type="checkbox" name="Fehlermeldung" id="Fehlermeldung" <?php if(isset($_POST['Fehlermeldung']) || !$_POST) echo 'checked'; ?>>
+                    <label for="Fehlermeldung">Fehlermeldungen</label>
+                    <input type="checkbox" name="Error" id="Error" <?php if(isset($_POST['Error']) || !$_POST) echo 'checked'; ?>>
+                    <label for="Error">Errors</label>
+                    <input type="checkbox" name="Feedback" id="Feedback" <?php if(isset($_POST['Feedback']) || !$_POST) echo 'checked'; ?>>
+                    <label for="Feedback">Feedbacks</label>
                 </div>
-                <?php
-                    // Default values
-                    $timespan_selected = '0'; // last 24 hours
-                    $event_types_selected = "'Login', 'Registrierung', 'Rezept-Erstellung', 'Rezept-Bearbeitung', 'Fehlermeldung', 'Feedback'";
-
-                    // Update based on user selection (this is just a placeholder, actual implementation needed)
-
-                    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                        // Handle timespan selection
-                        if (isset($_POST['timeselection'])) {
-                            switch ($_POST['timeselection']) {
-                                case 'letzte 7 Tage':
-                                    $timespan_selected = strtotime('-7 days');
-                                    break;
-                                case 'letzte 30 Tage':
-                                    $timespan_selected = strtotime('-30 days');
-                                    break;
-                                case 'letzte 6 Monate':
-                                    $timespan_selected = strtotime('-6 months');
-                                    break;
-                                case 'alle':
-                                    $timespan_selected = '0';
-                                    break;
-                                default:
-                                    $timespan_selected = strtotime('-1 day');
-                            }
-                        }
-
-                        // Handle event type selection
-                        $selected_types = [];
-                        if (isset($_POST['Logins'])) $selected_types[] = "'Login'";
-                        if (isset($_POST['Registrierungen'])) $selected_types[] = "'Registrierung'";
-                        if (isset($_POST['Rezept-Erstellungen'])) $selected_types[] = "'Rezept-Erstellung'";
-                        if (isset($_POST['Rezept-Bearbeitungen'])) $selected_types[] = "'Rezept-Bearbeitung'";
-                        if (isset($_POST['Fehlermeldungen'])) $selected_types[] = "'Fehlermeldung'";
-                        if (isset($_POST['Feedbacks'])) $selected_types[] = "'Feedback'";
-
-                        if (!empty($selected_types)) {
-                            $event_types_selected = implode(", ", $selected_types);
-                        } else {
-                            // If no types selected, default to all
-                            $event_types_selected = "'Login', 'Registrierung', 'Rezept-Erstellung', 'Rezept-Bearbeitung', 'Fehlermeldung', 'Feedback'";
-                        }
-                    }
-                ?>
             </form>
             <div id="log-heading">
                 <h2 class="timecode">Timecode</h2>
@@ -531,31 +518,166 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
                 <h2 class="IP-Adresse">IP-Adresse</h2>
             </div>
             <?php
-               
-                $timespan_selected = time() - 86400; // Default to last 24 hours
-                $event_types_selected = "'Login', 'Registrierung', 'Rezept-Erstellung', 'Rezept-Bearbeitung', 'Fehlermeldung', 'Feedback'"; // Default to all types
-                $logs = new SQLite3("../assets/db/logs.db");
-                $result = $logs->query("SELECT * FROM logs ORDER BY timecode DESC");
-                while ($log = $result->fetchArray(SQLITE3_ASSOC)) { 
-                    $class='';
-                    $timecode = date("d.m.Y H:m",$log['timecode']+ 6 * 3600);
-                    if ($timespan_selected != '0' && $log['timecode'] < $timespan_selected) {
-                        continue; // Skip logs outside the selected timespan
-                    }
-                    // if log contains 'error'
-                    if (str_contains($log['event'], 'error')) {
-                        $class=' error';
-                    }
-                    echo '
-                    <div class="log'.$class.'">
-                        <div class="timecode">'.$timecode.'</div>
-                        <div class="loguser">'.htmlspecialchars($log['user']).'</div>
-                        <div class="event">'.htmlspecialchars($log['event']).'</div>
-                        <div class="IP-Adresse">'.htmlspecialchars($log['IP-Adresse']).'</div>
-                    </div>
-                    ';
+                // --- LOG FILTERING ---
+                $timespan_selected = time() - 86400; // Default: last 24h
+                $event_types_selected = [
+                    'Logins' => 'login',
+                    'Registrierungen' => 'Registrierung',
+                    'Konto-Löschung' => 'Konto-Löschung',
+                    'Konto-Verifizierung' => 'Konto-Verifizierung',
+                    'Rezept-Erstellung' => 'Rezept-Erstellung',
+                    'Rezept-Bearbeitung' => 'Rezept-Bearbeitung',
+                    'Fehlermeldung' => 'Fehlermeldung',
+                    'Error' => 'Error',
+                    'Feedback' => 'Feedback'
+                ];
+                $selected_types = [];
+
+                if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Timespan
+                switch ($_POST['timeselection'] ?? '0') {
+                    case 'letzte 7 Tage':
+                        $timespan_selected = time() - 7 * 86400;
+                        break;
+                    case 'letzte 30 Tage':
+                        $timespan_selected = time() - 30 * 86400;
+                        break;
+                    case 'letzte 6 Monate':
+                        $timespan_selected = strtotime('-6 months');
+                        break;
+                    case 'alle':
+                        $timespan_selected = 0;
+                        break;
+                    default:
+                        $timespan_selected = time() - 86400;
                 }
+                // Event types
+                foreach ($event_types_selected as $postKey => $eventName) {
+                    if (isset($_POST[$postKey])) {
+                        $selected_types[] = $eventName;
+                    }
+                }
+            }
+            // Always default to all if none selected
+            if (empty($selected_types)) {
+                $selected_types = array_values($event_types_selected);
+            }
+
+            // Prepare SQL
+            $logs = new SQLite3("../assets/db/logs.db");
+            $type_placeholders = implode(',', array_fill(0, count($selected_types), '?'));
+            $sql = "SELECT * FROM logs WHERE 1";
+            $params = [];
+            if ($timespan_selected > 0) {
+                $sql .= " AND timecode >= ?";
+                $params[] = $timespan_selected;
+            }
+            if (!empty($selected_types)) {
+                $sql .= " AND event_type IN ($type_placeholders)";
+                $params = array_merge($params, $selected_types);
+            }
+            $sql .= " ORDER BY timecode DESC";
+            $stmt = $logs->prepare($sql);
+            // Bind params
+            $idx = 1;
+            foreach ($params as $p) {
+                if (is_int($p)) {
+                    $stmt->bindValue($idx, $p, SQLITE3_INTEGER);
+                } else {
+                    $stmt->bindValue($idx, $p, SQLITE3_TEXT);
+                }
+                $idx++;
+            }
+            $result = $stmt->execute();
+                while ($log = $result->fetchArray(SQLITE3_ASSOC)) { 
+                $class = '';
+                $date = new DateTime('@' . $log['timecode']);
+                $date->setTimezone(new DateTimeZone('Europe/Berlin'));
+                $timecode = $date->format('d.m.Y H:i');
+                if (str_contains($log['event'], 'error')) {
+                    $class = ' error';
+                }
+                echo '
+                <div class="log'.$class.'">
+                    <div class="timecode">'.$timecode.'</div>
+                    <div class="loguser">'.htmlspecialchars($log['user']).'</div>
+                    <div class="event">'.htmlspecialchars($log['event']).'</div>
+                    <div class="IP-Adresse">'.htmlspecialchars($log['IP-Adresse']).'</div>
+                </div>
+                ';
+            }
             ?>
+        </details>
+        <details id="feedbacks" class="section" onclick="loadanimations()">
+            <summary><h1>Feedbacks<span class="center"><span class="material-symbols-outlined">arrow_back_ios</span></span></h1></summary>
+            <form id="feedback-selection" onchange="//updateLogDisplay()">
+                <select id="timeselection">
+                    <option value="0">letzte 24h</option>
+                    <option value="letzte 7 Tage">letzte 7 Tage</option>
+                    <option value="letzte 30 Tage">letzte 30 Tage</option>
+                    <option value="letzte 6 Monate">letzte 6 Monate</option>
+                    <option value="alle" selected>alle</option>
+                </select>
+                <div id="feedback-buttons">
+                    <input type="checkbox" name="beendet" id="beendet">
+                    <label for="beendet">nur beendete anzeigen</label>
+                </div>
+            </form>
+            <div id="zufriedenheit">
+                <div id="y-achse">
+                    <p class="y-achse">10</p>
+                    <p class="y-achse">8</p>
+                    <p class="y-achse">6</p>
+                    <p class="y-achse">4</p>
+                    <p class="y-achse">2</p>
+                    <p class="y-achse">0</p>
+                </div>
+                <div id="diagramm">
+                    <hr class="bg-hr">
+                    <hr class="bg-hr">
+                    <hr class="bg-hr">
+                    <hr class="bg-hr">
+                    <div id="output">
+                        <div class="max-box" style="height:<?php echo 43;?>%">
+                            <div class="inner-box center"><?php echo 4.3;?></div>
+                        </div>
+                        <div class="max-box" style="height:<?php echo 79;?>%">
+                            <div class="inner-box center"><?php echo 7.9;?></div>
+                        </div>
+                        <div class="max-box" style="height:<?php echo 60;?>%">
+                            <div class="inner-box center"><?php echo 6.0;?></div>
+                        </div>
+                        <div class="max-box" style="height:<?php echo 12;?>%">
+                            <div class="inner-box center"><?php echo 1.2;?></div>
+                        </div>
+                        <div class="max-box" style="height:<?php echo 45;?>%">
+                            <div class="inner-box center"><?php echo 4.5;?></div>
+                        </div>
+                        <div class="max-box" style="height:<?php echo 95;?>%">
+                            <div class="inner-box center"><?php echo 9.5;?></div>
+                        </div>
+                    </div>
+                    <div id="x-achse">
+                        <p class="x-achse">Index</p>
+                        <p class="x-achse">Suche</p>
+                        <p class="x-achse">Filter</p>
+                        <p class="x-achse">Gericht</p>
+                        <p class="x-achse">Listen</p>
+                        <p class="x-achse">Intuitivität</p>
+                    </div>
+                </div>
+            </div>
+            <div id="devices">
+                <div id="max-width">
+                    <div id="handy" class="center" style="width:<?php echo 60;?>%">Handy</div>
+                    <div id="tablet" class="center" style="width:<?php echo 10;?>%">Tablet</div>
+                    <div id="pc" class="center" style="width:<?php echo 30;?>%">PC</div>
+                </div>
+            </div>
+            <div id="messages">
+                <h2>Rückmeldungen zu <b><?php echo 'Index'?></b></h2>
+                <?php echo '<li class="message">Dies ist eine Nachricht</li>';?>
+            </div>
         </details>
     </div>
 </body>

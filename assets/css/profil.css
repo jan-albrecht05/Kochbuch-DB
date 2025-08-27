@@ -14,8 +14,8 @@ body{
     padding: 10px;
     height: 2.5rem;
     text-decoration: none;
-    color: var(--bg-color) !important;
-    background-color: var(--grey);
+    color: var(--text-color) !important;
+    background-color: var(--lightgrey);
     border-radius: 5px;
     font-weight: bold;
     font-size: 1.2em;
@@ -23,13 +23,13 @@ body{
     transition: all 0.2s;
 }
 #profillinks a:hover {
-    background-color: var(--lightergrey);
+    background-color: var(--lightgrey2);
 }
 #profillinks a span {
     margin-right: 1rem;
 }
 #profillinks a.active{
-    background-color: var(--lightergrey);
+    background-color: var(--lightgrey2);
 }
 #profillinks a.active span:last-child{
     text-decoration: underline;

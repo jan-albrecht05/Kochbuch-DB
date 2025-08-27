@@ -22,7 +22,10 @@ if (!in_array($query, $allowed_queries)) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_settings'])) {
     $new_name = trim($_POST['name']);
     $new_email = trim($_POST['email']);
-    $profilbild_name = $profilbild; // default to current
+
+    // Fetch current profile image from DB
+    $row = $usersdb->query("SELECT profilbild FROM users WHERE id = $user_id")->fetchArray(SQLITE3_ASSOC);
+    $profilbild_name = $row && !empty($row['profilbild']) ? $row['profilbild'] : '';
 
     // Handle profile picture upload
     if (isset($_FILES['profilbild']) && $_FILES['profilbild']['error'] === UPLOAD_ERR_OK) {

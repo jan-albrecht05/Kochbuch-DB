@@ -63,8 +63,9 @@ if ($user) {
         </p>';
             $logs_db = new SQLite3("../assets/db/logs.db");
             $ip = $_SERVER['REMOTE_ADDR'];
-            $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event, timecode, 'IP-Adresse') VALUES (:name, :event, :timecode, :ip)");
+            $log_stmt = $logs_db->prepare("INSERT INTO logs (user,event_type, event, timecode, 'IP-Adresse') VALUES (:name, :event_type, :event, :timecode, :ip)");
             $log_stmt->bindValue(':name', $username, SQLITE3_TEXT);
+            $log_stmt->bindValue(':event_type', 'Konto-Verifizierung', SQLITE3_TEXT);
             $log_stmt->bindValue(':event', 'Konto verifiziert', SQLITE3_TEXT);
             $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
             $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);

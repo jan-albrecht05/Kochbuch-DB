@@ -159,7 +159,7 @@ function insertSidebar() {
                 <span class="material-symbols-outlined">add</span>
                 <span>Rezept erstellen</span>
             </a>
-            <a href="#" class="sidebar-link" id="feedback-link">
+            <a href="pages/feedback.php" class="sidebar-link" id="feedback-link">
                 <span class="material-symbols-outlined">feedback</span>
                 <span>Feedback geben</span>
             </a>
@@ -217,7 +217,7 @@ function insertSidebar() {
                 <span class="material-symbols-outlined">add</span>
                 <span>Rezept erstellen</span>
             </a>
-            <a href="#" class="sidebar-link" id="feedback-link">
+            <a href="../pages/feedback.php" class="sidebar-link" id="feedback-link">
                 <span class="material-symbols-outlined">feedback</span>
                 <span>Feedback geben</span>
             </a>

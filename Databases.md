@@ -54,12 +54,25 @@ Table Einlaufsliste
  - status (0 = offen, 1 = abgehakt)
 
 
-## feedback
+## feedback.db
 Table feedback:
 - timecode
 - device width
 - device height
 - browser
 - operating system
-- message
+- bewertung_index
+- message_index
+- bewertung_suche
+- message_suche
+- bewertung_filter
+- message_filter
+- bewertung_gericht
+- message_gericht
+- bewertung_einkaufsliste
+- message_einkaufsliste
+- message_extra
+- intuitivitaet
 - contact (not nessesary)
+- user_id
+- staus (standard=0, in progress=1, abgeschlossen=2)

@@ -395,6 +395,15 @@
             $stmt->bindValue(':problem', $problem, SQLITE3_TEXT);
             $stmt->bindValue(':id', $recipe_id, SQLITE3_INTEGER);
             $stmt->execute();
+            // log the event
+            $logs_db = new SQLite3("../assets/db/logs.db");
+            $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event_type, event, timecode, 'IP-Adresse') VALUES (:name, :event_type, :event, :timecode, :ip)");
+            $log_stmt->bindValue(':name', $user, SQLITE3_TEXT);
+            $log_stmt->bindValue(':event_type', 'Fehlermeldung', SQLITE3_TEXT);
+            $log_stmt->bindValue(':event', $problem, SQLITE3_TEXT);
+            $log_stmt->bindValue(':timecode', $timecode_error, SQLITE3_INTEGER);
+            $log_stmt->bindValue(':ip', $_SERVER['REMOTE_ADDR'], SQLITE3_TEXT);
+            $log_stmt->execute();
             // Optional: show a success message or reload
             echo '
             <script>
