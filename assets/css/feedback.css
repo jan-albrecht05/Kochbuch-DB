@@ -1,0 +1,116 @@
+#main {
+    position: relative;
+    height: 74.5lvh;
+    overflow-x: hidden;
+}
+#progress-bar{
+    height: 1rem;
+    width: 100% ;
+    background-color: var(--lightgrey);
+    border-radius: 1rem;
+    border: 1px solid var(--text-color);
+    overflow: hidden;
+}
+#progress{
+    background-color: rgb(76, 148, 255);
+    height: 100%;
+    z-index: 4;
+}
+#progress-text{
+    color: var(--bg-color);
+    margin-top: -1rem;
+    z-index: 5;
+}
+.section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-top: 1rem;
+    width: calc(100% - 3rem);
+    height: calc(100% - 1rem);
+    padding: 1rem;
+    transition: all .5s;
+    box-sizing: border-box;
+    z-index: 1;
+}
+.section.right {
+    transform: translateX(120%);
+    z-index: 2;
+}
+.section.mid {
+    transform: translateX(0%);
+    z-index: 3;
+}
+.section.left {
+    transform: translateX(-120%);
+    z-index: 2;
+}
+#start.left{
+    height: 0px !important;
+}
+.section p{
+    font-size: 110%;
+    margin-bottom: 2rem;
+}
+.buttons{
+    margin-top: auto;
+    position: fixed;
+    margin-bottom: 5rem;
+    bottom: 0;
+    display: flex;
+    width: 90%;
+    margin-inline: 5%;
+    justify-content: space-between;
+    padding-inline: .6rem;
+}
+button{
+    padding: .3rem .8rem;
+    font-size: 120%;
+    background: none;
+    border: 2px solid;
+    border-color: var(--text-color);
+    border-radius: 5px;
+    transition: all .2s;
+}
+#starten:hover{
+    border-color: var(--orange);
+    color: var(--orange);
+    background-color: var(--bg-color-transparent);
+}
+@media (max-width: 600px) {
+    #main{
+        overflow-y:auto;
+        height: 77.6vh;
+        margin-bottom: 1rem !important;
+    }
+    #start.mid{
+        height: 100lvh !important;
+        height: max-content;
+    }
+    #start.left{
+        height: 0px !important;
+        overflow: hidden;
+    }
+    #starten{
+        margin-bottom: 1rem;
+    }
+    #progress-bar{
+        width: calc(100% - 1rem);
+    }
+    .section{
+        height: max-content;
+        margin-top: 0rem;
+    }
+    
+    .buttons{
+        position: relative;
+        margin-top: 2rem;
+        margin-bottom: 0;
+    }
+    .section p{
+        margin-bottom: .5rem;
+    }
+    #starten{
+        margin-inline: 35%;
+    }
+}
