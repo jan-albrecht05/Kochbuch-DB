@@ -19,23 +19,14 @@
 ## ✅ Verifizieren.php 
  - ❌ update verify logic
 
-## 🚹 admin-panel.php
- - ❌ update selection for Logs
-
 ## 💥 gericht.php
- - ❌ save-btn ohne login -> redirect
- - ❌ calculation for ingredients
- - ❌ add ingredients to einkaufsliste.php
+ - ❌ save-btn ohne login -> disable page reload to show popup
 
 ## ➕ rezept-erstellen.php
  - ❌ fetch error messages
 
 ## 🌐 suche.php
  - ❌ PHP paging (25, 50, 100 Gerichte)
-
-## 🔄 Account erstellen
- - ❌ Mail zum Bestätigen
- - ❌ verification via hash
 
 ## einkaufsliste.php
  - ❌ sort by laden
@@ -45,4 +36,3 @@
 
 ## feedback-form.php
  - ❌ needs everything
- - ❌ extra db

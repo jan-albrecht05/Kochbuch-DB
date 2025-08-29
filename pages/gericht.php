@@ -67,6 +67,9 @@
         var isAdmin = <?php if($_SESSION['rolle'] == 'admin') {echo 'true';}else{echo'false';}; ?>;
         var isEditor = <?php if($_SESSION['rolle'] == 'editor') {echo 'true';}else{echo'false';}; ?>;
     </script>
+    <?php
+        $isloggedin = isset($_SESSION['user_id']) ? 'true' : 'false';
+    ?>
     <script src="../assets/js/heading.js" defer></script>
     <script src="../assets/js/footer.js" defer></script>
 </head>
@@ -85,6 +88,10 @@
     <div class="popup positive center" id="saved">
         <span class="material-symbols-outlined">check</span>
         Rezept wurde gespeichert!
+    </div>
+    <div class="popup negative center" id="login_required">
+        <span class="material-symbols-outlined">lock</span>
+        Bitte logge dich ein, um Rezepte zu speichern!
     </div>
     <?php
     //Banner if recepie is not validated
@@ -128,8 +135,22 @@
             <div id="buttons">
                 <button id="printbtn" onclick="window.print();"><span class="material-symbols-outlined">print</span></button>
                 <form method="POST">
-                    <button id="savebtn" name="savebtn" type="submit">
-                        <span class="material-symbols-outlined">bookmark</span>
+                    <?php
+                    $isBookmarked = false;
+                    if (isset($_SESSION['user_id'])) {
+                        $user_id = $_SESSION['user_id'];
+                        $usersDb = new SQLite3("../assets/db/users.db");
+                        $stmt = $usersDb->prepare("SELECT saved_recepies FROM users WHERE id = :id");
+                        $stmt->bindValue(':id', $user_id, SQLITE3_INTEGER);
+                        $result = $stmt->execute();
+                        $userRow = $result->fetchArray(SQLITE3_ASSOC);
+                        $saved = $userRow['saved_recepies'] ?? '';
+                        $saved_array = array_filter(array_map('trim', explode(',', $saved)));
+                        $isBookmarked = in_array($id, $saved_array);
+                    }
+                    ?>
+                    <button id="savebtn" name="savebtn" type="submit" <?php if ($isBookmarked) echo 'class="bookmarked"'; ?>>
+                        <span class="material-symbols-outlined"><?php echo $isBookmarked ? 'bookmark_added' : 'bookmark'; ?></span>
                     </button>
                 </form>
                 <?php
@@ -149,35 +170,105 @@
                 <span class="material-symbols-outlined">calendar_month</span>
                 <span>
                     <?php
-                        echo date("d.m.Y",$row['timecode_erstellt']+ 6 * 3600); 
+                        $dt = new DateTime('@' . $row['timecode_erstellt']);
+                        $dt->setTimezone(new DateTimeZone('Europe/Berlin'));
+                        echo $dt->format('d.m.Y'); 
                     ?>
                 </span>
             </div>
         </div>
+        <?php
+        // Fetch all ingredients into an array for reuse
+        $zutatenArr = [];
+        $zutatenStmt = $db->prepare("SELECT * FROM zutaten WHERE gerichte_id = :id");
+        $zutatenStmt->bindValue(':id', $id, SQLITE3_INTEGER);
+        $zutatenResult = $zutatenStmt->execute();
+        while ($zutat = $zutatenResult->fetchArray(SQLITE3_ASSOC)) {
+            $zutatenArr[] = $zutat;
+        }
+        ?>
         <div id="zutaten">
             <h2>Zutaten</h2>
             <div id="personen-anpassen">
-                <button id="minusBtn">
+                <button id="minusBtn" type="button">
                     <span class="material-symbols-outlined">remove</span>
                 </button>
                 <span id="personenanzahl" class="center">
-                    <?php echo ($row["personen"])?>
+                    <?php echo (int)$row["personen"]; ?>
                 </span>
-                <button id="plusBtn">
+                <button id="plusBtn" type="button">
                     <span class="material-symbols-outlined">add</span>
                 </button>
             </div>
-            <?php
-                // need to implement calculation for ingredients based on persons
-                while ($zutat = $zutatenResult->fetchArray(SQLITE3_ASSOC)) {
-                    echo '<div class="zutat">
-                            <span class="menge">'.htmlspecialchars($zutat["menge"]).'</span>
-                            <span class="einheit">'.htmlspecialchars($zutat["einheit"]).'</span>
-                            <span class="name">'.htmlspecialchars($zutat["name"]).'</span>
-                        </div>';
-                }
-            ?>
+            <div id="zutatenliste">
+                <?php foreach ($zutatenArr as $zutat): 
+                    $menge = str_replace(',', '.', $zutat["menge"]);
+                    ?>
+                    <div class="zutat"
+                        data-base-menge="<?php echo htmlspecialchars($menge); ?>"
+                        data-einheit="<?php echo htmlspecialchars($zutat["einheit"]); ?>">
+                        <span class="menge"><?php echo htmlspecialchars($zutat["menge"]); ?></span>
+                        <span class="einheit"><?php echo htmlspecialchars($zutat["einheit"]); ?></span>
+                        <span class="name"><?php echo htmlspecialchars($zutat["name"]); ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let personen = <?php echo (int)$row["personen"]; ?>;
+            const minPersonen = 1;
+            const personenAnzahl = document.getElementById('personenanzahl');
+            const minusBtn = document.getElementById('minusBtn');
+            const plusBtn = document.getElementById('plusBtn');
+            const zutaten = document.querySelectorAll('#zutatenliste .zutat');
+            const basePersonen = <?php echo (int)$row["personen"]; ?>;
+
+            zutaten.forEach(zutat => {
+                // Save base amount as float for calculation
+                zutat.dataset.base = parseFloat(zutat.getAttribute('data-base-menge'));
+            });
+
+            function updateZutaten(newPersonen) {
+                zutaten.forEach(zutat => {
+                    const base = parseFloat(zutat.dataset.base);
+                    const einheit = zutat.getAttribute('data-einheit');
+                    let displayMenge;
+                    if (einheit.trim() === "%") {
+                        // Do not recalculate for percent
+                        displayMenge = zutat.dataset.base.replace('.', ',');
+                    } else {
+                        let newMenge = base * newPersonen / basePersonen;
+                        newMenge = Math.round(newMenge * 100) / 100;
+                        displayMenge = (newMenge % 1 === 0) ? newMenge : newMenge.toString().replace('.', ',');
+                    }
+                    zutat.querySelector('.menge').textContent = displayMenge;
+                });
+                personenAnzahl.textContent = newPersonen;
+
+                // Add or remove disabled class for minusBtn
+                if (newPersonen <= minPersonen) {
+                    minusBtn.classList.add('disabled');
+                } else {
+                    minusBtn.classList.remove('disabled');
+                }
+            }
+
+            minusBtn.addEventListener('click', function() {
+                if (personen > minPersonen) {
+                    personen--;
+                    updateZutaten(personen);
+                }
+            });
+            plusBtn.addEventListener('click', function() {
+                personen++;
+                updateZutaten(personen);
+            });
+
+            // Initial update
+            updateZutaten(personen);
+        });
+        </script>
         <div id="arbeitsschritte">
             <h2>Zubereitung</h2>
             <?php 
@@ -194,7 +285,7 @@
         <div id="zuletzt-geändert">
             <?php
                 if ($row['timecode_geaendert'] != '0000-00-00 00:00:00') {
-                    $dt = new DateTime($row['timecode_geaendert'], new DateTimeZone('UTC'));
+                    $dt = new DateTime($row['timecode_geaendert'], new DateTimeZone('Europe/Berlin'));
                     echo 'Zuletzt geändert am: ' . $dt->format('d.m.Y');
                 }
             ?>
@@ -271,9 +362,6 @@
                             <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                 <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                             </svg>
-                            <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
-                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                            </svg>
                         </span>
                     </div>
                     <div class="row">
@@ -296,6 +384,9 @@
                     <div class="row">
                         <span class="zahl"><?php echo ($row["star3"])?></span>
                         <span class="stars">
+                            <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                            </svg>
                             <svg class="svg" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-star-fill" viewBox="0 0 16 16">
                                 <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
                             </svg>
@@ -418,8 +509,8 @@
         <!-- Code gets injected by footer.js -->
     </div>
     <?php
-    // save button functionality
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['savebtn'])) {
+    // save/unsave button functionality
+if($isloggedin == 'true' && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['savebtn'])) {
     $user_id = $_SESSION['user_id'];
     $recipe_id = $id;
     $users = new SQLite3("../assets/db/users.db");
@@ -429,25 +520,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['savebtn'])) {
     $row = $result->fetchArray(SQLITE3_ASSOC);
     $saved = $row['saved_recepies'] ?? '';
     $saved_array = array_filter(array_map('trim', explode(',', $saved)));
-    if (!in_array($recipe_id, $saved_array)) {
-        $saved_array[] = $recipe_id;
-        $new_saved = implode(',', $saved_array);
-        $update = $users->prepare("UPDATE users SET saved_recepies = :saved WHERE id = :id");
-        $update->bindValue(':saved', $new_saved, SQLITE3_TEXT);
-        $update->bindValue(':id', $user_id, SQLITE3_INTEGER);
-        $update->execute();
-    }
-}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['star_rating'])) {
-    $rating = intval($_POST['star_rating']);
-    if ($rating >= 1 && $rating <= 5) {
-        $column = 'star' . $rating;
-        $stmt = $db->prepare("UPDATE gerichte SET $column = $column + 1 WHERE id = :id");
-        $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
-        $stmt->execute();
+    if (in_array($recipe_id, $saved_array)) {
+        // Unsave: remove recipe_id
+        $saved_array = array_diff($saved_array, [$recipe_id]);
+    } else {
+        // Save: add recipe_id
+        $saved_array[] = $recipe_id;
     }
-}
+    $new_saved = implode(',', $saved_array);
+    $update = $users->prepare("UPDATE users SET saved_recepies = :saved WHERE id = :id");
+    $update->bindValue(':saved', $new_saved, SQLITE3_TEXT);
+    $update->bindValue(':id', $user_id, SQLITE3_INTEGER);
+    $update->execute();
+    // Optional: reload to update button state
+        echo "<script>window.location.href=window.location.href;</script>";
+        exit;
+    }
+    else{
+        exit;
+    }
 ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -518,6 +610,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const active = isCooldownActive();
         radios.forEach(radio => radio.disabled = active);
     }, 10000); // check every 10s
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    const saveBtn = document.getElementById('savebtn');
+    const saveForm = saveBtn ? saveBtn.closest('form') : null;
+    const loginPopup = document.getElementById('login_required');
+
+    if (saveForm && saveBtn) {
+        saveForm.addEventListener('submit', function(e) {
+            if (!isLoggedIn) {
+                e.preventDefault();
+                loginPopup.classList.add('open');
+            }
+        });
+    }
 });
 </script>
 </body>

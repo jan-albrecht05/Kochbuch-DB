@@ -354,18 +354,7 @@
                         $db->exec("DELETE FROM schritte WHERE id = $db_id");
                     }
                 }
-            // Log the event
-            $logs_db = new SQLite3("../assets/db/logs.db");
-            $username = isset($_SESSION['name']) ? $_SESSION['name'] : 'Gast';
-            $ip = $_SERVER['REMOTE_ADDR'];
-            $id = 'Rezept '.$db->querySingle("SELECT MAX(id) FROM gerichte").' bearbeitet';
-            $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event_type, event, timecode, 'IP-Adresse') VALUES (:name, :event_type, :event, :timecode, :ip)");
-            $log_stmt->bindValue(':name', $username, SQLITE3_TEXT);
-            $log_stmt->bindValue(':event_type', 'Rezept-Bearbeitung', SQLITE3_TEXT);
-            $log_stmt->bindValue(':event', $id, SQLITE3_TEXT);
-            $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
-            $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
-            $log_stmt->execute();
+            
                 //Positiv Popup
                 echo '
                     <div id="erfolg" class="popup-positiv center" onclick="closeErfolg()">
@@ -380,6 +369,18 @@
                         </div>
                     </div>
                 ';
+                // Log the event
+            $logs_db = new SQLite3("../assets/db/logs.db");
+            $username = isset($_SESSION['name']) ? $_SESSION['name'] : 'Gast';
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $id = 'Rezept '.$db->querySingle("SELECT MAX(id) FROM gerichte").' bearbeitet';
+            $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event_type, event, timecode, 'IP-Adresse') VALUES (:name, :event_type, :event, :timecode, :ip)");
+            $log_stmt->bindValue(':name', $username, SQLITE3_TEXT);
+            $log_stmt->bindValue(':event_type', 'Rezept-Bearbeitung', SQLITE3_TEXT);
+            $log_stmt->bindValue(':event', $id, SQLITE3_TEXT);
+            $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
+            $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
+            $log_stmt->execute();
             }
         ?>
     </div>

@@ -161,7 +161,11 @@
                 <option value="4">4</option>
                 <option value="5">5</option>
                 <option value="6">6</option>
-                <option value="7">mehr als 6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
             </select><br><br>
             <h3>Wie lange dauert die Vorbereitung?</h3>
             <span>Gib die Zeit in Minuten an.</span><br>
@@ -214,136 +218,169 @@
             $db = new SQLite3('../assets/db/gerichte.db');
             $result = $db->querySingle("SELECT MAX(id) FROM gerichte");
             $gericht_id = $result ? $result + 1 : 1;
-            $allowedimgtypes = array("png", "jpeg", "jpg", "JPG", "JPEG", "PNG", "ICO", "ico");
 
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                // Rezeptdaten erfassen
-                $titel = $_POST['titel'] ?? '';
-                $beschreibung = $_POST['kbeschreibung'] ?? '';
-                $tags = isset($_POST['tags']) ? implode(",", $_POST['tags']) : '';
-                $personen = $_POST['portionen'] ?? 1;
-                $vorbereitungszeit = $_POST['vorbereitungszeit'] ?? 0;
-                $zubereitungszeit = $_POST['zubereitungszeit'] ?? 0;
+$errors = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validate required fields
+    if (empty($_POST['titel'])) $errors[] = "Bitte gib einen Titel an.";
+    if (empty($_POST['kbeschreibung'])) $errors[] = "Bitte gib eine Kurzbeschreibung an.";
+    if (empty($_POST['portionen'])) $errors[] = "Bitte wähle die Anzahl der Portionen.";
+    if (empty($_POST['vorbereitungszeit'])) $errors[] = "Bitte gib die Vorbereitungszeit an.";
+    if (empty($_POST['zubereitungszeit'])) $errors[] = "Bitte gib die Zubereitungszeit an.";
+    if (empty($_FILES['img1']['name'])) $errors[] = "Bitte lade mindestens ein Bild hoch.";
 
-            // Handle file uploads
-                if (!empty($_FILES['img1']['name'])) {
-                    $Img1 = $_FILES['img1']['name'];
-                    $img_extention = pathinfo($Img1, PATHINFO_EXTENSION);
-                    if(in_array($img_extention, $allowedimgtypes)){
-                        $tmpNameImg1 = $_FILES['img1']['tmp_name'];
-                        $Img1Name = $gericht_id . '.1.' . $img_extention;
-                        $targetpathImg1 = "../assets/img/uploads/gerichte/" . $Img1Name;
-                        move_uploaded_file($tmpNameImg1, $targetpathImg1);
-                    }
-                }else{
-                    $Img1Name = null;
-                }
-                if (!empty($_FILES['img2']['name'])) {
-                    $Img2 = $_FILES['img2']['name'];
-                    $img_extention = pathinfo($Img2, PATHINFO_EXTENSION);
-                    if(in_array($img_extention, $allowedimgtypes)){
-                        $tmpNameImg2 = $_FILES['img2']['tmp_name'];
-                        $Img2Name = $gericht_id . '.2.' . $img_extention;
-                        $targetpathImg2 = "../assets/img/uploads/gerichte/" . $Img2Name;
-                        move_uploaded_file($tmpNameImg2, $targetpathImg2);
-                    }
-                }
-                else{
-                    $Img2Name = null;
-                }
-                if (!empty($_FILES['img3']['name'])) {
-                    $Img3 = $_FILES['img3']['name'];
-                    $img_extention = pathinfo($Img3, PATHINFO_EXTENSION);
-                    if(in_array($img_extention, $allowedimgtypes)){
-                        $tmpNameImg3 = $_FILES['img3']['tmp_name'];
-                        $Img3Name = $gericht_id . '.3.' . $img_extention;
-                        $targetpathImg3 = "../assets/img/uploads/gerichte/" . $Img3Name;
-                        move_uploaded_file($tmpNameImg3, $targetpathImg3);
-                    }
-                }
-                else{
-                    $Img3Name = null;
-                }
-                
-            // set right user
-                $made_by_user = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
-                $status = ($made_by_user === 0) ? 1 : 0;
-            // Rezept einfügen
-                $stmt = $db->prepare("INSERT INTO gerichte (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, made_by_id, status, timecode_erstellt) 
-                    VALUES (:titel, :beschreibung, :tags, :vorbereitungszeit, :zubereitungszeit, :bild1, :bild2, :bild3, :personen, :made_by_id, :status, :timecode_erstellt)");
-                    $stmt->bindValue(':titel', $titel, SQLITE3_TEXT);
-                    $stmt->bindValue(':beschreibung', $beschreibung, SQLITE3_TEXT);
-                    $stmt->bindValue(':tags', $tags, SQLITE3_TEXT);
-                    $stmt->bindValue(':vorbereitungszeit', $vorbereitungszeit, SQLITE3_INTEGER);
-                    $stmt->bindValue(':zubereitungszeit', $zubereitungszeit, SQLITE3_INTEGER);
-                    $stmt->bindValue(':bild1', $Img1Name, SQLITE3_TEXT);
-                    $stmt->bindValue(':bild2', $Img2Name, SQLITE3_TEXT);
-                    $stmt->bindValue(':bild3', $Img3Name, SQLITE3_TEXT);
-                    $stmt->bindValue(':personen', $personen, SQLITE3_TEXT);
-                    $stmt->bindValue(':made_by_id', $made_by_user, SQLITE3_TEXT);
-                    $stmt->bindValue(':status', $status, SQLITE3_TEXT);
-                    $stmt->bindValue(':timecode_erstellt', time(), SQLITE3_INTEGER);
+    // Validate image types
+    $allowedimgtypes = array("png", "jpeg", "jpg", "JPG", "JPEG", "PNG", "ICO", "ico");
+    foreach (['img1', 'img2', 'img3'] as $imgField) {
+        if (!empty($_FILES[$imgField]['name'])) {
+            $img_ext = pathinfo($_FILES[$imgField]['name'], PATHINFO_EXTENSION);
+            if (!in_array(strtolower($img_ext), $allowedimgtypes)) {
+                $errors[] = "Ungültiges Bildformat bei $imgField. Erlaubt sind PNG und JPG.";
+            }
+        }
+    }
+
+    // Only proceed if no errors
+    if (empty($errors)) {
+        // Rezeptdaten erfassen
+        $titel = $_POST['titel'] ?? '';
+        $beschreibung = $_POST['kbeschreibung'] ?? '';
+        $tags = isset($_POST['tags']) ? implode(",", $_POST['tags']) : '';
+        $personen = $_POST['portionen'] ?? 1;
+        $vorbereitungszeit = $_POST['vorbereitungszeit'] ?? 0;
+        $zubereitungszeit = $_POST['zubereitungszeit'] ?? 0;
+
+    // Handle file uploads
+        if (!empty($_FILES['img1']['name'])) {
+            $Img1 = $_FILES['img1']['name'];
+            $img_extention = pathinfo($Img1, PATHINFO_EXTENSION);
+            if(in_array($img_extention, $allowedimgtypes)){
+                $tmpNameImg1 = $_FILES['img1']['tmp_name'];
+                $Img1Name = $gericht_id . '.1.' . $img_extention;
+                $targetpathImg1 = "../assets/img/uploads/gerichte/" . $Img1Name;
+                move_uploaded_file($tmpNameImg1, $targetpathImg1);
+            }
+        }else{
+            $Img1Name = null;
+        }
+        if (!empty($_FILES['img2']['name'])) {
+            $Img2 = $_FILES['img2']['name'];
+            $img_extention = pathinfo($Img2, PATHINFO_EXTENSION);
+            if(in_array($img_extention, $allowedimgtypes)){
+                $tmpNameImg2 = $_FILES['img2']['tmp_name'];
+                $Img2Name = $gericht_id . '.2.' . $img_extention;
+                $targetpathImg2 = "../assets/img/uploads/gerichte/" . $Img2Name;
+                move_uploaded_file($tmpNameImg2, $targetpathImg2);
+            }
+        }
+        else{
+            $Img2Name = null;
+        }
+        if (!empty($_FILES['img3']['name'])) {
+            $Img3 = $_FILES['img3']['name'];
+            $img_extention = pathinfo($Img3, PATHINFO_EXTENSION);
+            if(in_array($img_extention, $allowedimgtypes)){
+                $tmpNameImg3 = $_FILES['img3']['tmp_name'];
+                $Img3Name = $gericht_id . '.3.' . $img_extention;
+                $targetpathImg3 = "../assets/img/uploads/gerichte/" . $Img3Name;
+                move_uploaded_file($tmpNameImg3, $targetpathImg3);
+            }
+        }
+        else{
+            $Img3Name = null;
+        }
+        
+    // set right user
+        $made_by_user = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
+        $status = ($made_by_user === 0) ? 1 : 0;
+    // Rezept einfügen
+        $stmt = $db->prepare("INSERT INTO gerichte (titel, beschreibung, tags, vorbereitungszeit, zubereitungszeit, bild1, bild2, bild3, personen, made_by_id, status, timecode_erstellt) 
+            VALUES (:titel, :beschreibung, :tags, :vorbereitungszeit, :zubereitungszeit, :bild1, :bild2, :bild3, :personen, :made_by_id, :status, :timecode_erstellt)");
+            $stmt->bindValue(':titel', $titel, SQLITE3_TEXT);
+            $stmt->bindValue(':beschreibung', $beschreibung, SQLITE3_TEXT);
+            $stmt->bindValue(':tags', $tags, SQLITE3_TEXT);
+            $stmt->bindValue(':vorbereitungszeit', $vorbereitungszeit, SQLITE3_INTEGER);
+            $stmt->bindValue(':zubereitungszeit', $zubereitungszeit, SQLITE3_INTEGER);
+            $stmt->bindValue(':bild1', $Img1Name, SQLITE3_TEXT);
+            $stmt->bindValue(':bild2', $Img2Name, SQLITE3_TEXT);
+            $stmt->bindValue(':bild3', $Img3Name, SQLITE3_TEXT);
+            $stmt->bindValue(':personen', $personen, SQLITE3_TEXT);
+            $stmt->bindValue(':made_by_id', $made_by_user, SQLITE3_TEXT);
+            $stmt->bindValue(':status', $status, SQLITE3_TEXT);
+            $stmt->bindValue(':timecode_erstellt', time(), SQLITE3_INTEGER);
+        $stmt->execute();
+
+    // Zutaten auslesen (mehrere Einträge)
+    if (!empty($_POST['zutat']) && is_array($_POST['zutat'])) {
+        for ($i = 0; $i < count($_POST['zutat']); $i++) {
+            $name = $_POST['zutat'][$i] ?? '';
+            $menge = $_POST['menge'][$i] ?? '';
+            $einheit = $_POST['einheit'][$i] ?? '';
+            if ($name !== '') {
+                $stmt = $db->prepare("INSERT INTO zutaten (gerichte_id, name, menge, einheit) 
+                VALUES (:gerichte_id, :name, :menge, :einheit)");
+                $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
+                $stmt->bindValue(':name', $name, SQLITE3_TEXT);
+                $stmt->bindValue(':menge', $menge, SQLITE3_TEXT);
+                $stmt->bindValue(':einheit', $einheit, SQLITE3_TEXT);
                 $stmt->execute();
-
-            // Zutaten auslesen (mehrere Einträge)
-            if (!empty($_POST['zutat']) && is_array($_POST['zutat'])) {
-                for ($i = 0; $i < count($_POST['zutat']); $i++) {
-                    $name = $_POST['zutat'][$i] ?? '';
-                    $menge = $_POST['menge'][$i] ?? '';
-                    $einheit = $_POST['einheit'][$i] ?? '';
-                    if ($name !== '') {
-                        $stmt = $db->prepare("INSERT INTO zutaten (gerichte_id, name, menge, einheit) 
-                        VALUES (:gerichte_id, :name, :menge, :einheit)");
-                        $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
-                        $stmt->bindValue(':name', $name, SQLITE3_TEXT);
-                        $stmt->bindValue(':menge', $menge, SQLITE3_TEXT);
-                        $stmt->bindValue(':einheit', $einheit, SQLITE3_TEXT);
-                        $stmt->execute();
-                    }
-                }
             }
+        }
+    }
 
-            // Schritte auslesen (mehrere Einträge)
-            if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
-                for ($j = 0; $j < count($_POST['schritt']); $j++) {
-                    $schritt = $_POST['schritt'][$j] ?? '';
-                    if ($schritt !== '') {
-                        $stmt = $db->prepare("INSERT INTO schritte (gerichte_id, schritt) VALUES (:gerichte_id, :schritt)");
-                        $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
-                        $stmt->bindValue(':schritt', $schritt, SQLITE3_TEXT);
-                        $stmt->execute();
-                    }
-                }
+    // Schritte auslesen (mehrere Einträge)
+    if (!empty($_POST['schritt']) && is_array($_POST['schritt'])) {
+        for ($j = 0; $j < count($_POST['schritt']); $j++) {
+            $schritt = $_POST['schritt'][$j] ?? '';
+            if ($schritt !== '') {
+                $stmt = $db->prepare("INSERT INTO schritte (gerichte_id, schritt) VALUES (:gerichte_id, :schritt)");
+                $stmt->bindValue(':gerichte_id', $gericht_id, SQLITE3_INTEGER);
+                $stmt->bindValue(':schritt', $schritt, SQLITE3_TEXT);
+                $stmt->execute();
             }
-            // Log the event
-            $logs_db = new SQLite3("../assets/db/logs.db");
-            $username = isset($_SESSION['name']) ? $_SESSION['name'] : 'Gast';
-            $ip = $_SERVER['REMOTE_ADDR'];
-            $id = 'Rezept '.$db->querySingle("SELECT MAX(id) FROM gerichte").' erstellt';
-            $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event_type, event, timecode, 'IP-Adresse') VALUES (:name, :event_type, :event, :timecode, :ip)");
-            $log_stmt->bindValue(':name', $username, SQLITE3_TEXT);
-            $log_stmt->bindValue(':event_type', 'Rezept-Erstellung', SQLITE3_TEXT);
-            $log_stmt->bindValue(':event', $id, SQLITE3_TEXT);
-            $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
-            $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
-            $log_stmt->execute();
-
-                //Positiv Popup
-                echo '
-                    <div id="erfolg" class="popup-positiv center" onclick="closeErfolg()">
-                        <div class="inner-popup">
-                            <h1>Danke!</h1>
-                            <p>Dein Rezept wurde erfolgreich gespeichert!</p>
-                            <p>Du kannst es <a href="../pages/gericht.php?id='.$gericht_id.'"><u>hier</u></a> ansehen und teilen.</p>
-                            <div class="buttons">
-                                <button onclick="window.location.href = `../pages/rezept-erstellen.php`" id="btn-mehr">mehr erstellen</button>
-                                <button onclick="closeErfolg()" id="btn-close">schließen</button>
-                            </div>
-                        </div>
+        }
+    }
+   
+        //Positiv Popup
+        echo '
+            <div id="erfolg" class="popup-positiv center" onclick="closeErfolg()">
+                <div class="inner-popup">
+                    <h1>Danke!</h1>
+                    <p>Dein Rezept wurde erfolgreich gespeichert!</p>
+                    <p>Du kannst es <a href="../pages/gericht.php?id='.$gericht_id.'"><u>hier</u></a> ansehen und teilen.</p>
+                    <div class="buttons">
+                        <button onclick="window.location.href = `../pages/rezept-erstellen.php`" id="btn-mehr">mehr erstellen</button>
+                        <button onclick="closeErfolg()" id="btn-close">schließen</button>
                     </div>
-                ';
-            }
-        ?>
+                </div>
+            </div>
+        ';
+         // Log the event
+    $logs_db = new SQLite3("../assets/db/logs.db");
+    $username = isset($_SESSION['name']) ? $_SESSION['name'] : 'Gast';
+    $ip = $_SERVER['REMOTE_ADDR'];
+    $id = 'Rezept '.$db->querySingle("SELECT MAX(id) FROM gerichte").' erstellt';
+    $log_stmt = $logs_db->prepare("INSERT INTO logs (user, event_type, event, timecode, 'IP-Adresse') VALUES (:name, :event_type, :event, :timecode, :ip)");
+    $log_stmt->bindValue(':name', $username, SQLITE3_TEXT);
+    $log_stmt->bindValue(':event_type', 'Rezept-Erstellung', SQLITE3_TEXT);
+    $log_stmt->bindValue(':event', $id, SQLITE3_TEXT);
+    $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
+    $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
+    $log_stmt->execute();
+
+    } else {
+        // Show errors in the negative popup
+        echo '<div class="popup negative center open" id="form_error" style="display:flex;">';
+        echo '<span class="material-symbols-outlined">report</span>';
+        echo '<ul>';
+        foreach ($errors as $err) {
+            echo '<li>' . htmlspecialchars($err) . '</li>';
+        }
+        echo '</ul>';
+        echo '</div>';
+    }
+}
+?>
     </div>
     <div id="footer">
         

@@ -140,6 +140,10 @@ button:hover{
     justify-content: center;
     transition: all .2s;
 }
+#minusBtn.disabled{
+    cursor: not-allowed !important;
+    color: grey !important;
+}
 #personen-anpassen button:hover{
     background-color: var(--lightgrey2);
     cursor: pointer;
