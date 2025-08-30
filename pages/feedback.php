@@ -42,8 +42,9 @@ $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
     </div>
     <form method="post" id="main" onsubmit="return false;">
         <div id="progress-bar">
-            <div id="progress" style="width: 80%;"></div>
-            <div id="progress-text" class="center">80%</div>
+            <?php $progress = "0%"; ?>
+            <div id="progress" style="width: <?php echo $progress?>;"></div>
+            <div id="progress-text" class="center"><?php echo $progress?></div>
         </div>
         <div class="section mid" id="start">
             <h1>Feedback geben</h1>
@@ -57,19 +58,192 @@ $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
                 <button id="starten" onclick="nextPage()">Starten</button>
             </div>
         </div>
+    <!-- Index -->
         <div class="section right" id="page1">
             <h1>Seite 1</h1>
+            <h3>Wie bewertest du die Startseite?</h3>
+            <div class="slider-input">
+                <input type="range" min="1" max="10" step=".5" value="5.5" name="index" id="index"><br>
+                <div class="lines">
+                    <span>|</span>
+                    <span>|</span>
+                    <span>|</span>
+                </div>
+                <div class="caption">
+                    <span>sehr schlecht</span>
+                    <span>neutral</span>
+                    <span>sehr gut</span>
+                </div>
+            </div>
+            <div class="text-input">
+                <textarea name="comment_index" id="comment_index" placeholder="Dein Kommentar..." resize="none"></textarea>
+            </div>
             <div class="buttons">
                 <button id="zurück" type="button" onclick="prevPage()">Zurück</button>
+                <div class="page center">1 / 7</div>
                 <button id="next" type="button" onclick="nextPage()">Nächste</button>
             </div>
         </div>
+    <!-- Filter -->
         <div class="section right" id="page2">
             <h1>Seite 2</h1>
+            <h3>Wie bewertest du die Filter?</h3>
+            <div class="slider-input">
+                <input type="range" min="1" max="10" step=".5" value="5.5" name="filter" id="filter"><br>
+                <div class="lines">
+                    <span>|</span>
+                    <span>|</span>
+                    <span>|</span>
+                </div>
+                <div class="caption">
+                    <span>sehr schlecht</span>
+                    <span>neutral</span>
+                    <span>sehr gut</span>
+                </div>
+            </div>
+            <div class="text-input">
+                <textarea name="comment_filter" id="comment_filter" placeholder="Dein Kommentar..." resize="none"></textarea>
+            </div>
             <div class="buttons">
                 <button id="zurück" type="button" onclick="prevPage()">Zurück</button>
+                <div class="page center">2 / 7</div>
                 <button id="next" type="button" onclick="nextPage()">Nächste</button>
             </div>
+        </div>
+    <!-- Suche -->
+        <div class="section right" id="page3">
+            <h1>Seite 3</h1>
+            <h3>Wie bewertest du die Suche?</h3>
+            <div class="slider-input">
+                <input type="range" min="1" max="10" step=".5" value="5.5" name="search" id="search"><br>
+                <div class="lines">
+                    <span>|</span>
+                    <span>|</span>
+                    <span>|</span>
+                </div>
+                <div class="caption">
+                    <span>sehr schlecht</span>
+                    <span>neutral</span>
+                    <span>sehr gut</span>
+                </div>
+            </div>
+            <div class="text-input">
+                <textarea name="comment_search" id="comment_search" placeholder="Dein Kommentar..." resize="none"></textarea>
+            </div>
+            <div class="buttons">
+                <button id="zurück" type="button" onclick="prevPage()">Zurück</button>
+                <div class="page center">3 / 7</div>
+                <button id="next" type="button" onclick="nextPage()">Nächste</button>
+            </div>
+        </div>
+    <!-- Gericht -->
+        <div class="section right" id="page4">
+            <h1>Seite 4</h1>
+            <h3>Wie bewertest du die Rezept-Seite?</h3>
+            <div class="slider-input">
+                <input type="range" min="1" max="10" step=".5" value="5.5" name="gericht" id="gericht"><br>
+                <div class="lines">
+                    <span>|</span>
+                    <span>|</span>
+                    <span>|</span>
+                </div>
+                <div class="caption">
+                    <span>sehr schlecht</span>
+                    <span>neutral</span>
+                    <span>sehr gut</span>
+                </div>
+            </div>
+            <div class="text-input">
+                <textarea name="comment_gericht" id="comment_gericht" placeholder="Dein Kommentar..." resize="none"></textarea>
+            </div>
+            <div class="buttons">
+                <button id="zurück" type="button" onclick="prevPage()">Zurück</button>
+                <div class="page center">4 / 7</div>
+                <button id="next" type="button" onclick="nextPage()">Nächste</button>
+            </div>
+        </div>
+    <!-- Einkaufsliste -->
+        <div class="section right" id="page5">
+            <h1>Seite 5</h1>
+            <h3>Wie bewertest du die Einkaufslisten?</h3>
+            <div class="slider-input">
+                <input type="range" min="1" max="10" step=".5" value="5.5" name="einkaufsliste" id="einkaufsliste"><br>
+                <div class="lines">
+                    <span>|</span>
+                    <span>|</span>
+                    <span>|</span>
+                </div>
+                <div class="caption">
+                    <span>sehr schlecht</span>
+                    <span>neutral</span>
+                    <span>sehr gut</span>
+                </div>
+            </div>
+            <div class="text-input">
+                <textarea name="comment_einkaufsliste" id="comment_einkaufsliste" placeholder="Dein Kommentar..." resize="none"></textarea>
+            </div>
+            <div class="buttons">
+                <button id="zurück" type="button" onclick="prevPage()">Zurück</button>
+                <div class="page center">5 / 7</div>
+                <button id="next" type="button" onclick="nextPage()">Nächste</button>
+            </div>
+        </div>
+    <!-- Gericht -->
+        <div class="section right" id="page6">
+            <h1>Seite 6</h1>
+            <h3>Wie bewertest du die Profil-Seite?</h3>
+            <div class="slider-input">
+                <input type="range" min="1" max="10" step=".5" value="5.5" name="profil" id="profil"><br>
+                <div class="lines">
+                    <span>|</span>
+                    <span>|</span>
+                    <span>|</span>
+                </div>
+                <div class="caption">
+                    <span>sehr schlecht</span>
+                    <span>neutral</span>
+                    <span>sehr gut</span>
+                </div>
+            </div>
+            <div class="text-input">
+                <textarea name="comment_profil" id="comment_profil" placeholder="Dein Kommentar..." resize="none"></textarea>
+            </div>
+            <div class="buttons">
+                <button id="zurück" type="button" onclick="prevPage()">Zurück</button>
+                <div class="page center">6 / 7</div>
+                <button id="next" type="button" onclick="nextPage()">Nächste</button>
+            </div>
+        </div>
+    <!-- Gericht -->
+        <div class="section right" id="page7">
+            <h1>Seite 7</h1>
+            <h3>Wie intuitiv ist das Kochbuch für dich?</h3>
+            <div class="slider-input">
+                <input type="range" min="1" max="10" step=".5" value="5.5" name="intuitiv" id="intuitiv"><br>
+                <div class="lines">
+                    <span>|</span>
+                    <span>|</span>
+                    <span>|</span>
+                </div>
+                <div class="caption">
+                    <span>sehr schlecht</span>
+                    <span>neutral</span>
+                    <span>sehr gut</span>
+                </div>
+            </div>
+            <div class="text-input">
+                <textarea name="comment_intuitiv" id="comment_intuitiv" placeholder="Dein Kommentar..." resize="none"></textarea>
+            </div>
+            <div class="buttons">
+                <button id="zurück" type="button" onclick="prevPage()">Zurück</button>
+                <div class="page center">7 / 7</div>
+                <button id="next" type="button" onclick="nextPage()" type="submit">Absenden</button>
+            </div>
+        </div>
+    <!-- Gericht -->
+        <div class="section right" id="finish">
+            <h1>Vielen Dank für dein Feedback!</h1>
+            <p>Wir schätzen deine Meinung und werden sie nutzen, um das Kochbuch zu verbessern.</p>
         </div>
     </form>
     <div id="footer">
