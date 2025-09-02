@@ -9,7 +9,53 @@ $user_id = $_SESSION['user_id'];
 if (!isset($user_id)) {
     header("Location: login.php?redirect=einkaufsliste.php");
     exit;
+}
+// Einzelne Liste bereinigen
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['clean_list_id'])) {
+    $list_id = intval($_POST['clean_list_id']);
+    $stmt = $usersdb->prepare("
+        DELETE FROM Einkaufsliste
+        WHERE status = 1
+        AND list_id = :list_id
+        AND list_id IN (SELECT id FROM shopping_lists WHERE user_id = :user_id)
+    ");
+    $stmt->bindValue(':list_id', $list_id, SQLITE3_INTEGER);
+    $stmt->bindValue(':user_id', $user_id, SQLITE3_INTEGER);
+    $stmt->execute();
+    header("Location: einkaufsliste.php?list=$list_id");
+    exit;
+}
 
+// Alle Listen bereinigen
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cleanup_all'])) {
+    $stmt = $usersdb->prepare("
+        DELETE FROM Einkaufsliste
+        WHERE status = 1
+        AND list_id IN (SELECT id FROM shopping_lists WHERE user_id = :user_id)
+    ");
+    $stmt->bindValue(':user_id', $user_id, SQLITE3_INTEGER);
+    $stmt->execute();
+    header("Location: einkaufsliste.php");
+    exit;
+}
+
+// Liste löschen
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_list_id'])) {
+    $list_id = intval($_POST['delete_list_id']);
+    // Sicherheit: Gehört die Liste dem User?
+    $check = $usersdb->querySingle("SELECT id FROM shopping_lists WHERE id = $list_id AND user_id = $user_id");
+    if ($check) {
+        // Zuerst alle Items aus der Liste löschen
+        $stmt = $usersdb->prepare("DELETE FROM Einkaufsliste WHERE list_id = :list_id");
+        $stmt->bindValue(':list_id', $list_id, SQLITE3_INTEGER);
+        $stmt->execute();
+        // Dann die Liste selbst löschen
+        $stmt = $usersdb->prepare("DELETE FROM shopping_lists WHERE id = :list_id");
+        $stmt->bindValue(':list_id', $list_id, SQLITE3_INTEGER);
+        $stmt->execute();
+    }
+    header("Location: einkaufsliste.php");
+    exit;
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['item_id']) && !empty($_POST['item_id']) && !empty($_POST['list_id'])) {
     // Check if the check button was clicked (not the select)
@@ -47,23 +93,24 @@ if (!$list) {
                 $list_id = intval($_POST['list_id']);
 
                 if ($list_id > 0) {
-                    $stmt = $usersdb->prepare("INSERT INTO Einkaufsliste (zutat, menge, einheit, list_id) VALUES (:name, :quantity, :einheit, :list_id)");
-                    $stmt->bindValue(':name', $item_name, SQLITE3_TEXT);
-                    $stmt->bindValue(':quantity', $item_quantity, SQLITE3_INTEGER);
+                    $laden = isset($_POST['laden']) ? trim($_POST['laden']) : null;
+
+                    $stmt = $usersdb->prepare("INSERT INTO Einkaufsliste (zutat, menge, einheit, list_id, status, laden) VALUES (:zutat, :menge, :einheit, :list_id, 0, :laden)");
+                    $stmt->bindValue(':zutat', $item_name, SQLITE3_TEXT);
+                    $stmt->bindValue(':menge', $item_quantity, SQLITE3_TEXT);
                     $stmt->bindValue(':einheit', $item_einheit, SQLITE3_TEXT);
                     $stmt->bindValue(':list_id', $list_id, SQLITE3_INTEGER);
+                    $stmt->bindValue(':laden', $laden, SQLITE3_TEXT);
+                    $stmt->execute();
 
-                    if ($stmt->execute()) {
-                        header("Location: einkaufsliste.php?list=$list_id");
-                        exit;
-                    } else {
-                        echo "<p>Fehler beim Hinzufügen des Items.</p>";
-                    }
+                    header("Location: einkaufsliste.php?list=$list_id");
+                    exit;
                 } else {
                     echo "<p>Ungültige Liste ausgewählt.</p>";
                 }
             }
-            ?>
+             
+    ?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -178,14 +225,14 @@ if (!$list) {
                                 <div>{$item['menge']} {$item['einheit']} <b>{$item['zutat']}</b></div>
                                 <form method='POST' action='einkaufsliste.php?list={$list_id}' class='delete-item-form'>
                                     <input type='hidden' name='item_id' value='{$item['id']}'>
-                                    <select name='item_action' onchange='this.form.submit()' $disabled>
-                                        <option value='' disabled selected></option>
-                                        <option value='Aldi'>Aldi</option>
-                                        <option value='Lidl'>Lidl</option>
-                                        <option value='Netto'>Netto</option>
-                                        <option value='Rossmann'>Rossmann</option>
+                                    <input type='hidden' name='list_id' value='{$item['list_id']}'>
+                                    <select name='laden' onchange='this.form.submit()' $disabled>
+                                        <option value='".(empty($item['laden']) ? 'selected' : '')."'>jeder Laden</option>
+                                        <option value='Aldi' ".($item['laden'] == 'Aldi' ? 'selected' : '').">Aldi</option>
+                                        <option value='Lidl' ".($item['laden'] == 'Lidl' ? 'selected' : '').">Lidl</option>
+                                        <option value='Netto' ".($item['laden'] == 'Netto' ? 'selected' : '').">Netto</option>
+                                        <option value='Rossmann' ".($item['laden'] == 'Rossmann' ? 'selected' : '').">Rossmann</option>
                                     </select>
-                                    <input type='hidden' name='list_id' value='{$list_id}'>
                                     <button type='submit' class='check-btn' $disabled>
                                         <span class='material-symbols-outlined'>check</span>
                                     </button>
@@ -202,16 +249,16 @@ if (!$list) {
                         </div>
                     ';
                     echo '
-                        <div id="controls">
-                            <button id="clean-list-btn" class="center"'. $hidden.'>
+                        <form method="post" id="controls">
+                            <button name="clean_list_id" value="'.$list_id.'" type="submit" class="center" '.$hidden.'>
                                 <span class="material-symbols-outlined">cleaning_services</span>
                                 <span>Liste bereinigen</span>
                             </button>
-                            <button id="delete-list-btn" class="center" onclick="if(confirm(\'Bist du sicher, dass du diese Liste löschen möchtest?\')) { location.href=\'einkaufsliste.php\'; }">
+                            <button id="delete-list-btn" name="delete_list_id" value="'.$list_id.'" type="submit" class="center" onclick="if(confirm(\'Bist du sicher, dass du diese Liste löschen möchtest?\')) { location.href=\'einkaufsliste.php\'; }">
                                 <span class="material-symbols-outlined">delete</span>
                                 <span>Liste löschen</span>
                             </button>
-                        </div>
+                        </form>
                     ';
                 } else {
                     echo "<h2>Liste nicht gefunden</h2>";
@@ -227,7 +274,9 @@ if (!$list) {
                     ORDER BY Einkaufsliste.list_id, Einkaufsliste.id
                 ");
                 $hasItems = false;
+                $hidden = 'style="display:none;"';
                 while ($item = $all_items->fetchArray(SQLITE3_ASSOC)) {
+                    $hidden = '';
                     $hasItems = true;
                     if (empty($item['einheit'])) {
                         $item['einheit'] = 'Stk';
@@ -237,39 +286,37 @@ if (!$list) {
                     echo "
                         <div class='item $class'>
                             <div>
+                                <span class='listname'>[{$item['list_name']}]</span>
                                 {$item['menge']} {$item['einheit']} <b>{$item['zutat']}</b>
                             </div>
-                <form method='POST' action='einkaufsliste.php' class='delete-item-form'>
-                    <input type='hidden' name='item_id' value='{$item['id']}'>
-                    <select name='item_action' onchange='this.form.submit()' $disabled>
-                        <option value='' disabled selected></option>
-                        <option value='Aldi'>Aldi</option>
-                        <option value='Lidl'>Lidl</option>
-                        <option value='Netto'>Netto</option>
-                        <option value='Rossmann'>Rossmann</option>
-                    </select>
-                    <input type='hidden' name='list_id' value='{$item['list_id']}'>
-                    <button type='submit' class='check-btn center' $disabled>
-                        <span class='material-symbols-outlined'>check</span>
-                    </button>
-                </form>
-            </div>";
-                    }
-                    if (!$hasItems) {
-                        $hidden = 'style="display:none;"';
-                    }
-                    echo '
-                            <div id="controls">
-                                <button id="clean-list-btn" class="center"'. $hidden.'>
-                                    <span class="material-symbols-outlined">cleaning_services</span>
-                                    <span>Listen bereinigen</span>
+                            <form method='POST' action='einkaufsliste.php' class='delete-item-form'>
+                                <input type='hidden' name='item_id' value='{$item['id']}'>
+                                <input type='hidden' name='list_id' value='{$item['list_id']}'>
+                                <select name='laden' onchange='this.form.submit()' $disabled>
+                                    <option value='".(empty($item['laden']) ? 'selected' : '')."'>jeder Laden</option>
+                                    <option value='Aldi' ".($item['laden'] == 'Aldi' ? 'selected' : '').">Aldi</option>
+                                    <option value='Lidl' ".($item['laden'] == 'Lidl' ? 'selected' : '').">Lidl</option>
+                                    <option value='Netto' ".($item['laden'] == 'Netto' ? 'selected' : '').">Netto</option>
+                                    <option value='Rossmann' ".($item['laden'] == 'Rossmann' ? 'selected' : '').">Rossmann</option>
+                                </select>
+                                <button type='submit' class='check-btn center' $disabled>
+                                    <span class='material-symbols-outlined'>check</span>
                                 </button>
-                            </div>
-                        ';
-                    if (!$hasItems) {
-                        echo "<p>Du hast noch keine Einträge in deinen Listen.</p>";
-                    }
+                            </form>
+                        </div>";
+                        }
+                        echo '
+                        <form method="post" id="controls">
+                            <button type="submit" name="cleanup_all" class="center" '.$hidden.'>
+                                <span class="material-symbols-outlined">cleaning_services</span>
+                                Listen bereinigen
+                            </button>
+                        </form>';
                 }
+                if (!$hasItems) {
+                    echo "<p>Du hast noch keine Einträge in deinen Listen.</p>";
+                }
+            
             ?>
         </div>
     </div>
@@ -283,7 +330,7 @@ if (!$list) {
             <input type="number" name="item_quantity" placeholder="Menge *" required>
             <input type="text" name="item_einheit" placeholder="Einheit (optional)">
             <input type="hidden" name="list_id" value="<?php echo isset($_GET['list']) ? intval($_GET['list']) : ''; ?>">
-            <select name="item_laden">
+            <select name="laden">
                 <option value="" selected> jeder Laden</option>
                 <option value="Aldi">Aldi</option>
                 <option value="Lidl">Lidl</option>

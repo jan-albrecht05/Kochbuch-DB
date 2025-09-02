@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,7 +31,7 @@ if (!$hash) {
             <small>Du wirst in 5 Sekunden weitergeleitet.</small>
         </span>    
     </p>';
-    //header("refresh:5;url=../index.php");
+    header("refresh:5;url=../index.php");
     exit;
 }
 
@@ -47,13 +47,12 @@ if ($user) {
     $now = time();
 
     // prüfen ob innerhalb der letzten 60 Minuten
-    if ($now - $timestamp_register >= 3600 * 1000) {
+    if ($now - $timestamp_register >= 3600) {
         // Status auf 2 setzen (verifiziert)
         $update = $usersdb->prepare("UPDATE users SET status = 2 WHERE id = :id");
         $update->bindValue(':id', $user['id'], SQLITE3_INTEGER);
         $update->execute();
-        $user_row = $usersdb->query("SELECT * FROM users WHERE id = $user_id")->fetchArray(SQLITE3_ASSOC);
-        $user_row->execute();
+        $user_row = $usersdb->query("SELECT * FROM users WHERE id = {$user['id']}")->fetchArray(SQLITE3_ASSOC);
         $username = $user_row['name'];
         echo '
         <span class="material-symbols-outlined green center">check</span>
@@ -70,7 +69,7 @@ if ($user) {
             $log_stmt->bindValue(':timecode', time(), SQLITE3_INTEGER);
             $log_stmt->bindValue(':ip', $ip, SQLITE3_TEXT);
             $log_stmt->execute();
-        //header("refresh:5;url=login.php");
+        header("refresh:5;url=login.php");
 
     } else {
         echo '
@@ -79,7 +78,7 @@ if ($user) {
                 Verifizierungs-Link abgelaufen.
             </p>
         ';
-        //header("refresh:5;url=login.php");
+        header("refresh:5;url=login.php");
 
     }
 } else {
@@ -89,7 +88,7 @@ if ($user) {
         Verifizierung gescheitert. Versuche es bitte erneut.
     </p>
     ';
-    //header("refresh:5;url=login.php");
+    header("refresh:5;url=login.php");
 
 }
 ?>

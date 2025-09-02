@@ -76,3 +76,10 @@ Table feedback:
 - contact (not nessesary)
 - user_id
 - staus (standard=0, in progress=1, abgeschlossen=2)
+
+## hits
+Table hits
+- timecode
+- page
+- from
+- device type

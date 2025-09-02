@@ -15,9 +15,8 @@
 # SEITEN TO-DO
 ## 🎯 index.php
  - ❌ arrows for horizontal scrolling
-
-## ✅ Verifizieren.php 
- - ❌ update verify logic
+ - ❌ new DB for page hits
+ - ❌ check for "?from=" in URL
 
 ## 💥 gericht.php
  - ❌ save-btn ohne login -> disable page reload to show popup
@@ -31,8 +30,8 @@
 ## einkaufsliste.php
  - ❌ sort by laden
  - ❌ Logik shops hinzufügen
- - ❌ Funktion aufräumen
- - ❌ Funktion Liste löschen
 
 ## feedback-form.php
- - ❌ needs everything
+ - ❌ style input fields "range"
+ - ❌ Ajax
+ - ❌ inserting Data to DB
