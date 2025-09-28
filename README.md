@@ -35,3 +35,9 @@
  - ❌ style input fields "range"
  - ❌ Ajax
  - ❌ inserting Data to DB
+
+## Datenschutzerklärung
+ - ❌ needs everything
+
+## person.php
+ - ❌ delete-user-Button
