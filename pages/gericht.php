@@ -3,6 +3,25 @@
 <head>
     <?php
         session_start();
+
+        // Handle star rating submission (AJAX)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['star_rating'])) {
+            $db = new SQLite3("../assets/db/gerichte.db");
+            $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+            $rating = intval($_POST['star_rating']);
+            
+            if ($rating >= 1 && $rating <= 5 && $id > 0) {
+                $column = 'star' . $rating;
+                $updateRating = $db->prepare("UPDATE gerichte SET $column = $column + 1 WHERE id = :id");
+                $updateRating->bindValue(':id', $id, SQLITE3_INTEGER);
+                $updateRating->execute();
+                
+                // Return success for AJAX
+                echo json_encode(['success' => true]);
+                exit;
+            }
+        }
+
         if(file_exists("../assets/db/gerichte.db")){
             $db = new SQlite3("../assets/db/gerichte.db");
             
@@ -110,7 +129,7 @@
                 <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild2"])?>" id="img2" alt="">
                 <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild3"])?>" id="img3" alt="">
             </div>
-            <div id="sidebar">
+            <div id="image-sidebar">
                 <img src="../assets/img/uploads/gerichte/<?php echo ($row["bild1"])?>"onclick = "showImg1()" alt="">
                 <?php if(!empty($row["bild2"])){
                     echo '<img src="../assets/img/uploads/gerichte/'. ($row["bild2"]).'"onclick = "showImg2()" alt="">';
@@ -538,8 +557,9 @@ if($isloggedin == 'true' && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POS
         exit;
     }
     else{
-        exit;
-    }
+        // Not logged in, do nothing
+    };
+
 ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
